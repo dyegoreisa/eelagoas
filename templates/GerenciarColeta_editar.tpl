@@ -34,9 +34,8 @@
 
       $(".novo_item").livequery( 'click', function(e) {
         i++;
-        conteudo = $("#parametro_inserir").html();
 
-        conteudo += '<span id="parametro' + i + '"><br>'
+        conteudo = '<span id="parametro' + i + '"><br>'
                  + '<input type="text" name="nome_parametros[]" value="">'
                  + '<div class="campos_parametros">'
                  + '<label>N&iacute;vel: <input type="text" name="nivel_novo[]" size="10"></label>'
@@ -46,7 +45,7 @@
                  + '</div>'
                  + '<input type="button" class="cancelar_item" alt="parametro' + i + '" value="Cancelar">'
                  + '</span>';
-        $("#parametro_inserir").html( conteudo );
+        $("#parametro_inserir").append( conteudo );
       });
 
       $(".cancelar_item").livequery( 'click', function(e) {
