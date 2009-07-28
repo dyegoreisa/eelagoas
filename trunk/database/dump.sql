@@ -30,16 +30,6 @@ CREATE TABLE `categoria` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Dumping data for table `categoria`
---
-
-LOCK TABLES `categoria` WRITE;
-/*!40000 ALTER TABLE `categoria` DISABLE KEYS */;
-INSERT INTO `categoria` VALUES (11,'teste1');
-/*!40000 ALTER TABLE `categoria` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `coleta`
 --
 
@@ -63,16 +53,6 @@ CREATE TABLE `coleta` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Dumping data for table `coleta`
---
-
-LOCK TABLES `coleta` WRITE;
-/*!40000 ALTER TABLE `coleta` DISABLE KEYS */;
-INSERT INTO `coleta` VALUES (13,55,48,11,'2009-01-20');
-/*!40000 ALTER TABLE `coleta` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `coleta_parametro`
 --
 
@@ -94,16 +74,6 @@ CREATE TABLE `coleta_parametro` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Dumping data for table `coleta_parametro`
---
-
-LOCK TABLES `coleta_parametro` WRITE;
-/*!40000 ALTER TABLE `coleta_parametro` DISABLE KEYS */;
-INSERT INTO `coleta_parametro` VALUES (12,13,50,'22',2);
-/*!40000 ALTER TABLE `coleta_parametro` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `lagoa`
 --
 
@@ -118,16 +88,6 @@ CREATE TABLE `lagoa` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Dumping data for table `lagoa`
---
-
-LOCK TABLES `lagoa` WRITE;
-/*!40000 ALTER TABLE `lagoa` DISABLE KEYS */;
-INSERT INTO `lagoa` VALUES (55,'teste1');
-/*!40000 ALTER TABLE `lagoa` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `parametro`
 --
 
@@ -140,16 +100,6 @@ CREATE TABLE `parametro` (
   PRIMARY KEY  (`id_parametro`)
 ) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
-
---
--- Dumping data for table `parametro`
---
-
-LOCK TABLES `parametro` WRITE;
-/*!40000 ALTER TABLE `parametro` DISABLE KEYS */;
-INSERT INTO `parametro` VALUES (49,'teste1'),(50,'teste2');
-/*!40000 ALTER TABLE `parametro` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `ponto_amostral`
@@ -167,16 +117,6 @@ CREATE TABLE `ponto_amostral` (
   CONSTRAINT `ponto_amostral_ibfk_1` FOREIGN KEY (`id_lagoa`) REFERENCES `lagoa` (`id_lagoa`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
-
---
--- Dumping data for table `ponto_amostral`
---
-
-LOCK TABLES `ponto_amostral` WRITE;
-/*!40000 ALTER TABLE `ponto_amostral` DISABLE KEYS */;
-INSERT INTO `ponto_amostral` VALUES (47,55,'teste1'),(48,55,'teste2');
-/*!40000 ALTER TABLE `ponto_amostral` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `usuario`
@@ -203,7 +143,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (4,'dyego','202cb962ac59075b964b07152d234b70','Administador',NULL,'2009-07-16 00:38:07','2009-07-16 03:38:07');
+INSERT INTO `usuario` VALUES (4,'admin',md5('admin'),'Administador',NULL,now(),now());
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
