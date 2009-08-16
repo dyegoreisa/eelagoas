@@ -15,8 +15,14 @@
   <script type="text/javascript" src="/eelagoas/js/jquery.validate.min.js"></script>
   <script type="text/javascript" src="/eelagoas/js/jquerycssmenu.js"></script>
   {literal}
-  <script type="text/javascript">
-    //droplinemenu.buildmenu("menu")  
+  <script>
+      $(document).ready(function() {
+          $('.excluir').click(function () {
+              if (false == confirm('Deseja excluir este registro?')) {
+                  return false;
+              }
+          });
+      });
   </script>
   {/literal}
 </head>
