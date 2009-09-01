@@ -258,6 +258,22 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
   }
 
   public function excluir( $id ) {
+    $smarty = $this->getSmarty();
+    
+    try{
+      if( isset( $id ) && $id != '' ) {
+        $this->coleta->setId( $id );
+        $this->coleta->excluir(); 
+        $smarty->assign( 'mensagem', 'Registro excluido.' );
+      } else {
+        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
+      }
+
+      $smarty->displayHBF( 'salvar.tpl' );
+    }catch( Exception $e ) {
+      $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
+      $smarty->display( 'error.tpl' );
+    }
   }
 
 }
