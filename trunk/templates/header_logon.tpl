@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Estudos Ecol&oacute;gicos nas Lagoas</html>
+  <title>Estudos Ecol&oacute;gicos nas Lagoas</title>
   <link rel="stylesheet" type="text/css" href="/eelagoas/css/form.css" />
   <link rel="stylesheet" type="text/css" href="/eelagoas/css/jquerycssmenu.css" />
   {literal}
