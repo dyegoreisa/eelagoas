@@ -9,6 +9,9 @@ require_once 'app/models/BaseModel.class.php';
 require_once 'app/controller/BaseController.class.php';
 require_once 'app/controller/Gerenciar.php';
 
+// Plugins
+require_once 'plugin/report/Report.class.php';
+
 loadModules( DIR_MODELS );
 loadModules( DIR_CONTROLLER );
 
