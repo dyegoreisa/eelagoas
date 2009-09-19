@@ -18,11 +18,13 @@ define('R_DIR', '/eelagoas/index.php');
 /**
  * Define informações para acesso ao banco de dados
  */
-//define('DB_DRIVER', 'mysql');
-//define('DB_HOST',   'mysql.linksimbolico.com.br');
-//define('DB_NAME',   'linksimbolico');
-//define('DB_USER',   'linksimbolico');
-//define('DB_PASSWD', 'banco123');
+/*
+define('DB_DRIVER', 'mysql');
+define('DB_HOST',   'mysql.linksimbolico.com.br');
+define('DB_NAME',   'linksimbolico');
+define('DB_USER',   'linksimbolico');
+define('DB_PASSWD', 'banco123');
+*/
 // Configuração local
 define('DB_DRIVER', 'mysql');
 define('DB_HOST',   'localhost');
