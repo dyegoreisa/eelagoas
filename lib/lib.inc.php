@@ -52,3 +52,30 @@ function unir_arrays( $a, $b ) {
 
     return $novo_array;
 }
+
+/**
+ * Remove itens do array baseado num array de chaves
+ * 
+ * @param array $elementos - Array a ter seus itens removidos
+ * @param array $chaves - Array de chaves para remover
+ * @param bool $inverte - True para removar os campos do array de chaves e false para remover os outro campos
+ * @access public
+ * @return array - Array com os elementos removidos
+ */
+function remove_elementos_array($elementos, $chaves, $inverte = false) {
+    if (!$inverte) {
+        foreach ($chaves as $chave) {
+            unset($elementos[$chave]);   
+        }
+    } else {
+        $arrAuxiliar = array();
+        foreach ($chaves as $chave) {
+            if (isset($elementos[$chave])) {
+                $arrAuxiliar[$chave] = $elementos[$chave];
+            }
+        }
+        unset($elementos);
+        $elementos = $arrAuxiliar;
+    }
+    return $elementos;
+}
