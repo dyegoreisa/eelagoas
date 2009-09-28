@@ -1,25 +1,18 @@
 <?php
 require_once 'config.inc.php';
 require_once 'XML/XML.class.php';
+require_once 'render/Render.class.php';
+require_once 'render/Html.class.php';
+require_once 'render/Pdf.class.php';
+require_once 'data/Result.class.php';
 
 class Report
 {
-    
-    /**
-     * Objeto XML para acesso e parse do arquivo
-     * 
-     * @var XML
-     * @access private
-     */
     private $xml;
-
-    /**
-     * Array de objetos field que são os campos no XML
-     * 
-     * @var array
-     * @access private
-     */
-    private $fields;
+    private $html;
+    private $pdf;
+    private $xls;
+    private $result;
 
     /**
      * Método construtor que inicia variáveis
@@ -29,40 +22,36 @@ class Report
      */
     public function __construct()
     {
-        $this->xml = null;
-        $this->fields = array();
+        $this->render = null;
+        $this->xml    = new Html();
+        $this->result = new Result();
     }
 
-    /**
-     * Seta o XML
-     * 
-     * @access public
-     * @return void
-     */
-    public function setXML()
+    public function setHtml() 
     {
-        $this->xml = new XML();
-        $this->xml->setFile(FILE_XML);
+        $this->render = new Html();
+        $this->render->setResult($this->result);
     }
 
-    public function setFields(array $fields)
+    public function setPDF()
     {
-        $this->fields = $fields;
-        debug($this->fields);
+        $this->render = new Pdf();
+        $this->render->setResult($this->result);
     }
 
-    /**
-     * 
-     * 
-     * @access public
-     * @return string 
-     */
-    public function fetch()
+    public function setXls()
     {
-        $this->xml->openFile();
-        $this->setFields($this->xml->getFields());
-        $this->xml->parse();
-        return 'teste';
+        $this->render = new Xls();
+    }
+
+    public function getRender()
+    {
+        return $this->render;
+    }
+
+    public function getResult()
+    {
+        return $this->result;
     }
 
 }

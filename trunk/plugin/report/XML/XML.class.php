@@ -68,7 +68,7 @@ class XML
     {
         $fields = array();
 
-        $tables = $this->doc->getElementsByTagName('tables');
+        $tables = $this->doc->getElementsByTagName('table');
 
         foreach ($tables as $table) {
             $itemTableName = $table->getElementsByTagName('name');

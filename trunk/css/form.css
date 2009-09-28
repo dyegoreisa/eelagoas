@@ -108,6 +108,10 @@ select.ok {
   border: solid #ABC507;
 }
 
+select.campo {
+    width: 230px;
+}
+
 input.button{
   
 }
@@ -168,6 +172,11 @@ form.cmxform label.error {
 
 form.cmxform input.submit {
         margin-left: 103px;
+}
+
+div.campo {
+    width: 235px;
+    float: left;
 }
 
 /*\*//*/ form.cmxform legend { display: inline-block; } /* IE Mac legend fix */
