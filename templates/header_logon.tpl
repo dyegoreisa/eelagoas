@@ -28,39 +28,39 @@
 </head>
 <body>
 <div id="myjquerymenu" class="jquerycssmenu">
-  <ul>
-    <li><a href="{$dir}/GerenciarColeta/editar">Cadastrar Coleta</a></li>
-    <li><a href="#">Gerenciar Lagoa</a>
-      <ul>
-        <li><a href="{$dir}/GerenciarLagoa/editar">Cadastrar</a></li>
-        <li><a href="{$dir}/GerenciarLagoa/buscar">Buscar</a></li>
-        <li><a href="{$dir}/GerenciarLagoa/listar">Listar</a></li>
-      </ul>
-    </li>
-    <li><a href="#">Gerenciar Categoria</a>
-      <ul>
-        <li><a href="{$dir}/GerenciarCategoria/editar">Cadastrar</a></li>
-        <li><a href="{$dir}/GerenciarCategoria/buscar">Buscar</a></li>
-        <li><a href="{$dir}/GerenciarCategoria/listar">Listar</a></li>
-      </ul>
-    </li>
-    <li><a href="#">Gerenciar Parametro</a>
-      <ul>
-        <li><a href="{$dir}/GerenciarParametro/editar">Cadastrar</a></li>
-        <li><a href="{$dir}/GerenciarParametro/buscar">Buscar</a></li>
-        <li><a href="{$dir}/GerenciarParametro/listar">Listar</a></li>
-      </ul>
-    </li>
-    <li><a href="#">Gerenciar Usuario</a>
-      <ul>
-        <li><a href="{$dir}/GerenciarUsuario/editar">Cadastrar</a></li>
-        <li><a href="{$dir}/GerenciarUsuario/buscar">Buscar</a></li>
-        <li><a href="{$dir}/GerenciarUsuario/listar">Listar</a></li>
-      </ul>
-    </li>
-    <li><a href="{$dir}/Relatorio/reportInterface">Relat&oacute;rios</a></li>
-    <li><a href="{$dir}/Sessao/sair">Sair</a></li>
-  </ul>
+    <ul>
+        <li><a href="{$dir}/GerenciarColeta/editar">Cadastrar Coleta</a></li>
+        <li><a href="{$dir}/Relatorio/reportInterface">Relat&oacute;rios</a></li>
+        <li><a href="#">Gerenciar Lagoa</a>
+            <ul>
+                <li><a href="{$dir}/GerenciarLagoa/editar">Cadastrar</a></li>
+                <li><a href="{$dir}/GerenciarLagoa/buscar">Buscar</a></li>
+                <li><a href="{$dir}/GerenciarLagoa/listar">Listar</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Gerenciar Categoria</a>
+            <ul>
+                <li><a href="{$dir}/GerenciarCategoria/editar">Cadastrar</a></li>
+                <li><a href="{$dir}/GerenciarCategoria/buscar">Buscar</a></li>
+                <li><a href="{$dir}/GerenciarCategoria/listar">Listar</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Gerenciar Parametro</a>
+            <ul>
+                <li><a href="{$dir}/GerenciarParametro/editar">Cadastrar</a></li>
+                <li><a href="{$dir}/GerenciarParametro/buscar">Buscar</a></li>
+                <li><a href="{$dir}/GerenciarParametro/listar">Listar</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Gerenciar Usuario</a>
+            <ul>
+                <li><a href="{$dir}/GerenciarUsuario/editar">Cadastrar</a></li>
+                <li><a href="{$dir}/GerenciarUsuario/buscar">Buscar</a></li>
+                <li><a href="{$dir}/GerenciarUsuario/listar">Listar</a></li>
+            </ul>
+        </li>
+        <li><a href="{$dir}/Sessao/sair">Sair</a></li>
+    </ul>
 <br style="clear: left" />
 </div>
 <div id="main">

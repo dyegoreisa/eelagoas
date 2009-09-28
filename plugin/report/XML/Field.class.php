@@ -27,6 +27,11 @@ class Field
         $this->tableName = $name;
     }
 
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
     public function setColumnName($name)
     {
         $this->columnName = $name;

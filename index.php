@@ -3,12 +3,12 @@ require_once 'config/config.inc.php';
 require_once 'lib/lib.inc.php';
 require_once 'lib/Route.class.php';
 require_once 'lib/Connection.class.php';
+require_once 'lib/Connection.class.php';
 require_once 'app/view/BaseView.class.php';
 require_once 'app/view/Template.class.php';
 require_once 'app/view/Mensagem.class.php';
 require_once 'app/models/BaseModel.class.php';
 require_once 'app/controller/BaseController.class.php';
-require_once 'app/controller/Gerenciar.php';
 
 // Plugins
 require_once 'plugin/report/Report.class.php';
