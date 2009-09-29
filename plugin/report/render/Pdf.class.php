@@ -5,7 +5,7 @@ require_once 'lib/myFPDF.class.php';
 class Pdf extends Render
 {
     
-    private $heightColumn;
+    private $widthColumn;
     private $fpdf;
     
     public function __construct()
@@ -14,6 +14,27 @@ class Pdf extends Render
         $this->fpdf = new myFPDF();
         $this->fpdf->setToday($this->todayBR);
         $this->fpdf->setUserName($this->userName);
+
+        $this->fpdf->fills = array(
+            'data'                => 1,
+            'nome_lagoa'          => 1,
+            'nome_ponto_amostral' => 1,
+            'nome_categoria'      => 1,
+            'nome_parametro'      => 1,
+            'profundidade'        => 1,
+            'valor'               => 1
+        );
+        
+        $this->fpdf->aligns = array(
+            'data'                => 'L',
+            'nome_lagoa'          => 'L',
+            'nome_ponto_amostral' => 'L',
+            'nome_categoria'      => 'L',
+            'nome_parametro'      => 'L',
+            'profundidade'        => 'R',
+            'valor'               => 'R'
+        );
+        
     }
     
     public function setUserName($strUserName)
@@ -185,9 +206,9 @@ class Pdf extends Render
         $this->fpdf->SetXY($xBefore, $yBefore);
     }
     
-    public function setHeightColumn()
+    public function setWidthColumn()
     {
-        $this->heightColumn = array (
+        $this->fpdf->widths = $this->widthColumn = array (
             'data'                => 30,
             'nome_lagoa'          => 60,
             'nome_ponto_amostral' => 50,
@@ -196,6 +217,12 @@ class Pdf extends Render
             'profundidade'        => 25,
             'valor'               => 15
         );
+    }
+
+    public function Titles()
+    {
+        $this->makeColumns();
+        $this->fpdf->SetX(4);
     }
 
     /**
@@ -217,8 +244,9 @@ class Pdf extends Render
             } else {
                 $this->fpdf->SetXY($x, $y);
             }
-            $this->fpdf->Cell($this->heightColumn[$key], 6, $val, 0, 1, 'L', 1);            
-            $x += $this->heightColumn[$key];                
+            $align = (isset($this->fpdf->aligns[$key])) ? $this->fpdf->aligns[$key] : 'L';
+            $this->fpdf->Cell($this->widthColumn[$key], 6, $val, 0, 1, $align, 1);            
+            $x += $this->widthColumn[$key];                
         }
         $this->fpdf->SetFillColor(255);
         $this->fpdf->SetTextColor(0);
@@ -227,7 +255,7 @@ class Pdf extends Render
 
     public function makeList()
     {
-        $this->setHeightColumn();        
+        $this->setWidthColumn();        
         $this->fpdf->setReportName(mb_convert_encoding('Relatório', 'ISO-8859-1', 'UTF-8'));
         $this->fpdf->AddPage('L', 'A4');
         $this->fpdf->AliasNbPages();
@@ -236,38 +264,27 @@ class Pdf extends Render
         
         $this->totalLines();
         
-        // logica das linhas
-        $count = 1;
+        $this->fpdf->doBorder = false;
+        $this->fpdf->doFills = true;
+        
+        $this->printLines();
+    }
+
+    protected function printLines()
+    {
+        // logica das linhas        
+        $this->fpdf->currentLine = 1;        
         $this->makeColumns();
         foreach ($this->data as $key => $data) {
-            // Faz paginação
-            if (($count % 29) == 0) {
-                $this->fpdf->AddPage('L', 'A4');
-                $this->makeColumns();
-            }
-            
-            // Intercala cor da linha
-            if ($count % 2 != 0) {
+            if ($this->fpdf->currentLine % 2 != 0) {
                 $this->fpdf->SetFillColor(255, 255, 255);
             } else {
                 $this->fpdf->SetFillColor(224, 224, 224);
-            }
-            
-            unset($x);            
-            foreach ($this->columns as $keyColumn => $column) {
-                if (!isset($x)) {
-                    $x = 4;
-                    $this->fpdf->SetX($x);
-                    $y = $this->fpdf->GetY();
-                } else {
-                    $this->fpdf->SetXY($x, $y);
-                }
-                $value = $data[$keyColumn];
-                $this->fpdf->Cell($this->heightColumn[$keyColumn], 5, $value, 0, 1, 'L', 1);
-                $x += $this->heightColumn[$keyColumn];
-            }
-            $count++;
-        }
+            }            
+            $this->fpdf->SetX(4);
+            $this->fpdf->Row($data);
+            $this->fpdf->currentLine++;
+        }        
     }
 
     /**
