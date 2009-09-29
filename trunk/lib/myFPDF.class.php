@@ -1,8 +1,8 @@
 <?php
 
-require_once 'fpdf.php';
+require_once 'mc_table.class.php';
 
-class myFPDF extends FPDF
+class myFPDF extends PDF_MC_Table
 {
     private $userName;
     private $reportName;
