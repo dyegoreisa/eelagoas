@@ -23,7 +23,7 @@ class Report
     public function __construct()
     {
         $this->render = null;
-        $this->xml    = new Html();
+        $this->xml    = new Xml();
         $this->result = new Result();
     }
 

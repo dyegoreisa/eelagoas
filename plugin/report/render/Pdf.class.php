@@ -4,7 +4,6 @@ require_once 'lib/myFPDF.class.php';
 
 class Pdf extends Render
 {
-    
     private $widthColumn;
     private $fpdf;
     
@@ -43,11 +42,6 @@ class Pdf extends Render
         $this->fpdf->setUserName($this->userName);
     }
 
-    public function getUserName()
-    {
-        return $this->strUserName;
-    }
-    
     public function setDados(array $data)
     {
         $this->data = $data;
@@ -56,11 +50,6 @@ class Pdf extends Render
     public function getData()
     {
         return $this->data;
-    }
-    
-    public function setFilters(array $filters)
-    {
-        $this->filters = $filters;
     }
     
     public function getTodayBR()
@@ -84,12 +73,7 @@ class Pdf extends Render
         return $this->reportName;
     }
 
-    public function setColumns($columns)
-    {
-        $this->columns = $columns;
-    }
-
-    private function makeFilters()
+    public function makeFilters()
     {
         $intBorder = 1;
         $numHeight = 4;
@@ -97,7 +81,7 @@ class Pdf extends Render
         $numY = $this->fpdf->GetY();
         $this->fpdf->SetX($numX);
 
-        $this->printCellFilters($numHeight, array('index'   => 'lagoa', 
+        $this->printCellFilter($numHeight, array('index'   => 'lagoa', 
                                                   'field'   => 'Lagoas: ', 
                                                   'replace' => true));
         
@@ -105,7 +89,7 @@ class Pdf extends Render
         $numY = $this->fpdf->GetY() + $numHeight;
         $this->fpdf->SetXY($numX, $numY);
         
-        $this->printCellFilters($numHeight, array('index'   => 'ponto_amostral', 
+        $this->printCellFilter($numHeight, array('index'   => 'ponto_amostral', 
                                                   'field'   => 'Pontos amostrais: ', 
                                                   'replace' => true));
            
@@ -113,7 +97,7 @@ class Pdf extends Render
         $numY = $this->fpdf->GetY() + $numHeight;
         $this->fpdf->SetXY($numX, $numY);
         
-        $this->printCellFilters($numHeight, array('index'   => 'parametro', 
+        $this->printCellFilter($numHeight, array('index'   => 'parametro', 
                                                   'field'   => 'Parametros: ', 
                                                   'replace' => true));
 
@@ -121,77 +105,36 @@ class Pdf extends Render
         $numY = $this->fpdf->GetY() + $numHeight;
         $this->fpdf->SetXY($numX, $numY);
         
-        $this->printCellFilters($numHeight, array('index'   => 'id_categoria', 
+        $this->printCellFilter($numHeight, array('index'   => 'id_categoria', 
                                                   'field'   => 'Categoria: ', 
                                                   'replace' => true));   
 
-        $this->printCellFilters($numHeight, array('index'   => 'periodo', 
+        $this->printCellFilter($numHeight, array('index'   => 'periodo', 
                                                   'field'   => mb_convert_encoding('Período: ', 'ISO-8859-1', 'UTF-8'), 
                                                   'replace' => false,
                                                   'void'    => true));
 
-        $this->printCellFilters($numHeight, array('index'   => 'data_inicio', 
+        $this->printCellFilter($numHeight, array('index'   => 'data_inicio', 
                                                   'field'   => mb_convert_encoding('Início: ', 'ISO-8859-1', 'UTF-8'), 
                                                   'replace' => false));
         
-        $this->printCellFilters($numHeight, array('index'   => 'data_fim', 
+        $this->printCellFilter($numHeight, array('index'   => 'data_fim', 
                                                   'field'   => 'Fim: ', 
                                                   'replace' => false));
         
     }
     
-    public function getDataByParam($key, $index) 
+    private function printCellFilter($numHeight, $params) 
     {
-        if (isset($this->lists[$index][$key]) && $this->lists[$index][$key] != '') {
-            return $this->lists[$index][$key];
-        } else {
-            return '';                
-        }            
-    }
-    
-    /**
-     * Monta e imprime uma célula do filtro
-     * 
-     * A variável $arrParam deve ser enviada conforme o exemplo:
-     *  array('index'   => 'indice_exemplo', // Indice do array $arrFiltros do objeto
-     *        'field'   => 'Label exemplo: ',// Label que aparecerá no relatório
-     *        'replace' => true,             // true para subistituição de valor e false quando o é valor literal
-     *        'void'    => true)             // true quando quer imprimir somente o Label e omitir este parametro  
-     *                                       // quando o for imprimir o valor também 
-     * 
-     * @param float $numHeight - Altura do campo
-     * @param array $params - Array de paramentros
-     * @access private
-     * @return void
-     */
-    private function printCellFilters($numHeight, $params)
-    {
-        if (!isset($this->filters[$params['index']])) {
-            $text = (isset($params['void']) && $params['void']) ? '': 'Todos';
-        }elseif (is_array($this->filters[$params['index']])) {
-            if (isset($params['replace']) && $params['replace']) {
-                $aux = array();
-                foreach ($this->filters[$params['index']] as $val) {
-                    $aux[] = $this->getDataByParam($val, $params['index']);
-                }
-                $text = implode(', ', $aux);
-            } else {
-                $text = implode(', ', $this->filters[$params['index']]);
-            }
-        } else {
-            if (isset($params['replace']) && $params['replace']) {
-                $text = $this->getDataByParam($this->filters[$params['index']], $params['index']);
-            } else {
-                $text = $this->filters[$params['index']];
-            }
-        }
+        $filter = $this->makeFilter($params);
+
         $this->fpdf->SetFont('Arial', 'B', 9);
-        $this->fpdf->Cell($this->fpdf->GetStringWidth($params['field']), $numHeight, $params['field'], 0, 0, 'L', 0);
+        $this->fpdf->Cell($this->fpdf->GetStringWidth($filter['field']), $numHeight, $filter['field'], 0, 0, 'L', 0);
         $this->fpdf->SetFont('Arial', '', 9);
-        $this->fpdf->Cell($this->fpdf->GetStringWidth($text) + 5, $numHeight, $text, 0, 0, 'L', 0);         
+        $this->fpdf->Cell($this->fpdf->GetStringWidth($filter['value']) + 5, $numHeight, $filter['value'], 0, 0, 'L', 0);         
     }
     
-    private function totalLines()
+    public function totalLines()
     {
         $this->fpdf->SetFont('Arial', 'B', 10);
 
@@ -256,7 +199,7 @@ class Pdf extends Render
     public function makeList()
     {
         $this->setWidthColumn();        
-        $this->fpdf->setReportName(mb_convert_encoding('Relatório', 'ISO-8859-1', 'UTF-8'));
+        $this->fpdf->setReportName(mb_convert_encoding($this->getReportName(), 'ISO-8859-1', 'UTF-8'));
         $this->fpdf->AddPage('L', 'A4');
         $this->fpdf->AliasNbPages();
 

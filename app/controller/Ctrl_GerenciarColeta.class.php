@@ -43,7 +43,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $this->lagoa->pegar();
             $idLagoa = $this->lagoa->getId();
 
-            $smarty->assign( 'select_parametro', $this->coletaParametro->listarCheckboxAssoc( $id ));
+            $smarty->assign( 'select_parametro', $this->coletaParametro->listarSelectAssoc( $id ));
 
         } else {
             $smarty->assign( 'select_parametro', $this->parametro->listarCheckboxAssoc() );

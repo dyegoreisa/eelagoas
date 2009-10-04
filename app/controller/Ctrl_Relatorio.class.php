@@ -59,22 +59,13 @@ class Ctrl_Relatorio extends BaseController
             case 'html':
                 $report->setHtml();
                 $render = $report->getRender();
-                $render->render();
+                $render->setReportName('Relat&oacute;rio');
                 break;
 
             case 'pdf':
                 $report->setPdf();
                 $render = $report->getRender();
-                $render->setColumns($columns);
-                $render->setFilters($filtros);
-                $render->setUserName($userName);
-                $render->setLists(array(
-                    'lagoa'          => $this->lagoa->listarSelectAssoc(),
-                    'id_categoria'   => $this->categoria->listarSelectAssoc(),
-                    'parametro'      => $this->parametro->listarSelectAssoc(),
-                    'ponto_amostral' => $this->pontoAmostral->listarSelectAssoc($idLagoas)
-                ));
-                $render->render();
+                $render->setReportName('Relatório');
                 break;
 
             case 'xls':
@@ -82,5 +73,16 @@ class Ctrl_Relatorio extends BaseController
 
             default:
         }
+
+        $render->setColumns($columns);
+        $render->setFilters($filtros);
+        $render->setUserName($userName);
+        $render->setLists(array(
+            'lagoa'          => $this->lagoa->listarSelectAssoc(),
+            'id_categoria'   => $this->categoria->listarSelectAssoc(),
+            'parametro'      => $this->parametro->listarSelectAssoc(),
+            'ponto_amostral' => $this->pontoAmostral->listarSelectAssoc($idLagoas)
+        ));
+        $render->render();
     }
 }

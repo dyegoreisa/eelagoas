@@ -62,3 +62,11 @@ define('LIMIT', 50 );
  */
 //define(SMARTY_TEMPLATE, '/home/linksimbolico/www/Smarty-2.6.26/libs/');
 //define(SMARTY_TEMPLATE, '');
+
+/**
+ * Logos para os relatórios 
+ */
+ define('REP_LOGO_HTML', '/eelagoas/images/logo.jpg');
+ define('REP_LOGO_PDF', 'images/logo.jpg');
+ define('REP_LOGO_XLS', 'images/logo.jpg');
+

@@ -56,9 +56,7 @@ class myFPDF extends PDF_MC_Table
         $this->SetX($numX);
         $this->Cell($numWidth, 5, mb_convert_encoding('Emissão: ', 'ISO-8859-1', 'UTF-8') . $this->getToday(), 0, 1, 'R', 0);
 
-        $logo = 'images/logo.jpg';
-
-        $this->Image($logo, 5, 5, 45, 45);
+        $this->Image(REP_LOGO_PDF, 5, 5, 45, 45);
 
         $this->SetXY(4, 35);
     }
