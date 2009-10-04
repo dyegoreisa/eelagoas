@@ -14,7 +14,7 @@
 <fieldset>
     <legend>Relat&oacute;rio Configur&aacute;vel</legend>
 
-<form action="{$dir}/Relatorio/reportExecute" method="POST" class="cmxform" >
+<form action="{$dir}/Relatorio/reportExecute" method="POST" class="cmxform" target="_blank" >
     
     <div class="campo">
     <label for="lagoa">Lagoas:</label><br/>
@@ -56,8 +56,8 @@
 
     <fieldset>
         <legend>Tipo de relat&oacute;rio</legend>
-        {*<input type="radio" name="tipo_relatorio" value="html" id="radio_html"><label for="radio_html">HTML</label>*}
-        <input type="radio" name="tipo_relatorio" value="pdf" id="radio_pdf" checked><label for="radio_pdf">PDF</label>
+        <input type="radio" name="tipo_relatorio" value="html" id="radio_html" checked><label for="radio_html">HTML</label>
+        <input type="radio" name="tipo_relatorio" value="pdf" id="radio_pdf" ><label for="radio_pdf">PDF</label>
         {*<input type="radio" name="tipo_relatorio" value="xls" id="radio_xls"><label for="radio_xls">Excell</label>*}
     </fieldset>
     <input type="submit" value="Gerar">

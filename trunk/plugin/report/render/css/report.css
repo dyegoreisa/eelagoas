@@ -1,0 +1,38 @@
+img#logo {
+    width: 150px;
+}
+div#filter {
+    left: 125px;
+    position: absolute;
+    top: 30px;
+}
+p#total {
+    position: absolute;
+    right: 10px;
+}
+div#header {
+    position: absolute;
+    right: 10px;
+    text-align: right;
+    top: 0;
+}
+table#report {
+    position: absolute;
+    top: 205px;
+    width: 98%;
+    border: solid thin;
+    left: 1%;
+}
+html {
+    font-family: arial;
+    font-size: 12px;
+}
+body {
+    margin: 0px;
+}
+div#filter ul {
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+}
+

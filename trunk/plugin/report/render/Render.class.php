@@ -1,8 +1,22 @@
 <?php
 abstract class Render
 {
-    protected $fields;
+    /**
+     * Objeto que contém dados vindo do banco
+     * 
+     * @var Result
+     * @access protected
+     */
     protected $result;
+
+    /**
+     * Lista de parâmetros
+     *
+     * Esta lista de parametros é um array de arrays associativos
+     * 
+     * @var mixed
+     * @access protected
+     */
     protected $lists;
 
     /**
@@ -67,14 +81,9 @@ abstract class Render
         $this->today   = date('Y-m-d-H-i');
     }
 
-    public function setFields(array $fields) 
+    public function getData()
     {
-        $this->fields = $fields;
-    }
-
-    public function getFields() 
-    {
-        return $this->fields;
+        return $this->data;
     }
 
     public function setResult(Result $result) 
@@ -83,10 +92,115 @@ abstract class Render
         $this->data   = $this->result->execute();
     }
 
+    public function setColumns($columns)
+    {
+        $this->columns = $columns;
+    }
+
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    public function setFilters(array $filters)
+    {
+        $this->filters = $filters;
+    }
+    
+    public function setUserName($strUserName)
+    {
+        $this->userName = $strUserName;
+    }
+
+    public function getUserName()
+    {
+        return $this->userName;
+    }
+
+    public function setReportName($reportName)
+    {
+        $this->reportName = $reportName;
+    }
+
+    public function getReportName()
+    {
+        return $this->reportName;
+    }
+
+    public function getToday()
+    {
+        return $this->today;
+    }
+
+    public function getTodayBR()
+    {
+        return $this->todayBR;
+    }
+    
+    /**
+     * Define a lista de listas
+     * 
+     * @param array $lists 
+     * @access public
+     * @return void
+     */
     public function setLists($lists)
     {
         $this->lists = $lists;
     }
     
+    /**
+     * Monta uma célula do filtro
+     * 
+     * A variável $param deve ser enviada conforme o exemplo:
+     *  array('index'   => 'indice_exemplo', // Indice do array $arrFiltros do objeto
+     *        'field'   => 'Label exemplo: ',// Label que aparecerá no relatório
+     *        'replace' => true,             // true para subistituição de valor e false quando o é valor literal
+     *        'void'    => true)             // true quando quer imprimir somente o Label e omitir este parametro  
+     *                                       // quando o for imprimir o valor também 
+     * 
+     * @param array $params - Array de paramentros
+     * @access protected
+     * @return array - Dados para o filtro
+     */
+    protected function makeFilter($params)
+    {
+        if (!isset($this->filters[$params['index']])) {
+            $text = (isset($params['void']) && $params['void']) ? '': 'Todos';
+        }elseif (is_array($this->filters[$params['index']])) {
+            if (isset($params['replace']) && $params['replace']) {
+                $aux = array();
+                foreach ($this->filters[$params['index']] as $val) {
+                    $aux[] = $this->getDataByParam($val, $params['index']);
+                }
+                $text = implode(', ', $aux);
+            } else {
+                $text = implode(', ', $this->filters[$params['index']]);
+            }
+        } else {
+            if (isset($params['replace']) && $params['replace']) {
+                $text = $this->getDataByParam($this->filters[$params['index']], $params['index']);
+            } else {
+                $text = $this->filters[$params['index']];
+            }
+        }
+
+        return array(
+            'field' => $params['field'],
+            'value' => $text
+        );
+    }
+
+    public function getDataByParam($key, $index) 
+    {
+        if (isset($this->lists[$index][$key]) && $this->lists[$index][$key] != '') {
+            return $this->lists[$index][$key];
+        } else {
+            return '';                
+        }            
+    }
+    
     abstract public function render(); 
+    abstract public function totalLines();
+    abstract public function makeFilters();
 }
