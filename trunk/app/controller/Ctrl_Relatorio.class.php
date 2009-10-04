@@ -45,15 +45,13 @@ class Ctrl_Relatorio extends BaseController
         $result->setDBH($this->getDBH());
         $result->setFilters($filtros);
 
-        $columns = array(
-            'data'                => 'Data: ',
-            'nome_lagoa'          => 'Lagoa: ',
-            'nome_ponto_amostral' => 'Ponto Amostral: ',
-            'nome_categoria'      => 'Categoria: ',
-            'nome_parametro'      => 'Parametro: ',
-            'profundidade'        => 'Profundidade: ',
-            'valor'               => 'Valor: '
-        );
+        $report->addColumn('data',                'Data: ',           'L', 1, 30);
+        $report->addColumn('nome_lagoa',          'Lagoa: ',          'L', 1, 60);
+        $report->addColumn('nome_ponto_amostral', 'Ponto Amostral: ', 'L', 1, 50);
+        $report->addColumn('nome_categoria',      'Categoria: ',      'L', 1, 60);
+        $report->addColumn('nome_parametro',      'Parametro: ',      'L', 1, 50);
+        $report->addColumn('profundidade',        'Profundidade: ',   'R', 1, 25);
+        $report->addColumn('valor',               'Valor: ',          'R', 1, 15);
 
         switch ($tipoRelatorio) {
             case 'html':
@@ -66,6 +64,7 @@ class Ctrl_Relatorio extends BaseController
                 $report->setPdf();
                 $render = $report->getRender();
                 $render->setReportName('Relatório');
+                $render->prepareColumns();
                 break;
 
             case 'xls':
@@ -74,7 +73,8 @@ class Ctrl_Relatorio extends BaseController
             default:
         }
 
-        $render->setColumns($columns);
+
+        //$render->setColumns($columns);
         $render->setFilters($filtros);
         $render->setUserName($userName);
         $render->setLists(array(

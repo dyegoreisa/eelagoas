@@ -8,9 +8,9 @@
 <body>
 <img src="{$logo}" id="logo">
 <div id="header">
-    <p>{$nome_relatorio}</p>
-    <p>Emitido por: {$usuario}</p>
-    <p>Emiss&atilde;o: {$data_emissao}</p>
+    <h2>{$nome_relatorio}</h2>
+    <p><b>Emitido por:</b> {$usuario}</p>
+    <p><b>Emiss&atilde;o:</b> {$data_emissao}</p>
 </div>
 
 <div id="filter">

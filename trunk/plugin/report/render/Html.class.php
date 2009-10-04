@@ -6,6 +6,7 @@ class Html extends Render
 {
     private $formatedData;
     private $smarty;
+    private $algins;
 
     public function __construct() 
     {
@@ -60,7 +61,8 @@ class Html extends Render
 
         $smarty->assign('barra_titulo', $this->getReportName());
         $smarty->assign('dados', $this->getData());
-        $smarty->assign('colunas', $this->getColumns());
+        $smarty->assign('colunas', $this->getArrayColumnText());
+        $smarty->assign('alinhamento', $this->getArrayColumnAlign());
         $smarty->assign('total_linhas', $this->totalLines());
         $smarty->assign('logo', REP_LOGO_HTML);
         $smarty->assign('nome_relatorio', $this->getReportName());

@@ -1,13 +1,13 @@
 <table id="report">
-    <tr>
-        {foreach from=$colunas item=coluna}
-            <th>{$coluna}</th>
+    <tr class="header">
+        {foreach from=$colunas key=chave item=coluna}
+            <th class="algin_{$alinhamento.$chave}">{$coluna}</th>
         {/foreach}
     </tr>
     {foreach from=$dados item=dado}
-    <tr>
+    <tr bgcolor="{cycle values="#eeeeee,#d0d0d0"}">
         {foreach from=$colunas key=chave item=coluna}
-            <td>{$dado.$chave}</td>
+            <td class="align_{$alinhamento.$chave}">{$dado.$chave}</td>
         {/foreach}
     </tr>
     {/foreach}

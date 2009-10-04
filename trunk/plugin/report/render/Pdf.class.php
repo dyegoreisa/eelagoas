@@ -4,8 +4,14 @@ require_once 'lib/myFPDF.class.php';
 
 class Pdf extends Render
 {
-    private $widthColumn;
     private $fpdf;
+    /**
+     * Lista de titulos para as colunas
+     * 
+     * @var array
+     * @access private
+     */
+    private $titles;
     
     public function __construct()
     {
@@ -13,27 +19,6 @@ class Pdf extends Render
         $this->fpdf = new myFPDF();
         $this->fpdf->setToday($this->todayBR);
         $this->fpdf->setUserName($this->userName);
-
-        $this->fpdf->fills = array(
-            'data'                => 1,
-            'nome_lagoa'          => 1,
-            'nome_ponto_amostral' => 1,
-            'nome_categoria'      => 1,
-            'nome_parametro'      => 1,
-            'profundidade'        => 1,
-            'valor'               => 1
-        );
-        
-        $this->fpdf->aligns = array(
-            'data'                => 'L',
-            'nome_lagoa'          => 'L',
-            'nome_ponto_amostral' => 'L',
-            'nome_categoria'      => 'L',
-            'nome_parametro'      => 'L',
-            'profundidade'        => 'R',
-            'valor'               => 'R'
-        );
-        
     }
     
     public function setUserName($strUserName)
@@ -71,6 +56,14 @@ class Pdf extends Render
     public function getReportName()
     {
         return $this->reportName;
+    }
+
+    public function prepareColumns()
+    {
+        $this->fpdf->fills = $this->getArrayColumnFill();
+        $this->fpdf->aligns = $this->getArrayColumnAlign();
+        $this->fpdf->widths = $this->getArrayColumnWidth();
+        $this->titles = $this->getArrayColumnText();
     }
 
     public function makeFilters()
@@ -148,19 +141,6 @@ class Pdf extends Render
         $this->fpdf->Cell(70, 4, $text, 0, 1, 'R', 0);
         $this->fpdf->SetXY($xBefore, $yBefore);
     }
-    
-    public function setWidthColumn()
-    {
-        $this->fpdf->widths = $this->widthColumn = array (
-            'data'                => 30,
-            'nome_lagoa'          => 60,
-            'nome_ponto_amostral' => 50,
-            'nome_categoria'      => 60,
-            'nome_parametro'      => 50,
-            'profundidade'        => 25,
-            'valor'               => 15
-        );
-    }
 
     public function Titles()
     {
@@ -179,7 +159,7 @@ class Pdf extends Render
         $this->fpdf->SetFont('Arial', 'B', 9);     
         $this->fpdf->SetFillColor(96);
         $this->fpdf->SetTextColor(255);
-        foreach ($this->columns as $key => $val) {
+        foreach ($this->titles as $key => $val) {
             if (!isset($x)) {
                 $x = 4;
                 $y = $this->fpdf->GetY() + 5;                
@@ -187,9 +167,10 @@ class Pdf extends Render
             } else {
                 $this->fpdf->SetXY($x, $y);
             }
+
             $align = (isset($this->fpdf->aligns[$key])) ? $this->fpdf->aligns[$key] : 'L';
-            $this->fpdf->Cell($this->widthColumn[$key], 6, $val, 0, 1, $align, 1);            
-            $x += $this->widthColumn[$key];                
+            $this->fpdf->Cell($this->fpdf->widths[$key], 6, $val, 0, 1, $align, 1);            
+            $x += $this->fpdf->widths[$key];                
         }
         $this->fpdf->SetFillColor(255);
         $this->fpdf->SetTextColor(0);
@@ -198,7 +179,6 @@ class Pdf extends Render
 
     public function makeList()
     {
-        $this->setWidthColumn();        
         $this->fpdf->setReportName(mb_convert_encoding($this->getReportName(), 'ISO-8859-1', 'UTF-8'));
         $this->fpdf->AddPage('L', 'A4');
         $this->fpdf->AliasNbPages();
