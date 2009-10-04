@@ -1,38 +1,66 @@
-img#logo {
-    width: 150px;
+html {
+    font-family: arial;
+    font-size: 12px;
 }
+
+body {
+    margin: 0;
+}
+
+img#logo {
+    width: 120px;
+}
+
 div#filter {
-    left: 125px;
+    left: 85px;
     position: absolute;
     top: 30px;
 }
+
 p#total {
     position: absolute;
     right: 10px;
+    top: 103px;
 }
+
 div#header {
     position: absolute;
     right: 10px;
     text-align: right;
     top: 0;
 }
+
 table#report {
-    position: absolute;
-    top: 205px;
-    width: 98%;
-    border: solid thin;
+    border: thin solid;
     left: 1%;
+    position: absolute;
+    top: 130px;
+    width: 98%;
 }
-html {
-    font-family: arial;
-    font-size: 12px;
-}
-body {
-    margin: 0px;
-}
+
 div#filter ul {
     list-style-image: none;
     list-style-position: outside;
     list-style-type: none;
 }
 
+table#report th{
+    background-color:  #606060;
+    color:  white;
+}
+
+.align_L {
+    text-align: left;
+}
+
+.align_R {
+    text-align: right;
+}
+
+.linha1{
+    background-color:  #eeeeee;
+}
+
+.linha2{
+    background-color:  #D0D0D0;
+}
