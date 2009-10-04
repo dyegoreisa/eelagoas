@@ -36,7 +36,7 @@ abstract class Render
     protected $data;
     
     /**
-     * Lista de titulos das colunas
+     * Lista de objetos tipo Columns contendo informações sobre as colunas
      * 
      * @access protected
      * @var array
@@ -92,7 +92,7 @@ abstract class Render
         $this->data   = $this->result->execute();
     }
 
-    public function setColumns($columns)
+    public function setColumns(array $columns)
     {
         $this->columns = $columns;
     }
@@ -147,6 +147,42 @@ abstract class Render
     public function setLists($lists)
     {
         $this->lists = $lists;
+    }
+
+    public function getArrayColumnText()
+    {
+        $aux = array();
+        foreach ($this->columns as $column) {
+            $aux[$column->getField()] = $column->getText();
+        }
+        return $aux;
+    }
+
+    public function getArrayColumnAlign()
+    {
+        $aux = array();
+        foreach ($this->columns as $column) {
+            $aux[$column->getField()] = $column->getAlign();
+        }
+        return $aux;
+    }
+
+    public function getArrayColumnFill()
+    {
+        $aux = array();
+        foreach ($this->columns as $column) {
+            $aux[$column->getField()] = $column->getFill();
+        }
+        return $aux;
+    }
+
+    public function getArrayColumnWidth()
+    {
+        $aux = array();
+        foreach ($this->columns as $column) {
+            $aux[$column->getField()] = $column->getWidth();
+        }
+        return $aux;
     }
     
     /**
