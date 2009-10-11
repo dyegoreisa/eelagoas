@@ -27,37 +27,12 @@ class Pdf extends Render
         $this->fpdf->setUserName($this->userName);
     }
 
-    public function setDados(array $data)
-    {
-        $this->data = $data;
-    } 
-    
-    public function getData()
-    {
-        return $this->data;
-    }
-    
-    public function getTodayBR()
-    {
-        return $this->todayBR;
-    }
-    
-    public function getToday()
-    {
-        return $this->today;
-    }
-    
     public function setReportName($reportName)
     {
         $this->reportName = $reportName;
         $this->fpdf->setReportName($this->reportName);
     }
     
-    public function getReportName()
-    {
-        return $this->reportName;
-    }
-
     public function prepareColumns()
     {
         $this->fpdf->fills = $this->getArrayColumnFill();

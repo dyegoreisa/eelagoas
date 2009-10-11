@@ -4,6 +4,7 @@ require_once 'XML/XML.class.php';
 require_once 'render/Render.class.php';
 require_once 'render/Html.class.php';
 require_once 'render/Pdf.class.php';
+require_once 'render/Xls.class.php';
 require_once 'data/Result.class.php';
 require_once 'data/Column.class.php';
 

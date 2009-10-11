@@ -66,7 +66,7 @@ define('LIMIT', 50 );
 /**
  * Logos para os relatórios 
  */
- define('REP_LOGO_HTML', '/eelagoas/images/logo.jpg');
- define('REP_LOGO_PDF', 'images/logo.jpg');
- define('REP_LOGO_XLS', 'images/logo.jpg');
+ define('LOGO_HTML', '/eelagoas/images/logo.jpg');
+ define('LOGO_PDF', 'images/logo.jpg');
+ define('LOGO_XLS', 'images/logo_menor.bmp');
 

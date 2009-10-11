@@ -68,9 +68,14 @@ class Ctrl_Relatorio extends BaseController
                 break;
 
             case 'xls':
+                $report->setXls();
+                $render = $report->getRender();
+                $render->setReportName('Relatório');
+                $render->prepareColumns();
                 break;
 
             default:
+                die('Tipo de relatório não informado.');
         }
 
 

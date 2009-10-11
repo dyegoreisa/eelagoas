@@ -14,3 +14,9 @@ define('CONFIG_DIR', '');
 define('CACHE_DIR', '');
 
 
+/**
+ *  Logos
+ */
+define('REP_LOGO_HTML', LOGO_HTML);
+define('REP_LOGO_PDF', LOGO_PDF);
+define('REP_LOGO_XLS', LOGO_XLS);
