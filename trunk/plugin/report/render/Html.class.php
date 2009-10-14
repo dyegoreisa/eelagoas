@@ -38,9 +38,9 @@ class Html extends Render
                                                    'field'   => 'Parametros',
                                                    'replace' => true)),
 
-            'id_categoria' => $this->makeFilter(array('index'   => 'id_categoria',
-                                                      'field'   => 'Categorias',
-                                                      'replace' => true)),
+            'categorias' => $this->makeFilter(array('index'   => 'categorias',
+                                                    'field'   => 'Categorias',
+                                                    'replace' => true)),
 
             'data_inicio' => $this->makeFilter(array('index'   =>  'data_inicio',
                                                      'field'   => 'Inicio',
@@ -55,13 +55,23 @@ class Html extends Render
         return $filters;
     }
 
+    public function getFormattedTitles()
+    {
+        $titles = $this->getArrayColumnText();
+        foreach ($titles as &$val) {
+            $val = htmlentities($val, ENT_NOQUOTES, 'UTF-8');
+        }
+        return $titles;
+    }
+
+
     public function render()
     {
         $smarty = $this->smarty;
 
         $smarty->assign('barra_titulo', $this->getReportName());
         $smarty->assign('dados', $this->getData());
-        $smarty->assign('colunas', $this->getArrayColumnText());
+        $smarty->assign('colunas', $this->getFormattedTitles());
         $smarty->assign('alinhamento', $this->getArrayColumnAlign());
         $smarty->assign('total_linhas', $this->totalLines());
         $smarty->assign('logo', REP_LOGO_HTML);

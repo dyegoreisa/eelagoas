@@ -12,6 +12,7 @@ class Xls extends Render
     private $titles;
     private $x;
     private $y;
+    private $format;
     
     public function __construct()
     {
@@ -19,6 +20,57 @@ class Xls extends Render
         $this->workbook = new Spreadsheet_Excel_Writer();
         $this->x = 0;
         $this->y = 0;
+
+        $this->format();
+    }
+
+    public function format()
+    {
+        // Setando as cores
+        $this->workbook->setCustomColor(8, 224, 224, 224); // Linhas intercaladas
+        $this->workbook->setCustomColor(9, 95, 95, 95); // Cor de fundo dos nomes das coluna
+        $this->workbook->setCustomColor(10, 255, 255, 255); // Cor dos nomes das coluna
+
+        // Formatação do cabeçalho
+        $this->format['head'] =& $this->workbook->addFormat();
+        $this->format['head']->setBold();
+        $this->format['head']->setAlign('right');
+
+        // Formatação da segunda parte do cabeçalho
+        $this->format['subhead'] =& $this->workbook->addFormat();
+        $this->format['subhead']->setAlign('right');
+
+        // Formatação do nomes dos campos dos filtros
+        $this->format['filter_field'] =& $this->workbook->addFormat();
+        $this->format['filter_field']->setBold();
+
+        // Formatação dos valores dos filtros
+        $this->format['filter_value'] =& $this->workbook->addFormat();
+
+        // Formatação dos nomes das colunas
+        $this->format['columns'] =& $this->workbook->addFormat();
+        $this->format['columns']->setBold();
+        $this->format['columns']->setFgColor(9);
+        $this->format['columns']->setColor(10);
+
+        // Formatação dos nomes das colunas para colunas de números
+        $this->format['columns_number'] =& $this->workbook->addFormat();
+        $this->format['columns_number']->setBold();
+        $this->format['columns_number']->setFgColor(9);
+        $this->format['columns_number']->setColor(10);
+        $this->format['columns_number']->setAlign('right');
+
+        // Formatação da linha que mostra o total de registros
+        $this->format['total'] =& $this->workbook->addFormat();
+        $this->format['total']->setBold();
+        $this->format['total']->setAlign('right');
+
+        // Formatação das linhas intercaladas
+        $this->format['row_even'] =& $this->workbook->addFormat();
+        $this->format['row_even']->setFgColor(8);
+
+        // Formatação das linhas intercaladas
+        $this->format['row_odd'] =& $this->workbook->addFormat();
     }
 
     public function prepareColumns()
@@ -27,16 +79,20 @@ class Xls extends Render
         $this->aligns = $this->getArrayColumnAlign();
         $this->widths = $this->getArrayColumnWidth();
         $this->titles = $this->getArrayColumnText();
+
+        $this->totalColmuns = count($this->titles);
     }
 
     private function addWorksheet($name)
     {
         $this->worksheet =& $this->workbook->addWorksheet($name);
+        $this->worksheet->hideScreenGridlines();
+        $this->worksheet->setColumn(0, $this->totalColmuns, 18);
     }
 
     public function makeFilters()
     {
-        $this->y = 2;
+        $this->y = 1;
 
         $this->printCellFilter(array('index'   => 'lagoa', 
                                      'field'   => 'Lagoas: ', 
@@ -47,10 +103,10 @@ class Xls extends Render
                                      'replace' => true));
         
         $this->printCellFilter(array('index'   => 'parametro', 
-                                     'field'   => 'Parametros: ', 
+                                     'field'   => mb_convert_encoding('Parâmetros: ', 'ISO-8859-1', 'UTF-8'), 
                                      'replace' => true));
         
-        $this->printCellFilter(array('index'   => 'id_categoria', 
+        $this->printCellFilter(array('index'   => 'categorias', 
                                      'field'   => 'Categoria: ', 
                                      'replace' => true));   
         
@@ -77,18 +133,19 @@ class Xls extends Render
     {
         $filter = $this->makeFilter($params);
 
-        $this->worksheet->writeString($this->x, $this->y, $filter['field']);
-        $this->worksheet->writeString($this->x, $this->y + 1, $filter['value']);
+        $this->worksheet->writeString($this->x, $this->y, $filter['field'], $this->format['filter_field']);
+        $this->worksheet->writeString($this->x, $this->y + 1, $filter['value'], $this->format['filter_value']);
         $this->x++;
     }
     
     private function makeHead()
     {
-        $this->worksheet->insertBitmap($this->x, $this->y, REP_LOGO_XLS);
-        $this->y = count($this->titles) - 1;
-        $this->worksheet->write($this->x++, $this->y, mb_convert_encoding($this->getReportName(), 'ISO-8859-1', 'UTF-8'));
-        $this->worksheet->write($this->x++, $this->y, 'Emitido por: ' . $this->getUserName());
-        $this->worksheet->write($this->x++, $this->y, 'Emitido em: ' . $this->getTodayBR());
+        $this->worksheet->insertBitmap($this->x, $this->y, REP_LOGO_XLS, 0, 0, 1, 1);
+        $this->y = $this->totalColmuns - 1;
+        $this->worksheet->write($this->x++, $this->y, mb_convert_encoding($this->getReportName(), 'ISO-8859-1', 'UTF-8'), $this->format['head']);
+        $this->worksheet->write($this->x++, $this->y, 'Emitido por: ' . $this->getUserName(), $this->format['subhead']);
+        $this->worksheet->write($this->x++, $this->y, 'Emitido em: ' . $this->getTodayBR(), $this->format['subhead']);
+        $this->x++;
     }
 
     public function totalLines()
@@ -97,8 +154,8 @@ class Xls extends Render
 
         $text = "Total de registros impressos: $totalData";
 
-        $this->y = count($this->titles) - 1;
-        $this->worksheet->writeString(++$this->x, $this->y, $text);
+        $this->y = $this->totalColmuns - 1;
+        $this->worksheet->writeString(++$this->x, $this->y, $text, $this->format['total']);
         $this->x++;
     }
 
@@ -110,16 +167,24 @@ class Xls extends Render
      */
     private function makeColumns()
     {
-        $this->worksheet->writeRow($this->x, 0, $this->titles);
+        $this->y = 0;
+        foreach ($this->titles as $key => $val) {
+            $format = ($this->aligns[$key] == 'R') ? 'columns_number' : 'columns';
+            $this->worksheet->writeString($this->x, $this->y, mb_convert_encoding($val, 'ISO-8859-1', 'UTF-8'), $this->format[$format]);
+            $this->y++;
+        }
         $this->x++;
     }
 
     protected function printLines()
     {
+        $count = 0;
         $this->makeColumns();
         foreach ($this->data as $key => $val) {
-            $this->worksheet->writeRow($this->x, 0, $val);
+            $cyle = ($count % 2) ? 'row_even' : 'row_odd';
+            $this->worksheet->writeRow($this->x, 0, $val, $this->format[$cyle]);
             $this->x++;
+            $count++;
         }
     }
 

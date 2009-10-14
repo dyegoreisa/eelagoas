@@ -49,7 +49,7 @@ class Ctrl_Relatorio extends BaseController
         $report->addColumn('nome_lagoa',          'Lagoa: ',          'L', 1, 60);
         $report->addColumn('nome_ponto_amostral', 'Ponto Amostral: ', 'L', 1, 50);
         $report->addColumn('nome_categoria',      'Categoria: ',      'L', 1, 60);
-        $report->addColumn('nome_parametro',      'Parametro: ',      'L', 1, 50);
+        $report->addColumn('nome_parametro',      'Parâmetro: ',      'L', 1, 50);
         $report->addColumn('profundidade',        'Profundidade: ',   'R', 1, 25);
         $report->addColumn('valor',               'Valor: ',          'R', 1, 15);
 
@@ -84,7 +84,7 @@ class Ctrl_Relatorio extends BaseController
         $render->setUserName($userName);
         $render->setLists(array(
             'lagoa'          => $this->lagoa->listarSelectAssoc(),
-            'id_categoria'   => $this->categoria->listarSelectAssoc(),
+            'categorias'     => $this->categoria->listarSelectAssoc(),
             'parametro'      => $this->parametro->listarSelectAssoc(),
             'ponto_amostral' => $this->pontoAmostral->listarSelectAssoc($idLagoas)
         ));

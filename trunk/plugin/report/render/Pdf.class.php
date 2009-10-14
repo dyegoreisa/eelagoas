@@ -66,17 +66,21 @@ class Pdf extends Render
         $this->fpdf->SetXY($numX, $numY);
         
         $this->printCellFilter($numHeight, array('index'   => 'parametro', 
-                                                  'field'   => 'Parametros: ', 
+                                                  'field'   => mb_convert_encoding('Parâmetros: ', 'ISO-8859-1', 'UTF-8'), 
                                                   'replace' => true));
 
         // Pula linha
         $numY = $this->fpdf->GetY() + $numHeight;
         $this->fpdf->SetXY($numX, $numY);
         
-        $this->printCellFilter($numHeight, array('index'   => 'id_categoria', 
+        $this->printCellFilter($numHeight, array('index'   => 'categorias', 
                                                   'field'   => 'Categoria: ', 
                                                   'replace' => true));   
 
+        // Pula linha
+        $numY = $this->fpdf->GetY() + $numHeight;
+        $this->fpdf->SetXY($numX, $numY);
+        
         $this->printCellFilter($numHeight, array('index'   => 'periodo', 
                                                   'field'   => mb_convert_encoding('Período: ', 'ISO-8859-1', 'UTF-8'), 
                                                   'replace' => false,
@@ -144,7 +148,7 @@ class Pdf extends Render
             }
 
             $align = (isset($this->fpdf->aligns[$key])) ? $this->fpdf->aligns[$key] : 'L';
-            $this->fpdf->Cell($this->fpdf->widths[$key], 6, $val, 0, 1, $align, 1);            
+            $this->fpdf->Cell($this->fpdf->widths[$key], 6, mb_convert_encoding($val, 'ISO-8859-1', 'UTF-8'), 0, 1, $align, 1);            
             $x += $this->fpdf->widths[$key];                
         }
         $this->fpdf->SetFillColor(255);
