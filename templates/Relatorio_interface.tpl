@@ -32,8 +32,8 @@
     </div>
 
     <div class="campo">
-    <label for="id_categoria">Categoria:</label><br/>
-    <select name="id_categoria" id="id_categoria" class="campo">
+    <label for="categorias">Categoria:</label><br/>
+    <select name="categorias[]" id="categorias" multiple="multiple" size="5" class="campo">
         {html_options options=$select_categoria selected=''}
     </select>
     </div>
