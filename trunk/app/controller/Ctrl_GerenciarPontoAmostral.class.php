@@ -1,4 +1,6 @@
 <?php
+require_once 'Gerenciar.php';
+
 class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
     protected $pontoAmostral;
     protected $lagoa;

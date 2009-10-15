@@ -63,19 +63,21 @@ function unir_arrays( $a, $b ) {
  * @return array - Array com os elementos removidos
  */
 function remove_elementos_array($elementos, $chaves, $inverte = false) {
-    if (!$inverte) {
-        foreach ($chaves as $chave) {
-            unset($elementos[$chave]);   
-        }
-    } else {
-        $arrAuxiliar = array();
-        foreach ($chaves as $chave) {
-            if (isset($elementos[$chave])) {
-                $arrAuxiliar[$chave] = $elementos[$chave];
+    if (is_array($chaves)) {
+        if (!$inverte) {
+            foreach ($chaves as $chave) {
+                unset($elementos[$chave]);   
             }
+        } else {
+            $arrAuxiliar = array();
+            foreach ($chaves as $chave) {
+                if (isset($elementos[$chave])) {
+                    $arrAuxiliar[$chave] = $elementos[$chave];
+                }
+            }
+            unset($elementos);
+            $elementos = $arrAuxiliar;
         }
-        unset($elementos);
-        $elementos = $arrAuxiliar;
     }
     return $elementos;
 }
