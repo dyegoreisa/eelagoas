@@ -60,10 +60,15 @@ define('LIMIT', 50 );
 /**
  * Diretório da instalação de framework
  */
-//define('SMARTY_TEMPLATE', '');
+
+define('SMARTY_TEMPLATE', '');
+define('FPDF', '');
+define('SPREADSHEET', '');
+/*
 define('SMARTY_TEMPLATE', '/home/linksimbolico/www/api/smarty/');
 define('FPDF', '/home/linksimbolico/www/api/fpdf16/');
 define('SPREADSHEET', '/home/linksimbolico/www/api/Spreadsheet/Excel/');
+*/
 
 /**
  * Logos para os relatórios 
