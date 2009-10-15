@@ -293,17 +293,25 @@ abstract class BaseModel {
      * TODO: Fazer critério de relevancia.
      */
     public function montarBusca( $dados, $campos = '') {
-        $sql = "SELECT * FROM {$this->table} WHERE ";
+        $sql = "SELECT * FROM {$this->table} ";
 
         $sth_column = $this->dbh->prepare( "SHOW COLUMNS FROM {$this->table} WHERE field = :campo" );
 
         if (!empty($campos)) {
-            $camposInformados = explode(',', $campos);
-        } else {
-            $camposInformados = array();
+            if (is_array($campos)) {
+                $camposInformados = $campos;
+            } else {
+                $camposInformados = explode(',', $campos);
+            }
+            $this->search = remove_elementos_array($this->search, $camposInformados, true);
         }
 
-        $this->search = remove_elementos_array($this->search, $camposInformados, true);
+        if (count($this->search) < 1) {
+            return $sql;
+        } else {
+            $sql .= 'WHERE ';
+        }
+
         foreach( $this->search as $campo => $operador ) {
             $sth_column->execute( array( ':campo' => $campo ) );
             $dados_campo = $sth_column->fetch();

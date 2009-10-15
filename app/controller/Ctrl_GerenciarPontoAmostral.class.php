@@ -89,7 +89,7 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
                 $this->lagoa->pegar();
             }
 
-            $num_linhas = $this->pontoAmostral->buscar( $dados );
+            $num_linhas = $this->pontoAmostral->buscar( $dados, array('id_ponto_amostral', 'nome') );
 
             if( $num_linhas > 0 ) {
                 $this->listar();
