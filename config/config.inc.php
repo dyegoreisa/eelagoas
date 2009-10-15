@@ -58,10 +58,12 @@ define('CACHE',     '');
 define('LIMIT', 50 );
 
 /**
- * Diretório da instalação do Smarty
+ * Diretório da instalação de framework
  */
-//define(SMARTY_TEMPLATE, '/home/linksimbolico/www/Smarty-2.6.26/libs/');
-//define(SMARTY_TEMPLATE, '');
+//define('SMARTY_TEMPLATE', '');
+define('SMARTY_TEMPLATE', '/home/linksimbolico/www/api/smarty/');
+define('FPDF', '/home/linksimbolico/www/api/fpdf16/');
+define('SPREADSHEET', '/home/linksimbolico/www/api/Spreadsheet/Excel/');
 
 /**
  * Logos para os relatórios 

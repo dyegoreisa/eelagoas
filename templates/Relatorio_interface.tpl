@@ -56,9 +56,9 @@
 
     <fieldset>
         <legend>Tipo de relat&oacute;rio</legend>
-        <input type="radio" name="tipo_relatorio" value="html" id="radio_html"><label for="radio_html">HTML</label>
+        <input type="radio" name="tipo_relatorio" value="html" id="radio_html" checked><label for="radio_html">HTML</label>
         <input type="radio" name="tipo_relatorio" value="pdf" id="radio_pdf" ><label for="radio_pdf">PDF</label>
-        <input type="radio" name="tipo_relatorio" value="xls" id="radio_xls" checked><label for="radio_xls">Excell</label>
+        <input type="radio" name="tipo_relatorio" value="xls" id="radio_xls"><label for="radio_xls">Excell</label>
     </fieldset>
     <input type="submit" value="Gerar">
 
