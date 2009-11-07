@@ -47,7 +47,8 @@ define('DIR_PIECES', 'pieces/');
 /**
  * Define os diretórios do Smarty
  */
-define('TEMPLATES', 'templates');
+//define('TEMPLATES', 'templates');
+define('TEMPLATES', 'app/view');
 define('COMPILED',  'compiled');
 define('CONFIG',    'config');
 define('CACHE',     '');
@@ -73,7 +74,8 @@ define('SPREADSHEET', '/home/linksimbolico/www/api/Spreadsheet/Excel/');
 /**
  * Logos para os relatórios 
  */
+ define('LOGO_SITE', '/eelagoas/images/logo_longa.png');
  define('LOGO_HTML', '/eelagoas/images/logo.jpg');
  define('LOGO_PDF', 'images/logo.jpg');
- define('LOGO_XLS', 'images/logo_menor.bmp');
+ define('LOGO_XLS', 'images/logo.bmp');
 
