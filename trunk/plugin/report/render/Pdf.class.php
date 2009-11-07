@@ -45,7 +45,7 @@ class Pdf extends Render
     {
         $intBorder = 1;
         $numHeight = 4;
-        $numX = 50;
+        $numX = 65;
         $numY = $this->fpdf->GetY();
         $this->fpdf->SetX($numX);
 

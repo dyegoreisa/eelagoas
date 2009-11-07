@@ -8,19 +8,19 @@ body {
 }
 
 img#logo {
-    width: 120px;
+    width: 260px;
 }
 
 div#filter {
-    left: 85px;
+    left: 210px;
     position: absolute;
-    top: 30px;
+    top: 0px;
 }
 
 p#total {
     position: absolute;
     right: 10px;
-    top: 103px;
+    top: 70px;
 }
 
 div#header {
@@ -30,11 +30,20 @@ div#header {
     top: 0;
 }
 
+div#header h2 {
+    margin-bottom: 3px;
+}
+
+div#header p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 table#report {
     border: thin solid;
     left: 1%;
     position: absolute;
-    top: 130px;
+    top: 98px;
     width: 98%;
 }
 
