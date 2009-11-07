@@ -1,8 +1,10 @@
 
 create table lagoa(
   id_lagoa int(11) not null auto_increment,
+  id_projeto int(11) not null,
   nome varchar(100) not null,
-  primary key(id_lagoa)
+  primary key(id_lagoa),
+  foreign key(id_projeto) references projeto (id_projeto) on update cascade on delete cascade,
 ) engine=innodb;
 
 create table parametro(
@@ -44,4 +46,10 @@ create table coleta_ponto(
   foreign key(id_ponto_amostral) references ponto_amostral (id_ponto_amostral) on update cascade on delete cascade,
   foreign key(id_parametro) references parametro (id_parametro) on update cascade on delete cascade,
   foreign key(id_categoria) references categoria (id_categoria) on update cascade on delete cascade
+)engine=innodb;
+
+create table projeto(
+  id_projeto int(11) not null auto_increment,
+  nome varchar(200) not null,
+  primary key(id_projeto)
 )engine=innodb;
