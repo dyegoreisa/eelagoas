@@ -17,6 +17,11 @@ display: inline;
 float: left;
 }
 
+.jquerycssmenu ul li.left:last-child {
+position: absolute;
+right: 1%;
+}
+
 /*Top level menu link items style*/
 .jquerycssmenu ul li a{
 display: block;
