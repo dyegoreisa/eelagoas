@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Writer.php';
+require_once SPREADSHEET . 'Writer.php';
 
 class Xls extends Render
 {
@@ -92,7 +92,7 @@ class Xls extends Render
 
     public function makeFilters()
     {
-        $this->y = 1;
+        $this->y = 0;
 
         $this->printCellFilter(array('index'   => 'lagoa', 
                                      'field'   => 'Lagoas: ', 

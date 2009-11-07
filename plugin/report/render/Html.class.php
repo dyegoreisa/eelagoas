@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Smarty.class.php';
+require_once SMARTY_TEMPLATE . 'Smarty.class.php';
 
 class Html extends Render
 {
