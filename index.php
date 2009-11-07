@@ -27,9 +27,9 @@ $route->setRouteDefault( D_ROUTE );
 
 if( session_id() != @$_SESSION['SID'] ) {
   $route->setRoute( LOGIN ); 
-  $smarty->setHeader( 'header_logoff.tpl' );
+  $smarty->setHeader( 'common/header_logoff.tpl' );
 } else {
-  $smarty->setHeader( 'header_logon.tpl' );
+  $smarty->setHeader( 'common/header_logon.tpl' );
 }
 
 $route->prepare();
