@@ -14,6 +14,7 @@
     <script type="text/javascript" src="/eelagoas/js/jquery.livequery.js"></script>
     <script type="text/javascript" src="/eelagoas/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/eelagoas/js/jquerycssmenu.js"></script>
+    <script type="text/javascript" src="/eelagoas/js/lib.js"></script>
     {literal}
     <script>
         $(document).ready(function() {

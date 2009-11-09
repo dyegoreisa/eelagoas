@@ -8,6 +8,12 @@
 
   <label for="nome">Nome:</label><br/>
   <input type="text" name="nome" id="nome" value="{$lagoa.nome}">
+  <br/>
+  <label for="id_projeto">Projeto:</label><br/>
+    <select name="id_projeto" id="id_projeto">
+        <option value="-1"> -- [Selecione] -- </option>
+        {html_options options=$select_projetos selected=$lagoa.id_projeto}
+    </select>
   <br/><br/>
 
   <br/>

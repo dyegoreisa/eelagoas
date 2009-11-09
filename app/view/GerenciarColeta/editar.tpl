@@ -1,90 +1,115 @@
 {literal}
 <script type="text/javascript" language="javascript">
-{/literal} dir = '{$dir}'; {literal}
-    $(document).ready(function () {
+{/literal}dir = '{$dir}';{literal}
 
-        $(".novo").livequery( 'click', function(e) {
-            seletor = $(this).attr('alt');
+function abreNovo(seletor){
+    esconder = "#" + seletor + "_inserir";
+    mostrar = "#" + seletor + "_selecionar";
+    desativar = "select[name=id_" + seletor + "]";
+    ativar = "input[name=nome_" + seletor + "]";
 
-            esconder = "#" + seletor + "_inserir";
-            mostrar = "#" + seletor + "_selecionar";
-            desativar = "select[name=id_" + seletor + "]";
-            ativar = "input[name=nome_" + seletor + "]";
+    $(esconder).removeClass("escondido");
+    $(mostrar).addClass("escondido");
+    $(desativar).attr("disabled","disabled");
+    $(ativar).attr("disabled","");
+}
 
-            $(esconder).removeClass("escondido");
-            $(mostrar).addClass("escondido");
-            $(desativar).attr("disabled","disabled");
-            $(ativar).attr("disabled","");
-        });
+function fechaNovo(seletor) {
+    esconder = "#" + seletor + "_selecionar";
+    mostrar = "#" + seletor + "_inserir";
+    desativar = "input[name=nome_" + seletor + "]";
+    ativar = "select[name=id_" + seletor + "]";
 
-        $(".cancelar").livequery( 'click', function(e) {
-            seletor = $(this).attr('alt');
+    $(esconder).removeClass("escondido");
+    $(mostrar).addClass("escondido");
+    $(desativar).val('');
+    $(desativar).attr("disabled","disabled");
+    $(ativar).attr("disabled","");
+}
 
-            esconder = "#" + seletor + "_selecionar";
-            mostrar = "#" + seletor + "_inserir";
-            desativar = "input[name=nome_" + seletor + "]";
-            ativar = "select[name=id_" + seletor + "]";
+function novoParametro() {
+    i++;
 
-            $(esconder).removeClass("escondido");
-            $(mostrar).addClass("escondido");
-            $(desativar).val('');
-            $(desativar).attr("disabled","disabled");
-            $(ativar).attr("disabled","");
-        });
+    conteudo = '<span id="parametro' + i + '"><br>'
+             + '<input type="text" name="nome_parametros[]" value="">'
+             + '<div class="campos_parametros">'
+             + '<label>Pronfundidade:<br/> <input type="text" name="nivel_novo[]" size="10"></label>'
+             + '<br>'
+             + '<label>Valor:<br/> <input type="text" name="valor_novo[]" size="10"></label>'
+             + '<br />'
+             + '</div>'
+             + '<input type="button" class="cancelar_item" alt="parametro' + i + '" value="Cancelar">'
+             + '</span>';
+    $("#parametro_inserir").append( conteudo );
+}
 
-        $(".novo_item").livequery( 'click', function(e) {
-            i++;
+function removeParametro() {
+    parametro = $(this).attr('alt');
 
-            conteudo = '<span id="parametro' + i + '"><br>'
-                             + '<input type="text" name="nome_parametros[]" value="">'
-                             + '<div class="campos_parametros">'
-                             + '<label>Pronfundidade:<br/> <input type="text" name="nivel_novo[]" size="10"></label>'
-                             + '<br>'
-                             + '<label>Valor:<br/> <input type="text" name="valor_novo[]" size="10"></label>'
-                             + '<br />'
-                             + '</div>'
-                             + '<input type="button" class="cancelar_item" alt="parametro' + i + '" value="Cancelar">'
-                             + '</span>';
-            $("#parametro_inserir").append( conteudo );
-        });
+    $("#" + parametro ).remove();
+}
 
-        $(".cancelar_item").livequery( 'click', function(e) {
-            parametro = $(this).attr('alt');
+$(document).ready( function () {
+    $(".novo").livequery('click', function() {
+        seletor = $(this).attr('alt');
+        switch (seletor) {
+            case 'projeto':
+                abreNovo('lagoa');
+                abreNovo('ponto_amostral');
+                break;
 
-            $("#" + parametro ).remove();
-        });
-
-
-        $("#id_lagoa").change( function () {
-            $("#ponto_amostral_selecionar").load( dir + "/GerenciarPontoAmostral/montarSelect/" + $(this).val() );
-        });
-
-        $(":checkbox").click( function() {
-            campos = $(this).attr('alt');
-
-            if( $(this).attr('checked') ) {
-                $("#" + campos).removeClass('escondido');
-                $("#n_" + campos).attr("disabled","");
-                $("#v_" + campos).attr("disabled","");
-            } else {
-                $("#" + campos).addClass('escondido');
-                $("#n_" + campos).attr("disabled","disabled");
-                $("#v_" + campos).attr("disabled","disabled");
-            }
-        });
-
-        $("#editar_coleta").validate({
-            rules: {
-                data: "required" 
-            },
-            messages: {
-                data: "Este campo n&atilde;o pode ser vazio."
-            }
-        });
-
+            case 'lagoa':
+                abreNovo('ponto_amostral');
+                break;
+        }
+        abreNovo(seletor);
     });
 
-    i = 0;
+    $(".cancelar").livequery('click', function() {
+        fechaNovo($(this).attr('alt'));
+    });
+
+    $(".novo_item").livequery('click', novoParametro);
+    $(".cancelar_item").livequery('click', removeParametro);
+
+    $("#id_projeto").livequery( 'change', function () {
+        $("#lagoa_selecionar").load( dir + "/GerenciarLagoa/montarSelect/" + $(this).val() );
+        $("#ponto_amostral_selecionar").load( dir + "/GerenciarPontoAmostral/montarSelect/-1" );
+    });
+
+    $("#id_lagoa").livequery( 'change', function () {
+        $("#ponto_amostral_selecionar").load( dir + "/GerenciarPontoAmostral/montarSelect/" + $(this).val() );
+    });
+
+    $(":checkbox").click( function() {
+        campos = $(this).attr('alt');
+
+        if( $(this).attr('checked') ) {
+            $("#" + campos).removeClass('escondido');
+            $("#n_" + campos).attr("disabled","");
+            $("#v_" + campos).attr("disabled","");
+        } else {
+            $("#" + campos).addClass('escondido');
+            $("#n_" + campos).attr("disabled","disabled");
+            $("#v_" + campos).attr("disabled","disabled");
+        }
+    });
+
+    $("#editar_coleta").validate({
+        rules: {
+            data: {
+                required: true,
+                dataColeta: true
+            }
+        },
+        messages: {
+            data: {
+                required: "Este campo n&atilde;o pode ser vazio.",
+                dataColeta: "A data deve est&aacute; no padr&atilde;o informado ao lado."
+            }
+        }
+    });
+});
 </script>
 <style>
     .escondido{
@@ -94,14 +119,31 @@
         padding-left: 20px;
     }
 </style>
+
 {/literal}
+
 <fieldset>
 <legend>Cadastrar Coleta</legend>
 
 <form action="{$dir}/GerenciarColeta/salvar" method="POST" class="cmxform" id="editar_coleta">
 
     <label for="data">Data da coleta:</label><br/>
-    <input type="text" name="data" id="data" value="{$coleta.data|date_format:"%m/%Y"}">(mm/aaaa)
+    <input type="text" name="data" id="data" value="{$coleta.data}">
+    <i>(mm/aaaa hh) ou (dd/mm/aaaa hh)</i>
+    <br/><br/>
+
+    <label for="nome_projeto">Projeto:</label><br/>
+    <span id="projeto_selecionar">
+        <select name="id_projeto" id="id_projeto">
+            <option value="-1"> -- [Selecione] -- </option>
+            {html_options options=$select_projeto selected=$id_projeto}
+        </select>
+        <input type="button" class="novo" alt="projeto" value="Novo">
+    </span>
+    <span id="projeto_inserir" class="escondido">
+        <input type="text" name="nome_projeto" id="nome_projeto" value="" disabled>
+        <input type="button" class="cancelar" alt="projeto" value="Cancelar">
+    </span>
     <br/><br/>
 
     <label for="nome_lagoa">Lagoa:</label><br/>

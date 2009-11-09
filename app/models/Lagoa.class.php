@@ -13,7 +13,7 @@ class Lagoa extends BaseModel {
         );
     }
 
-    public function listarSelectAssoc() {
+    public function listarSelectAssoc( $idProjeto ) {
         
         $sth = $this->dbh->prepare("
             SELECT 
@@ -21,6 +21,8 @@ class Lagoa extends BaseModel {
                 , nome 
             FROM 
                 lagoa 
+            WHERE
+                id_projeto = $idProjeto
         ");
 
         $sth->execute();
