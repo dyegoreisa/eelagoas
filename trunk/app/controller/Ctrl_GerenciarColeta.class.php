@@ -16,6 +16,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
         $dbh = $this->getDBH();
         
+        $this->projeto          = new Projeto( $dbh );
         $this->lagoa            = new Lagoa( $dbh );
         $this->pontoAmostral    = new PontoAmotral( $dbh );
         $this->categoria        = new Categoria( $dbh );
@@ -30,18 +31,27 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         $smarty = $this->getSmarty();
         //$smarty->debugging = true;
 
-        $idLagoa = -1;
+        $idProjeto = -1;
+        $idLagoa   = -1;
 
         if( $id ) {
 
             $this->coleta->setId( $id );
             $this->coleta->pegar();
-            $dados_coleta = $this->coleta->getData();
-            $smarty->assign( 'coleta', $dados_coleta );
+            $dadosColeta = $this->coleta->getDataFormated();
+
+            $smarty->assign( 'coleta', $dadosColeta );
             
-            $this->lagoa->setId( $dados_coleta['id_lagoa'] );
+            $this->lagoa->setId( $dadosColeta['id_lagoa'] );
             $this->lagoa->pegar();
             $idLagoa = $this->lagoa->getId();
+            $dadosLagoa = $this->lagoa->getData();
+
+            $smarty->assign( 'id_projeto', $dadosLagoa['id_projeto'] );
+            $this->projeto->setId( $dadosLagoa['id_projeto'] );
+            $this->projeto->pegar();
+            $idProjeto = $this->projeto->getId();
+
 
             $smarty->assign( 'select_parametro', $this->coletaParametro->listarSelectAssoc( $id ));
 
@@ -49,7 +59,8 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $smarty->assign( 'select_parametro', $this->parametro->listarCheckboxAssoc() );
         }
 
-        $smarty->assign( 'select_lagoa', $this->lagoa->listarSelectAssoc() );
+        $smarty->assign( 'select_projeto', $this->projeto->listarSelectAssoc() );
+        $smarty->assign( 'select_lagoa', $this->lagoa->listarSelectAssoc( $idProjeto ) );
         $smarty->assign( 'select_ponto_amostral', $this->pontoAmostral->listarSelectAssoc( $idLagoa ) );
         $smarty->assign( 'select_categoria', $this->categoria->listarSelectAssoc() );
         $this->getSmarty()->displayHBF( 'editar.tpl' );
@@ -64,9 +75,27 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         $dbh = $this->getDBH();
         $dbh->beginTransaction();
     
+        if( isset( $_POST['nome_projeto'] ) && !isset( $_POST['id_projeto'] ) ) {
+
+            $this->projeto->setData( array( 'nome' => $_POST['nome_projeto'] ) );
+            $ok_projeto = $this->projeto->inserir();
+            ( $ok_projeto ) ? Mensagem::addOk("Projeto salvo") : Mensagem::addErro("Ao salvar Projeto");
+
+        } else {
+
+            $this->projeto->setId( $_POST['id_projeto'] );
+            $this->projeto->pegar();
+            Mensagem::addOk("Selecionado o projeto " . $this->projeto->getData( 'nome' ));
+            $ok_projeto = true;
+
+        }
+
         if( isset( $_POST['nome_lagoa'] ) && !isset( $_POST['id_lagoa'] ) ) {
 
-            $this->lagoa->setData( array( 'nome' => $_POST['nome_lagoa'] ) );
+            $this->lagoa->setData( array( 
+                'nome'       => $_POST['nome_lagoa'],
+                'id_projeto' => $this->projeto->getId()
+            ));
             $ok_lagoa = $this->lagoa->inserir();
             ( $ok_lagoa ) ? Mensagem::addOk("Lagoa salva") : Mensagem::addErro("Ao salvar Lagoa");
 
@@ -128,8 +157,8 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $mensagem_cache = "N&atilde;o foi selecionado nenhum parametro";
         }
 
+        $novosParametrosIgnorados = array();
         if( isset( $_POST['nome_parametros'] ) && is_array( $_POST['nome_parametros'] ) ) {
-            $novosParametrosIgnorados = array();
             foreach( $_POST['nome_parametros'] as $key => $nome_parametro ) {
                 if ($nome_parametro != '') {
                     $this->parametros[$count] = new Parametro( $dbh );
@@ -163,16 +192,27 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $this->pontoAmostral->getId() > 0 &&
             $this->categoria->getId() > 0
         ) {
-            if (preg_match('/\d{2}\/\d{4}/', $_POST['data'])) {
-                $ok_data = true;                
+            $padraoDMAH = '/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/([12][0-9]{3})\ ([01][0-9]|2[0-3])$/';
+            $padraoMAH  = '/^(0[1-9]|1[012])\/([12][0-9]{3})\ ([01][0-9]|2[0-3])$/';
+            if (preg_match($padraoDMAH, $_POST['data'])) {
+                $ok_data     = true;                
+                $dataISO     = preg_replace($padraoDMAH, '\3-\2-\1 \4:00:00', $_POST['data']); 
+                $tipoPeriodo = 'diario';
             } else {
-                $ok_data = false;
-                Mensagem::addErro('A data informada est&aacute; no formato incorreto, favor informar no formato (mm/aaaa).');
+                if (preg_match($padraoMAH, $_POST['data'])) {
+                    $ok_data     = true;
+                    $dataISO     = preg_replace($padraoMAH, '\2-\1-01 \3:00:00', $_POST['data']); 
+                    $tipoPeriodo = 'mensal';
+                } else {
+                    $ok_data = false;
+                    Mensagem::addErro('A data informada est&aacute; no formato incorreto, favor informar no formato (dd/mm/aaaa hh) ou (dd/mm/aaaa hh).');
+                }
             }
 
             $this->coleta->setData( 
                 array( 
-                    'data'              => preg_replace('/(\d{2})\/(\d{4})/', '\2-\1', $_POST['data']) . '-01',
+                    'data'              => $dataISO,
+                    'tipo_periodo'      => $tipoPeriodo,
                     'id_lagoa'          => $this->lagoa->getId(),
                     'id_ponto_amostral' => $this->pontoAmostral->getId(),
                     'id_categoria'      => $this->categoria->getId()
@@ -224,6 +264,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             }
 
             if( 
+                $ok_projeto         !== false &&
                 $ok_lagoa           !== false && 
                 $ok_pontoAmostal    !== false && 
                 $ok_categoria       !== false && 

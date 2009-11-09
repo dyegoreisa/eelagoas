@@ -14,7 +14,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
         $smarty = $this->getSmarty(); 
 
         $parametro = new Parametro($this->getDBH());
-        $smarty->assign('select_especie', $parametro->listarSelectAssoc());
+        $smarty->assign('select_parametros', $parametro->listarSelectAssoc());
 
         if( $id ) {
             $this->especie->setId( $id );
@@ -30,7 +30,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
         $smarty = $this->getSmarty();
 
         if( isset( $_POST['nome'] ) && $_POST['nome'] != '' &&
-            isset( $_POST['id_parametro'] ) && $_POST['id_parametro'] != '') {
+            isset( $_POST['id_parametro'] ) && $_POST['id_parametro'] != '-1') {
 
             try{
                 $this->especie->setData( array( 
@@ -60,7 +60,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
             }
 
         } else {
-            $smarty->assign( 'mensagem', 'O campo Nome n&atilde;o pode ser vazio.' );
+            $smarty->assign( 'mensagem', 'O campo Nome ou Parametro n&atilde;o podem ser vazios.' );
             $smarty->displayHBF( 'editar.tpl' );
         }
     }

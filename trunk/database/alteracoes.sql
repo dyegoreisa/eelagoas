@@ -16,3 +16,6 @@ create table especie(
     primary key(id_especie),
     foreign key (id_parametro) references parametro (id_parametro) on delete cascade on update cascade
 )engine=innodb;
+
+alter table coleta modify data datetime not null;
+alter table coleta add tipo_periodo enum('mensal', 'diario') not null default 'mensal' after data;

@@ -9,10 +9,10 @@
   <label for="nome">Nome:</label><br/>
   <input type="text" name="nome" id="nome" value="{$especie.nome}">
   <br/>
-  <label for="nome">Parametro:</label><br/>
+  <label for="id_parametro">Parametro:</label><br/>
     <select name="id_parametro" id="id_parametro">
         <option value="-1"> -- [Selecione] -- </option>
-        {html_options options=$select_especie selected=$especie.id_parametro}
+        {html_options options=$select_parametros selected=$especie.id_parametro}
     </select>
   <br/><br/>
 

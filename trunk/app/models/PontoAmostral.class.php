@@ -15,6 +15,9 @@ class PontoAmotral extends BaseModel
         );
     }
 
+    /**
+     * TODO: Implementar o recebimento de parametro com array para fazer um implode e colocar no IN
+     */
     public function listarSelectAssoc($lagoas) {
         $sth = $this->dbh->prepare("
             SELECT 
