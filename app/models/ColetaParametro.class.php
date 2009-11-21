@@ -10,7 +10,7 @@ class ColetaParametro extends BaseModel {
         $this->search  = array(
             'id_coleta_parametro' => '=',
             'id_coleta'           => '=',
-            'nivel'               => '=',
+            'extra'               => '=',
             'valor'               => 'LIKE'
         );
     }
@@ -22,9 +22,15 @@ class ColetaParametro extends BaseModel {
                 , p.nome
                 , cp.id_coleta_parametro
                 , cp.valor
-                , cp.nivel
+                , cp.extra
+                , e.id_extra
+                , e.nome as nome_campo_extra
+                , e.descricao
+                , e.tem_valor
+                , e.tem_relacao
             from 
                 parametro p 
+                join extra e on e.id_extra = p.id_extra
                 left join coleta_parametro cp on cp.id_parametro = p.id_parametro 
                 and cp.id_coleta = :id_coleta
         ");

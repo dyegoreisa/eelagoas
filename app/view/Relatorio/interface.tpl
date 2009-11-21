@@ -1,8 +1,13 @@
 {literal}
 <script type="text/javascript" language="javascript">
-{/literal} dir = '{$dir}'; {literal}
     $(document).ready(function () {
-        $("#lagoa").change( function () {
+        dir = $('#dir').val();
+
+        $('#projeto').livequery('change', function() {
+            $("#lagoa_selecionar").load( dir + "/GerenciarLagoa/montarMultiSelect/" + $(this).val() );
+        });
+
+        $("#lagoa").livequery('change', function () {
             $("#ponto_amostral_selecionar").load( dir + "/GerenciarPontoAmostral/montarMultiSelect/" + $(this).val() );
         });
     });
@@ -11,16 +16,27 @@
 {if $mensagem neq ""}
     <p>{$mensagem}</p>
 {/if}
+<form/>
+    <input type="hidden" id="dir" value="{$dir}"/>
+</form>
 <fieldset>
     <legend>Relat&oacute;rio Configur&aacute;vel</legend>
 
 <form action="{$dir}/Relatorio/reportExecute" method="POST" class="cmxform" target="_blank" >
     
     <div class="campo">
-    <label for="lagoa">Lagoas:</label><br/>
-    <select name="lagoa[]" id="lagoa" multiple="multiple" size="5" class="campo">
-        {html_options options=$select_lagoa selected=''}
+    <label for="projeto">Projetos:</label><br/>
+    <select name="projeto[]" id="projeto" multiple="multiple" size="5" class="campo">
+        {html_options options=$select_projeto selected=''}
     </select>
+    </div>
+
+    <div class="campo">
+    <label for="lagoa">Lagoas:</label><br/>
+    <span id="lagoa_selecionar">
+        <select name="lagoa[]" id="lagoa" multiple="multiple" size="5" class="campo">
+        </select>
+    </span>
     </div>
 
     <div class="campo">

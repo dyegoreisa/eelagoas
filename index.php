@@ -19,7 +19,9 @@ loadModules( DIR_CONTROLLER );
 session_start();
 
 $smarty = new Template();
-$smarty->setRootDirectory( R_DIR );
+$smarty->setRootDirectory(R_DIR);
+$smarty->setLiveSite(R_SITE);
+$smarty->setAbsolutePieces(ABSOLUTE_PIECES);
 $smarty->setFooter();
 
 $route = new Route();

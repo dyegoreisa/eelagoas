@@ -133,12 +133,12 @@ abstract class BaseModel {
                 throw new Exception('<hr>O nome do campo na tabela n&atilde;o foi informado.<hr>');
 
             if( $valor !== '' ) {
-                $campos    .= $campo . ',';
+                $campos  .= $campo . ',';
                 $valores .= $this->dbh->quote($valor) . ',';
             }
         }
-        $campos     = substr_replace( $campos, ')', -1, 1 );    // Subistitui a última virgula por parenteses
-        $valores    = substr_replace( $valores, ')', -1, 1 ); // Subistitui a última virgula por parenteses
+        $campos  = substr_replace( $campos, ')', -1, 1 );    // Subistitui a última virgula por parenteses
+        $valores = substr_replace( $valores, ')', -1, 1 ); // Subistitui a última virgula por parenteses
 
         $sql .= $campos.$valores;
 
@@ -174,7 +174,6 @@ abstract class BaseModel {
     /**
      * Pega dados com o id informado
      *
-     * @param Int $id
      * @return Array
      */
     public function pegar() {
@@ -191,10 +190,7 @@ abstract class BaseModel {
 
         $this->data = $sth->fetch();
 
-        if( $this->data == true )
-            return true;
-        else
-            return false;
+        return ($this->data == true) ? true : false;
     }
     
     /**
@@ -216,11 +212,7 @@ abstract class BaseModel {
             $ok = true;
         }
 
-        if($ok) {
-            return $this->id;
-        } else {
-            return false;
-        }
+        return ($ok) ? $this->id : false;
     }
 
     /**
@@ -257,11 +249,7 @@ abstract class BaseModel {
             throw new Exception( "<hr>{$e[2]}<br><br><strong>SQL:</strong> {$sql}<hr>" );
         }
 
-        if( $ok )
-            return true;
-        
-        else
-            return false;
+        return ($ok) ? true : false;
     }
 
     /**
@@ -384,5 +372,26 @@ abstract class BaseModel {
         }
 
         return $row_count;
+    }
+
+    /**
+     * listarSelectAssoc 
+     * 
+     * @access public
+     * @return array
+     */
+    public function listarSelectAssoc() {
+        $sth = $this->dbh->prepare("SELECT {$this->nameId}, {$this->nameDesc} FROM {$this->table}");
+
+        $sth->execute();
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        $lista = $sth->fetchAll();
+
+        $lista2 = array();
+        foreach( $lista as $item ) {
+            $lista2[$item[$this->nameId]] = $item[$this->nameDesc];
+        }
+
+        return $lista2;
     }
 }

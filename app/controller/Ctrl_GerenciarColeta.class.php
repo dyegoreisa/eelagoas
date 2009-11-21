@@ -5,9 +5,13 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
     private $lagoa;
     private $pontoAmostral;
     private $categoria;
+    private $categoriaExtra;
     private $parametro;
     private $coleta;
     private $coletaParametro;
+    private $extra;
+    private $especie;
+    private $parametroExtra;
     private $parametros;
     private $coletaParametros;
 
@@ -20,23 +24,26 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         $this->lagoa            = new Lagoa( $dbh );
         $this->pontoAmostral    = new PontoAmotral( $dbh );
         $this->categoria        = new Categoria( $dbh );
+        $this->categoriaExtra   = new CategoriaExtra( $dbh );
         $this->parametro        = new Parametro( $dbh );
         $this->coleta           = new Coleta( $dbh );
         $this->coletaParametro  = new ColetaParametro( $dbh );
+        $this->especie          = new Especie( $dbh );
+        $this->parametroExtra   = new ParametroExtra( $dbh );
         $this->parametros       = array();
         $this->coletaParametros = array();
     }
 
-    public function editar( $id = false ) {
+    public function editar( $idColeta = false ) {
         $smarty = $this->getSmarty();
         //$smarty->debugging = true;
 
         $idProjeto = -1;
         $idLagoa   = -1;
 
-        if( $id ) {
+        if( $idColeta ) {
 
-            $this->coleta->setId( $id );
+            $this->coleta->setId( $idColeta );
             $this->coleta->pegar();
             $dadosColeta = $this->coleta->getDataFormated();
 
@@ -52,21 +59,83 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $this->projeto->pegar();
             $idProjeto = $this->projeto->getId();
 
-
-            $smarty->assign( 'select_parametro', $this->coletaParametro->listarSelectAssoc( $id ));
-
-        } else {
-            $smarty->assign( 'select_parametro', $this->parametro->listarCheckboxAssoc() );
         }
 
-        $smarty->assign( 'select_projeto', $this->projeto->listarSelectAssoc() );
-        $smarty->assign( 'select_lagoa', $this->lagoa->listarSelectAssoc( $idProjeto ) );
-        $smarty->assign( 'select_ponto_amostral', $this->pontoAmostral->listarSelectAssoc( $idLagoa ) );
-        $smarty->assign( 'select_categoria', $this->categoria->listarSelectAssoc() );
-        $this->getSmarty()->displayHBF( 'editar.tpl' );
+        $smarty->assign('piece_parametros', ABSOLUTE_PIECES . 'dados_parametro.tpl');
+        $smarty->assign('piece_extra', ABSOLUTE_PIECES . 'dado_extra.tpl');
+
+        $smarty->assign('select_parametro', $this->getSelectParametros($idColeta));
+        $smarty->assign('select_especie', $this->especie->listarSelectAssoc());
+        $smarty->assign('select_projeto', $this->projeto->listarSelectAssoc());
+        $smarty->assign('select_lagoa', $this->lagoa->listarSelectAssoc($idProjeto));
+        $smarty->assign('select_ponto_amostral', $this->pontoAmostral->listarSelectAssoc($idLagoa));
+        $smarty->assign('select_categoria', $this->categoria->listarSelectAssoc());
+        $smarty->assign('select_categoria_extra', $this->categoriaExtra->listarSelectAssoc());
+        $smarty->displayHBF( 'editar.tpl' );
+    }
+
+    private function getSelectParametros($idColeta) {
+        if ($idColeta) {
+            $lista = $this->coletaParametro->listarSelectAssoc($idColeta);
+        } else {
+            $lista = $this->parametro->listarCheckBoxAssoc();
+        }
+
+        foreach ($lista as &$item) {
+            $campoExtra = $item['nome_campo_extra'];
+            if ($item['tem_relacao']) {
+                $tmp = $this->$campoExtra->listarAssocPorParametro($item['id_parametro'], $idColeta);
+                $item[$campoExtra]              = $tmp['select_assoc'];
+                $item["{$campoExtra}_selected"] = $tmp['selected'];
+            }
+        }
+
+        return $lista;
+    }
+
+    public function ajaxNovoParametro($count, $idCategoria) {
+        $smarty = $this->getSmarty();
+
+        $campoExtra = $this->categoriaExtra->getCampoExtraByIdCategoria($idCategoria);
+
+        $smarty->assign('count', $count);
+        $smarty->assign('campoExtra', $campoExtra);
+        $smarty->assign('select_parametro_extra', $this->parametroExtra->listarSelectAssoc());
+        $smarty->assign('parametro_categoria_extra', ABSOLUTE_PIECES . 'parametro_categoria_extra.tpl');
+        $smarty->displayPiece('dados_novo_parametro.tpl');
+    }
+
+    public function ajaxParametroCategoriaExtra($idCategoria) {
+        $smarty = $this->getSmarty();
+
+        $campoExtra = $this->categoriaExtra->getCampoExtraByIdCategoria($idCategoria);
+
+        if ($campoExtra != '' && $campoExtra['nome'] != 'nenhum') {
+            $smarty->assign('campoExtra', $campoExtra);
+            $smarty->displayPiece('parametro_categoria_extra.tpl');
+        }
+    }
+
+    public function ajaxParametroNovaCategoriaExtra($idExtra) {
+        $smarty = $this->getSmarty();
+
+        $campoExtra = $this->categoriaExtra->getCampoExtraByIdExtra($idExtra);
+
+        if ($campoExtra != '' && $campoExtra['nome'] != 'nenhum') {
+            $smarty->assign('campoExtra', $campoExtra);
+            $smarty->displayPiece('parametro_categoria_extra.tpl');
+        }
+    }
+
+    public function jsonNovoParametroExtra($idExtra) {
+        $smarty = $this->getSmarty();
+
+        $campoExtra = $this->parametroExtra->getCampoExtraByIdExtra($idExtra);
+        $smarty->displayJson($campoExtra);
     }
 
     public function salvar() {
+debug($_POST, '', false, true);
         $smarty = $this->getSmarty();
 
         Mensagem::begin();
@@ -83,37 +152,37 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
         } else {
 
-            $this->projeto->setId( $_POST['id_projeto'] );
+            $this->projeto->setId( $_POST['idColeta_projeto'] );
             $this->projeto->pegar();
             Mensagem::addOk("Selecionado o projeto " . $this->projeto->getData( 'nome' ));
             $ok_projeto = true;
 
         }
 
-        if( isset( $_POST['nome_lagoa'] ) && !isset( $_POST['id_lagoa'] ) ) {
+        if( isset( $_POST['nome_lagoa'] ) && !isset( $_POST['idColeta_lagoa'] ) ) {
 
             $this->lagoa->setData( array( 
                 'nome'       => $_POST['nome_lagoa'],
-                'id_projeto' => $this->projeto->getId()
+                'idColeta_projeto' => $this->projeto->getId()
             ));
             $ok_lagoa = $this->lagoa->inserir();
             ( $ok_lagoa ) ? Mensagem::addOk("Lagoa salva") : Mensagem::addErro("Ao salvar Lagoa");
 
         } else {
 
-            $this->lagoa->setId( $_POST['id_lagoa'] );
+            $this->lagoa->setId( $_POST['idColeta_lagoa'] );
             $this->lagoa->pegar();
             Mensagem::addOk("Selecionada a lagoa " . $this->lagoa->getData( 'nome' ));
             $ok_lagoa = true;
 
         }
 
-        if( isset( $_POST['nome_ponto_amostral'] ) && !isset( $_POST['id_ponto_amostral'] ) ) {
+        if( isset( $_POST['nome_ponto_amostral'] ) && !isset( $_POST['idColeta_ponto_amostral'] ) ) {
 
             $this->pontoAmostral->setData( 
                 array( 
                     'nome'     => $_POST['nome_ponto_amostral'],
-                    'id_lagoa' => $this->lagoa->getId()
+                    'idColeta_lagoa' => $this->lagoa->getId()
                 ) 
             );
             $ok_pontoAmostal = $this->pontoAmostral->inserir();
@@ -121,14 +190,14 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
         } else {
 
-            $this->pontoAmostral->setId( $_POST['id_ponto_amostral'] );
+            $this->pontoAmostral->setId( $_POST['idColeta_ponto_amostral'] );
             $this->pontoAmostral->pegar();
             Mensagem::addOk("Selecionado o ponto amostral " . $this->pontoAmostral->getData( 'nome' ));
             $ok_pontoAmostal = true;
 
         }
 
-        if( isset( $_POST['nome_categoria'] ) && !isset( $_POST['id_categoria'] ) ) { 
+        if( isset( $_POST['nome_categoria'] ) && !isset( $_POST['idColeta_categoria'] ) ) { 
 
             $this->categoria->setData( array( 'nome' => $_POST['nome_categoria'] ) );
             $ok_categoria = $this->categoria->inserir();
@@ -136,7 +205,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
         } else {
 
-            $this->categoria->setId( $_POST['id_categoria'] );
+            $this->categoria->setId( $_POST['idColeta_categoria'] );
             $this->categoria->pegar();
             Mensagem::addOk("Selecionada a categoria " . $this->categoria->getData( 'nome' ));
             $ok_categoria = true;
@@ -144,10 +213,10 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         }
 
         $count = 0;
-        if( isset( $_POST['id_parametros'] ) && is_array( $_POST['id_parametros'] ) ) {
-            foreach( $_POST['id_parametros'] as $id_parametro ) {
+        if( isset( $_POST['idColeta_parametros'] ) && is_array( $_POST['idColeta_parametros'] ) ) {
+            foreach( $_POST['idColeta_parametros'] as $idColeta_parametro ) {
                 $this->parametros[$count] = new Parametro( $dbh );
-                $this->parametros[$count]->setId( $id_parametro );
+                $this->parametros[$count]->setId( $idColeta_parametro );
                 $this->parametros[$count]->pegar();
 
                 $count++;
@@ -213,14 +282,14 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
                 array( 
                     'data'              => $dataISO,
                     'tipo_periodo'      => $tipoPeriodo,
-                    'id_lagoa'          => $this->lagoa->getId(),
-                    'id_ponto_amostral' => $this->pontoAmostral->getId(),
-                    'id_categoria'      => $this->categoria->getId()
+                    'idColeta_lagoa'          => $this->lagoa->getId(),
+                    'idColeta_ponto_amostral' => $this->pontoAmostral->getId(),
+                    'idColeta_categoria'      => $this->categoria->getId()
                 )
             );
 
-            if( isset( $_POST['id_coleta'] ) && $_POST['id_coleta'] != "" ) {
-                $this->coleta->setId( $_POST['id_coleta'] );
+            if( isset( $_POST['idColeta_coleta'] ) && $_POST['idColeta_coleta'] != "" ) {
+                $this->coleta->setId( $_POST['idColeta_coleta'] );
                 $ok_coleta = $this->coleta->atualizar();
                 ( $ok_coleta ) ? Mensagem::addOk("coleta salvo") : Mensagem::addErro("Ao atualizar coleta");
             } else {
@@ -237,16 +306,16 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $niveis    = unir_arrays( $nivel, $nivelNovo);
             $valores   = unir_arrays( $valor, $valorNovo);
 
-            if( isset( $_POST['id_coleta'] ) && $_POST['id_coleta'] != "" ) {
-                $this->coletaParametro->excluir( $_POST['id_coleta'] );
+            if( isset( $_POST['idColeta_coleta'] ) && $_POST['idColeta_coleta'] != "" ) {
+                $this->coletaParametro->excluir( $_POST['idColeta_coleta'] );
             }
 
             $count = 0;
             foreach( $this->parametros as $parametro ) {
                 $this->coletaParametro->setData(
                     array(
-                        'id_coleta'    => $this->coleta->getId(),
-                        'id_parametro' => $parametro->getId(),
+                        'idColeta_coleta'    => $this->coleta->getId(),
+                        'idColeta_parametro' => $parametro->getId(),
                         'nivel'        => $niveis[$count],
                         'valor'        => $valores[$count]
                     )
@@ -328,14 +397,14 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         }
     }
 
-    public function excluir( $id ) {
+    public function excluir( $idColeta ) {
         $smarty = $this->getSmarty();
         
         try{
-            if( isset( $id ) && $id != '' ) {
-                $this->coleta->setId( $id );
+            if( isset( $idColeta ) && $idColeta != '' ) {
+                $this->coleta->setId( $idColeta );
                 $this->coleta->excluir(); 
-                $smarty->assign( 'mensagem', 'Registro excluido.' );
+                $smarty->assign( 'mensagem', 'Registro excluidColetao.' );
             } else {
                 $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
             }
