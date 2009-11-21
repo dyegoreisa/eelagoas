@@ -7,11 +7,12 @@ class Parametro extends BaseModel
     {
         parent::__construct( $dbh );
 
-        $this->table   = 'parametro';
-        $this->nameId  = 'id_parametro';
-        $this->data    = array();
-        $this->dataAll = array();
-        $this->search  = array(
+        $this->table    = 'parametro';
+        $this->nameId   = 'id_parametro';
+        $this->nameDesc = 'nome';
+        $this->data     = array();
+        $this->dataAll  = array();
+        $this->search   = array(
             'id_parametro' => '=',
             'nome'         => 'LIKE'
         );
@@ -23,10 +24,15 @@ class Parametro extends BaseModel
     {
         $sth = $this->dbh->prepare("
             SELECT 
-                id_parametro 
-                , nome 
-            FROM 
-                parametro 
+                p.id_parametro 
+                , p.nome 
+                , e.id_parametro_extra
+                , e.nome as nome_campo_extra
+                , e.descricao
+                , e.tem_valor
+                , e.tem_relacao
+            FROM parametro p
+            JOIN parametro_extra e ON e.id_parametro_extra = p.id_parametro_extra
         ");
 
         $sth->execute();
@@ -34,20 +40,33 @@ class Parametro extends BaseModel
         $this->listaAssoc = $sth->fetchAll();
     }
 
-    public function listarSelectAssoc() 
-    {
-        $lista2 = array();
-        foreach($this->listaAssoc as $item ) {
-            $lista2[$item['id_parametro']] = $item['nome'];
-        }
-        return $lista2;
-    }
-
-    public function listarCheckboxAssoc()
+    public function listarCheckBoxAssoc()
     {
         $lista2 = array();
         foreach($this->listaAssoc as $item ) {
             $lista2[$item['id_parametro']] = $item;
+        }
+        return $lista2;
+    }
+
+    public function listarSelectAssocEspecie()
+    {
+        $sth = $this->dbh->prepare("
+            SELECT 
+                p.id_parametro 
+                , p.nome 
+            FROM parametro p
+            JOIN parametro_extra e ON e.id_parametro_extra = p.id_parametro_extra
+            WHERE e.tem_relacao is true
+        ");
+
+        $sth->execute();
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        $lista = $sth->fetchAll();
+
+        $lista2 = array();
+        foreach($lista as $item ) {
+            $lista2[$item['id_parametro']] = $item['nome'];
         }
         return $lista2;
     }

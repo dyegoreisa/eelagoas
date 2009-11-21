@@ -26,10 +26,11 @@ class Categoria extends BaseModel {
     $sth->setFetchMode(PDO::FETCH_ASSOC);
     $lista = $sth->fetchAll();
 
+    $lista2 = array();
     foreach( $lista as $item ) {
       $lista2[$item['id_categoria']] = $item['nome'];
     }
 
-    return @$lista2;
+    return $lista2;
   }
 }

@@ -11,9 +11,11 @@ define('D_ROUTE', '/Main/run');
 define('LOGIN', '/Sessao/login/');
 
 /**
- * Define o caminho padrão 
+ * Define os caminhos padrôes 
  */
 define('R_DIR', '/eelagoas/index.php');
+define('R_SITE', 'http://localhost/eelagoas');
+define('D_ABSOLUTE', '/Projetos/eelagoas');
 
 /**
  * Define informações para acesso ao banco de dados
@@ -43,6 +45,7 @@ define('DIR_VIEW',        'app/view');
  * Define o localização dos templates em pedaços 
  */
 define('DIR_PIECES', 'pieces/');
+define('ABSOLUTE_PIECES', D_ABSOLUTE . '/' . DIR_VIEW . '/' . DIR_PIECES);
 
 /**
  * Define os diretórios do Smarty

@@ -1,6 +1,7 @@
 <?php
 class Ctrl_Relatorio extends BaseController
 {
+    private $projeto;
     private $lagoa;
     private $pontoAmostral;
     private $categoria;
@@ -13,6 +14,7 @@ class Ctrl_Relatorio extends BaseController
 
         $dbh = $this->getDBH();
 
+        $this->projeto       = new Projeto($dbh);
         $this->lagoa         = new Lagoa($dbh);
         $this->pontoAmostral = new PontoAmotral($dbh);
         $this->categoria     = new Categoria($dbh);
@@ -23,7 +25,7 @@ class Ctrl_Relatorio extends BaseController
     public function reportInterface()
     {
         $smarty = $this->getSmarty();
-        $smarty->assign( 'select_lagoa', $this->lagoa->listarSelectAssoc() );
+        $smarty->assign( 'select_projeto', $this->projeto->listarSelectAssoc() );
         $smarty->assign( 'select_categoria', $this->categoria->listarSelectAssoc() );
         $smarty->assign( 'select_parametro', $this->parametro->listarSelectAssoc() );
         $smarty->displayHBF( 'interface.tpl' );

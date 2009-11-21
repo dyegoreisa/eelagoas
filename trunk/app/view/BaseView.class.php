@@ -159,4 +159,29 @@ abstract class BaseView extends Smarty{
     public function displayPiece ( $template ) {
         $this->display( DIR_PIECES . $template );
     }
+
+    /**
+     * fetchPiece 
+     * 
+     * @param mixed $template 
+     * @access public
+     * @return void
+     */
+    public function fetchPiece($template) {
+        return $this->fetch(DIR_PIECES . $template);
+    }
+
+    /**
+     * displayJson 
+     * 
+     * @param mixed $dados 
+     * @access public
+     * @return void
+     */
+    public function displayJson($dados) {
+        $json = json_encode($dados);
+        header("Content-Type: text/html; charset=iso-8859-1");
+        header('X-JSON: ' . $json);
+        print $json;
+    }
 }

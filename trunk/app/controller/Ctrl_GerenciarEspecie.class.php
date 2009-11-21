@@ -3,18 +3,19 @@ require_once 'Gerenciar.php';
 
 class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
     protected $especie;
+    protected $parametro;
 
     public function __construct() {
         parent::__construct();
 
-        $this->especie = new Especie( $this->getDBH() );
+        $this->especie   = new Especie( $this->getDBH() );
+        $this->parametro = new Parametro($this->getDBH());
     }
 
     public function editar( $id = false ) {
         $smarty = $this->getSmarty(); 
 
-        $parametro = new Parametro($this->getDBH());
-        $smarty->assign('select_parametros', $parametro->listarSelectAssoc());
+        $smarty->assign('select_parametros', $this->parametro->listarSelectAssocEspecie());
 
         if( $id ) {
             $this->especie->setId( $id );
@@ -61,7 +62,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
 
         } else {
             $smarty->assign( 'mensagem', 'O campo Nome ou Parametro n&atilde;o podem ser vazios.' );
-            $smarty->displayHBF( 'editar.tpl' );
+            $this->editar();
         }
     }
 
