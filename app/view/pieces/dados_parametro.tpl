@@ -4,10 +4,7 @@
     <br />
     {if $parametro.tem_valor eq true}
         {if $parametro.tem_relacao eq true}
-            {include file=$piece_extra}
-        {else}
-            <label for="{$parametro.campo_extra}_{$id_parametro}">{$parametro.campo_extra}:<br/>
-            <input type="text" id="{$parametro.campo_extra}_{$id_parametro}" name="extra[{$id_parametro}][]" size="10" value="{$parametro.extra}"></label>
+            {include file=$dado_extra}
         {/if}
         <br/>
     {/if}
