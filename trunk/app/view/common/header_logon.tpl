@@ -1,5 +1,6 @@
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
+    <meta http-equiv="content-type" content="text/html; charset=latin1" />
     <title>Estudos Ecol&oacute;gicos nas Lagoas</title>
     <link rel="stylesheet" type="text/css" href="/eelagoas/css/form.css" />
     <link rel="stylesheet" type="text/css" href="/eelagoas/css/jquerycssmenu.css" />

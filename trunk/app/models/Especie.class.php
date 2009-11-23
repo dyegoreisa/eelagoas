@@ -29,6 +29,7 @@ class Especie extends BaseModel
                 , nome 
             FROM 
                 especie 
+            ORDER BY nome
         ");
 
         $sth->execute();
@@ -50,6 +51,7 @@ class Especie extends BaseModel
                         AND cp.id_coleta = :idColeta
             WHERE
                 e.id_parametro = :idParametro
+            ORDER BY e.nome
         ');
 
         $sth->execute(array(

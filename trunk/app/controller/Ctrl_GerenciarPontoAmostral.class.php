@@ -78,7 +78,7 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
         $smarty->displayHBF( 'listar.tpl' );
     }
 
-    public function buscar( $dados = false ){
+    public function buscar($campo = 'id_ponto_amostral', $dados = false){
         $smarty = $this->getSmarty();
 
         if( $dados || isset( $_REQUEST['dados'] ) && $_REQUEST['dados'] != '' ) {
@@ -91,7 +91,13 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
                 $this->lagoa->pegar();
             }
 
-            $num_linhas = $this->pontoAmostral->buscar( $dados, array('id_ponto_amostral', 'nome') );
+            if ($campo == 'id_ponto_amostral') {
+                $campos = array($campo, 'nome');
+            } else {
+                $campos = array($campo);
+            }
+
+            $num_linhas = $this->pontoAmostral->buscar( $dados, $campos );
 
             if( $num_linhas > 0 ) {
                 $this->listar();

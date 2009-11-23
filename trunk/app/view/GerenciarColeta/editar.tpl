@@ -17,6 +17,7 @@ $(document).ready(onLoad);
 <form>
 <input type="hidden" id="dir" value="{$dir}"/>
 <input type="hidden" id="count" value="0"/>
+<input type="hidden" id="countItens" value="0"/>
 </form>
 
 <fieldset>
@@ -83,31 +84,35 @@ $(document).ready(onLoad);
         <input type="text" name="nome_categoria" id="nome_categoria" value="" disabled>
         <br/>
         <label for="id_categoria_extra">Informa&ccedil;&atilde;o extra:</label><br/>
-        <select name="id_categoria_extra" id="id_categoria_extra">
+        <select name="id_categoria_extra" id="id_categoria_extra" disabled="disabled">
             {html_options options=$select_categoria_extra}
         </select>
         <input type="button" class="cancelar" alt="categoria" value="Cancelar">
-    </span>
+    </span><br/>
+    <span id="categoria_extra"></span>
     <br/><br/>
 
-    <fieldset>
-        <legend>Parametros: <input type="button" class="novo_item" alt="parametro" value="Novo"></legend>
+    <fieldset id="lista_parametros">
+        <legend>Parametros:</legend>
+        <div class="box">
+            {foreach from=$select_parametro key=id_parametro item=parametro}
 
-        {foreach from=$select_parametro key=id_parametro item=parametro}
+                <label>
+                    <input type="checkbox" name="id_parametros[]" value="{$id_parametro}" alt="valor{$id_parametro}" {if $parametro.id_coleta_parametro neq ""} checked {/if} />{$parametro.nome}
+                </label>
+                <br>
 
-            <label>
-                <input type="checkbox" name="id_parametros[]" value="{$id_parametro}" alt="valor{$id_parametro}" {if $parametro.id_coleta_parametro neq ""} checked {/if} />{$parametro.nome}
-            </label>
-            <br>
+                {include file=$dados_parametros}
 
-            {include file=$piece_parametros}
+            {/foreach}
+        </div>
+    </fieldset>
 
-        {/foreach}
-
-        <span id="parametro_inserir">
-             
-        </span>
-
+    <fieldset id="lista_novos_parametros">
+        <legend>Novos parametros: <input type="button" class="novo_item" alt="parametro" value="Novo"></legend>
+        <div class="box">
+            <span id="parametro_inserir"></span>
+        </div>
     </fieldset>
     <br/>
     

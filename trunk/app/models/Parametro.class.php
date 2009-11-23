@@ -33,6 +33,7 @@ class Parametro extends BaseModel
                 , e.tem_relacao
             FROM parametro p
             JOIN parametro_extra e ON e.id_parametro_extra = p.id_parametro_extra
+            ORDER BY p.nome
         ");
 
         $sth->execute();
@@ -58,6 +59,7 @@ class Parametro extends BaseModel
             FROM parametro p
             JOIN parametro_extra e ON e.id_parametro_extra = p.id_parametro_extra
             WHERE e.tem_relacao is true
+            ORDER BY p.nome
         ");
 
         $sth->execute();

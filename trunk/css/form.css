@@ -179,4 +179,29 @@ div.campo {
     float: left;
 }
 
+form fieldset#lista_parametros  {
+    position: absolute;
+    left: 385px;
+    top: 154px;
+}
+
+form fieldset#lista_parametros div.box {
+    height: 275px;
+    width: 265px;
+    overflow: scroll;
+}
+
+form fieldset#lista_novos_parametros  {
+    position: absolute;
+    left: 678px;
+    top: 149px;
+}
+
+form fieldset#lista_novos_parametros div.box {
+    height: 270px;
+    width: 290px;
+    overflow: scroll;
+}
+
+
 /*\*//*/ form.cmxform legend { display: inline-block; } /* IE Mac legend fix */
