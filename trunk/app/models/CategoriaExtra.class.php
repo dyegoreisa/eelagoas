@@ -55,4 +55,28 @@ class CategoriaExtra extends BaseModel {
         $sth->setFetchMode(PDO::FETCH_ASSOC);
         return $sth->fetch();
     }
+
+    public function getCampoExtraByIdColeta($idColeta) {
+        $sth = $this->dbh->prepare('
+            SELECT
+                ce.id_categoria_extra
+                , ce.nome              
+                , ce.descricao         
+                , ce.tem_valor         
+                , ce.tem_relacao       
+                , ce.tabela
+                , cp.valor_categoria_extra
+            FROM
+                coleta c
+                JOIN categoria ca ON ca.id_categoria = c.id_categoria
+                JOIN categoria_extra ce ON ce.id_categoria_extra = ca.id_categoria_extra
+                JOIN coleta_parametro cp ON cp.id_coleta = c.id_coleta
+            WHERE
+                c.id_coleta = :idColeta LIMIT 1
+        ');
+
+        $sth->execute(array(':idColeta' => $idColeta));
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        return $sth->fetch();
+    }
 }

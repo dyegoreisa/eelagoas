@@ -25,9 +25,18 @@ class Ctrl_Relatorio extends BaseController
     public function reportInterface()
     {
         $smarty = $this->getSmarty();
-        $smarty->assign( 'select_projeto', $this->projeto->listarSelectAssoc() );
-        $smarty->assign( 'select_categoria', $this->categoria->listarSelectAssoc() );
-        $smarty->assign( 'select_parametro', $this->parametro->listarSelectAssoc() );
+        $smarty->assign( 'select_projeto', $this->projeto->listarSelectAssoc(array(
+            'campo' => 'nome',
+            'ordem' => 'ASC'
+        )) );
+        $smarty->assign( 'select_categoria', $this->categoria->listarSelectAssoc(array(
+            'campo' => 'nome',
+            'ordem' => 'ASC'
+        )) );
+        $smarty->assign( 'select_parametro', $this->parametro->listarSelectAssoc(array(
+            'campo' => 'nome',
+            'ordem' => 'ASC'
+        )) );
         $smarty->displayHBF( 'interface.tpl' );
     }
 
@@ -85,9 +94,9 @@ class Ctrl_Relatorio extends BaseController
         $render->setFilters($filtros);
         $render->setUserName($userName);
         $render->setLists(array(
-            'lagoa'          => $this->lagoa->listarSelectAssoc(),
-            'categorias'     => $this->categoria->listarSelectAssoc(),
-            'parametro'      => $this->parametro->listarSelectAssoc(),
+            'lagoa'          => $this->lagoa->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
+            'categorias'     => $this->categoria->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
+            'parametro'      => $this->parametro->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
             'ponto_amostral' => $this->pontoAmostral->listarSelectAssoc($idLagoas)
         ));
         $render->render();

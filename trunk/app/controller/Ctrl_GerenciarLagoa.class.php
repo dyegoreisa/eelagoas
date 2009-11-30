@@ -14,7 +14,10 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
         $smarty = $this->getSmarty(); 
 
         $projeto = new Projeto($this->getDBH());
-        $smarty->assign('select_projetos', $projeto->listarSelectAssoc());
+        $smarty->assign('select_projetos', $projeto->listarSelectAssoc(array(
+            'campo' => 'nome',
+            'ordem' => 'ASC'
+        )));
 
         if( $id ) {
             $this->lagoa->setId( $id );
@@ -23,7 +26,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
             $smarty->assign( 'lagoa', $this->lagoa->getData() );
         }
 
-        $smarty->displayHBF( 'editar.tpl' );
+        $smarty->displaySubMenuHBF( 'editar.tpl' );
     }
 
     public function salvar() {
@@ -52,7 +55,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
                         $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar a lagoa.' );
 
                 }
-                $smarty->displayHBF( 'salvar.tpl' );
+                $smarty->displaySubMenuHBF( 'salvar.tpl' );
 
             } catch (Exception $e) {
                 $smarty->assign( 'mensagem', 'Problema ao salvar lagoa.' . $e->getMessage() );
@@ -61,22 +64,32 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
 
         } else {
             $smarty->assign( 'mensagem', 'O campo Nome ou Projeto n&atilde;o podem ser vazios.' );
-            $smarty->displayHBF( 'editar.tpl' );
+            $smarty->displaySubMenuHBF( 'editar.tpl' );
         }
     }
 
-    public function listar() {
+    public function listar($idProjeto = -1) {
         $smarty = $this->getSmarty(); 
+        $template = 'listar.tpl';
 
-        if( $this->lagoa->getDataAll() ) {
+        if ($idProjeto != -1) {
+            $smarty->assign( 'lagoas', $this->lagoa->listarPorProjeto($idProjeto, array(
+                'campo' => 'l.nome',
+                'ordem' => 'ASC'
+            )));
+            $template = 'listarPorProjeto.tpl';
+        } elseif( $this->lagoa->getDataAll() ) {
             $smarty->assign( 'lagoas', $this->lagoa->getDataAll() );
         } elseif( $this->lagoa->getData() ) {
             $smarty->assign( 'lagoas', array ( $this->lagoa->getData() ) );
         } else {
-            $smarty->assign( 'lagoas', $this->lagoa->listar() );
+            $smarty->assign( 'lagoas', $this->lagoa->listar(array(
+                'campo' => 'l.nome',
+                'ordem' => 'ASC'
+            )));
         }
 
-        $smarty->displayHBF( 'listar.tpl' );
+        $smarty->displaySubMenuHBF($template);
     }
 
     public function buscar( $dados = false ) {
@@ -87,16 +100,19 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
                 $dados = $_REQUEST['dados'];
             }
 
-            $num_linhas = $this->lagoa->buscar( $dados );
+            $num_linhas = $this->lagoa->buscar( $dados, '', array(
+                'campo' => 'nome',
+                'ordem' => 'ASC'
+            ));
 
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
                 $smarty->assign('msg', "N&atilde;o foram encontradas informa&ccedil;&otilde;es com a palavra {$dados}");
-                $smarty->displayHBF('buscar.tpl');
+                $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
-            $smarty->displayHBF('buscar.tpl');
+            $smarty->displaySubMenuHBF('buscar.tpl');
         }
     }
 
@@ -112,7 +128,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
                 $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
             }
 
-            $smarty->displayHBF( 'salvar.tpl' );
+            $smarty->displaySubMenuHBF( 'salvar.tpl' );
         }catch( Exception $e ) {
             $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
             $smarty->display( 'error.tpl' );

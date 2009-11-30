@@ -103,7 +103,6 @@ function carregarLagoa(disabled) {
         disabled = '';
     }
 
-    console.info(disabled);
     var dir = $('#dir').val()
     $('#lagoa_selecionar').load(dir + '/GerenciarLagoa/montarSelect/' + $(this).val(), function() {
         $('#id_lagoa').val(0);

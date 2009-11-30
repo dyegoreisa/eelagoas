@@ -124,6 +124,14 @@ abstract class BaseView extends Smarty{
         $this->display( $this->getFooter() );
     }
 
+    public function displaySubMenuHBF( $body ) {
+        $this->assign('modulo', $this->getTpl());
+        $this->assign('submenu', ABSOLUTE_PIECES . '/submenu.tpl');
+        $this->display( $this->getHeader() );
+        $this->display( $this->getTpl() . '/' . $body );
+        $this->display( $this->getFooter() );
+    }
+
     /**
      * displayError 
      * 

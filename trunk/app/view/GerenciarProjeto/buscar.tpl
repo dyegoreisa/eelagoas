@@ -1,5 +1,5 @@
 <fieldset>
-  <legend>Buscar Projeto</legend>
+{include file=$submenu titulo='Lista de projetos'}
   {if $msg neq ""}
     <p>{$msg}</p>
   {/if}

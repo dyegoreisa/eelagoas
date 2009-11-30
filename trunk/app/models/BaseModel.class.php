@@ -264,10 +264,21 @@ abstract class BaseModel {
     protected function montarParteBusca( $campo, $operador, $dados ) {
         switch( $operador ) {
             case "LIKE":
-                return " {$campo} {$operador} '%{$dados}%' OR";
+                return " {$campo} {$operador} '%{$dados}%' ";
             
             case "=":
-                return " {$campo} {$operador} '{$dados}' OR";
+                return " {$campo} {$operador} '{$dados}' ";
+        }
+    }
+
+    protected function prepararCampos($campos){
+        if (!empty($campos)) {
+            if (is_array($campos)) {
+                $camposInformados = $campos;
+            } else {
+                $camposInformados = explode(',', $campos);
+            }
+            $this->search = remove_elementos_array($this->search, $camposInformados, true);
         }
     }
 
@@ -280,19 +291,12 @@ abstract class BaseModel {
      *
      * TODO: Fazer critério de relevancia.
      */
-    public function montarBusca( $dados, $campos = '') {
+    protected function montarBusca( $dados, $campos = '') {
         $sql = "SELECT * FROM {$this->table} ";
 
         $sth_column = $this->dbh->prepare( "SHOW COLUMNS FROM {$this->table} WHERE field = :campo" );
 
-        if (!empty($campos)) {
-            if (is_array($campos)) {
-                $camposInformados = $campos;
-            } else {
-                $camposInformados = explode(',', $campos);
-            }
-            $this->search = remove_elementos_array($this->search, $camposInformados, true);
-        }
+        $this->prepararCampos($campos);
 
         if (count($this->search) < 1) {
             return $sql;
@@ -300,6 +304,7 @@ abstract class BaseModel {
             $sql .= 'WHERE ';
         }
 
+        $where = array();
         foreach( $this->search as $campo => $operador ) {
             $sth_column->execute( array( ':campo' => $campo ) );
             $dados_campo = $sth_column->fetch();
@@ -312,25 +317,26 @@ abstract class BaseModel {
                 case "float":
                 case "double":
                     if( is_numeric( $dados ) )
-                        $sql .= $this->montarParteBusca( $campo, $operador, $dados );
+                        $where[] = $this->montarParteBusca( $campo, $operador, $dados );
                     break;
 
                 case "varchar":
                 case "char":
                 case "blob":
                 case "enum":
-                    $sql .= $this->montarParteBusca( $campo, $operador, $dados );
+                    $where[] = $this->montarParteBusca( $campo, $operador, $dados );
                     break;
 
                 case "date":
                 case "datetime":
-                    $sql .= $this->montarParteBusca( $campo, $operador, $dados );
+                    $where[] = $this->montarParteBusca( $campo, $operador, $dados );
                     break;
             }
             
         }
 
-        $sql = substr( $sql, 0, -3 ); // Remove o último OR
+        //$sql = substr( $sql, 0, -3 ); // Remove o último OR
+        $sql .= implode(' OR ', $where);
 
         return $sql;
     }
@@ -342,8 +348,11 @@ abstract class BaseModel {
      * @access public
      * @return int
      */
-    public function buscar( $dados, $campos = '' ) {
+    public function buscar( $dados, $campos = '', $order = false ) {
         $sql = $this->montarBusca( $dados, $campos );
+
+        if( $order )
+            $sql .= " ORDER BY {$order['campo']} {$order['ordem']}";
 
         $sth = $this->dbh->prepare( $sql );
 
@@ -380,8 +389,12 @@ abstract class BaseModel {
      * @access public
      * @return array
      */
-    public function listarSelectAssoc() {
-        $sth = $this->dbh->prepare("SELECT {$this->nameId}, {$this->nameDesc} FROM {$this->table}");
+    public function listarSelectAssoc($order = false) {
+        $sqlOrder = '';
+        if( $order )
+            $sqlOrder .= " ORDER BY {$order['campo']} {$order['ordem']}";
+
+        $sth = $this->dbh->prepare("SELECT {$this->nameId}, {$this->nameDesc} FROM {$this->table} {$sqlOrder}");
 
         $sth->execute();
         $sth->setFetchMode(PDO::FETCH_ASSOC);

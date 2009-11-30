@@ -1,5 +1,5 @@
 <fieldset>
-  <legend>Lista de categorias</legend>
+{include file=$submenu titulo='Lista de categorias'}
   <ul>
     {foreach from=$categorias item=categoria}
       <li>
