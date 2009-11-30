@@ -20,7 +20,7 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
       $smarty->assign( 'usuario', $this->usuario->getData() );
     }
 
-    $smarty->displayHBF( 'editar.tpl' );
+    $smarty->displaySubMenuHBF( 'editar.tpl' );
   }
 
   public function salvar() {
@@ -63,7 +63,7 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
               $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar a usuario.' );
 
           }
-          $smarty->displayHBF( 'salvar.tpl' );
+          $smarty->displaySubMenuHBF( 'salvar.tpl' );
 
         } catch (Exception $e) {
           $smarty->assign( 'mensagem', 'Problema ao salvar usuario.' . $e->getMessage() );
@@ -72,12 +72,12 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
 
       } else {
         $smarty->assign( 'mensagem', 'A senha deve ser igual a confirma senha.' );
-        $smarty->displayHBF( 'editar.tpl' );
+        $smarty->displaySubMenuHBF( 'editar.tpl' );
       }
 
     } else {
       $smarty->assign( 'mensagem', 'O campo Nome, login, senha e/ou confirma senha n&atilde;o podem ser vazios.' );
-      $smarty->displayHBF( 'editar.tpl' );
+      $smarty->displaySubMenuHBF( 'editar.tpl' );
     }
   }
 
@@ -89,10 +89,10 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
     } elseif( $this->usuario->getData() ) {
       $smarty->assign( 'usuarios', array ( $this->usuario->getData() ) );
     } else {
-      $smarty->assign( 'usuarios', $this->usuario->listar() );
+      $smarty->assign( 'usuarios', $this->usuario->listar(array('campo' => 'nome', 'ordem' => 'ASC')) );
     }
 
-    $smarty->displayHBF( 'listar.tpl' );
+    $smarty->displaySubMenuHBF( 'listar.tpl' );
   }
 
   public function buscar( $dados = false ) {
@@ -109,10 +109,10 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
         $this->listar();
       } else {
         $smarty->assign('msg', "N&atilde;o foram encontradas informa&ccedil;&otilde;es com a palavra {$dados}");
-        $smarty->displayHBF('buscar.tpl');
+        $smarty->displaySubMenuHBF('buscar.tpl');
       }
     } else {
-      $smarty->displayHBF('buscar.tpl');
+      $smarty->displaySubMenuHBF('buscar.tpl');
     }
   }
 
@@ -128,7 +128,7 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
         $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
       }
 
-      $smarty->displayHBF( 'salvar.tpl' );
+      $smarty->displaySubMenuHBF( 'salvar.tpl' );
     }catch( Exception $e ) {
       $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
       $smarty->display( 'error.tpl' );

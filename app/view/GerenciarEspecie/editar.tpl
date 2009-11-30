@@ -2,7 +2,7 @@
   <p>{$mensagem}</p>
 {/if}
 <fieldset>
-  <legend>Cadastrar Especie</legend>
+{include file=$submenu titulo='Cadastrar Esp&eacute;cie'}
 
 <form action="{$dir}/GerenciarEspecie/salvar" method="POST" class="cmxform">
 

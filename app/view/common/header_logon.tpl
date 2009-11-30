@@ -2,6 +2,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=latin1" />
     <title>Estudos Ecol&oacute;gicos nas Lagoas</title>
+    <link rel="stylesheet" type="text/css" href="/eelagoas/css/eelagoas.css" />
     <link rel="stylesheet" type="text/css" href="/eelagoas/css/form.css" />
     <link rel="stylesheet" type="text/css" href="/eelagoas/css/jquerycssmenu.css" />
     {literal}
@@ -35,42 +36,42 @@
         <li><a href="{$dir}/Relatorio/reportInterface">Relat&oacute;rios</a></li>
         <li><a href="#">Gerenciar</a>
             <ul>
-                <li><a href="#">Projeto</a>
+                <li><a href="{$dir}/GerenciarProjeto/listar">Projeto</a>
                     <ul>
                         <li><a href="{$dir}/GerenciarProjeto/editar">cadastrar</a></li>
                         <li><a href="{$dir}/GerenciarProjeto/buscar">buscar</a></li>
                         <li><a href="{$dir}/GerenciarProjeto/listar">listar</a></li>
                     </ul>
                 </li>
-                <li><a href="#">Lagoa</a>
+                <li><a href="{$dir}/GerenciarLagoa/listar">Lagoa</a>
                     <ul>
                         <li><a href="{$dir}/GerenciarLagoa/editar">cadastrar</a></li>
                         <li><a href="{$dir}/GerenciarLagoa/buscar">buscar</a></li>
                         <li><a href="{$dir}/GerenciarLagoa/listar">listar</a></li>
                     </ul>
                 </li>
-                <li><a href="#">Categoria</a>
+                <li><a href="{$dir}/GerenciarCategoria/listar">Categoria</a>
                     <ul>
                         <li><a href="{$dir}/GerenciarCategoria/editar">Cadastrar</a></li>
                         <li><a href="{$dir}/GerenciarCategoria/buscar">Buscar</a></li>
                         <li><a href="{$dir}/GerenciarCategoria/listar">Listar</a></li>
                     </ul>
                 </li>
-                <li><a href="#">Parametro</a>
+                <li><a href="{$dir}/GerenciarParametro/listar">Par&acirc;metro</a>
                     <ul>
                         <li><a href="{$dir}/GerenciarParametro/editar">Cadastrar</a></li>
                         <li><a href="{$dir}/GerenciarParametro/buscar">Buscar</a></li>
                         <li><a href="{$dir}/GerenciarParametro/listar">Listar</a></li>
                     </ul>
                 </li>
-                <li><a href="#">Especie</a>
+                <li><a href="{$dir}/GerenciarEspecie/listar">Esp&eacute;cie</a>
                     <ul>
                         <li><a href="{$dir}/GerenciarEspecie/editar">Cadastrar</a></li>
                         <li><a href="{$dir}/GerenciarEspecie/buscar">Buscar</a></li>
                         <li><a href="{$dir}/GerenciarEspecie/listar">Listar</a></li>
                     </ul>
                 </li>
-                <li><a href="#">Usuario</a>
+                <li><a href="{$dir}/GerenciarUsuario/listar">Usu&aacute;rio</a>
                     <ul>
                         <li><a href="{$dir}/GerenciarUsuario/editar">Cadastrar</a></li>
                         <li><a href="{$dir}/GerenciarUsuario/buscar">Buscar</a></li>
@@ -80,6 +81,6 @@
             </ul>
         <li class="left"><a href="{$dir}/Sessao/sair">Sair</a></li>
     </ul>
-<br style="clear: left" />
+<br class="jquerycssmenu" />
 </div>
 <div id="main">

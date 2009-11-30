@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Pasta principal do sistema 
+ */
+define('ROOT_FOLDER', '/eelagoas');
+
+/**
  * Define a rota padrão
  */
 define('D_ROUTE', '/Main/run');
@@ -13,9 +18,9 @@ define('LOGIN', '/Sessao/login/');
 /**
  * Define os caminhos padrôes 
  */
-define('R_DIR', '/eelagoas/index.php');
-define('R_SITE', 'http://localhost/eelagoas');
-define('D_ABSOLUTE', '/Projetos/eelagoas');
+define('R_DIR', ROOT_FOLDER . '/index.php');
+define('R_SITE', 'http://' . $_SERVER['HTTP_HOST'] . ROOT_FOLDER);
+define('D_ABSOLUTE', '/home/dyego/projetos' . ROOT_FOLDER);
 
 /**
  * Define informações para acesso ao banco de dados
@@ -77,8 +82,8 @@ define('SPREADSHEET', '/home/linksimbolico/www/api/Spreadsheet/Excel/');
 /**
  * Logos para os relatórios 
  */
- define('LOGO_SITE', '/eelagoas/images/logo_longa.png');
- define('LOGO_HTML', '/eelagoas/images/logo.jpg');
+ define('LOGO_SITE', ROOT_FOLDER . '/images/logo_longa.png');
+ define('LOGO_HTML', ROOT_FOLDER . '/images/logo.jpg');
  define('LOGO_PDF', 'images/logo.jpg');
  define('LOGO_XLS', 'images/logo.bmp');
 

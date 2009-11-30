@@ -79,6 +79,7 @@ $(document).ready(onLoad);
             {html_options options=$select_categoria selected=$coleta.id_categoria}
         </select>
         <input type="button" class="novo" alt="categoria" value="Novo">
+
     </span>
     <span id="categoria_inserir" class="escondido">
         <input type="text" name="nome_categoria" id="nome_categoria" value="" disabled>
@@ -89,7 +90,13 @@ $(document).ready(onLoad);
         </select>
         <input type="button" class="cancelar" alt="categoria" value="Cancelar">
     </span><br/>
-    <span id="categoria_extra"></span>
+    {if $campoExtraCategoria.nome neq 'nenhum' and $campoExtraCategoria.nome neq ''}
+        <span id="categoria_extra">
+            {include file=$parametro_categoria_extra}
+        </span>
+    {else}
+        <span id="categoria_extra"></span>
+    {/if}
     <br/><br/>
 
     <fieldset id="lista_parametros">

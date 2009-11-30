@@ -89,3 +89,7 @@ position: absolute;
 top: 5px;
 right: 5px;
 }
+
+br.jquerycssmenu {
+    clear: left
+}

@@ -84,7 +84,6 @@ class Result
                 , pa.nome  AS nome_ponto_amostral 
                 , ca.nome  AS nome_categoria 
                 , p.nome   AS nome_parametro 
-                , cp.nivel AS profundidade 
                 , cp.valor 
             FROM
                 coleta c 

@@ -22,17 +22,18 @@ class ColetaParametro extends BaseModel {
                 , p.nome
                 , cp.id_coleta_parametro
                 , cp.valor
-                , cp.extra
-                , e.id_extra
+                , cp.valor_extra
+                , e.id_parametro_extra
                 , e.nome as nome_campo_extra
                 , e.descricao
                 , e.tem_valor
                 , e.tem_relacao
             from 
                 parametro p 
-                join extra e on e.id_extra = p.id_extra
+                join parametro_extra e on e.id_parametro_extra = p.id_parametro_extra
                 left join coleta_parametro cp on cp.id_parametro = p.id_parametro 
                 and cp.id_coleta = :id_coleta
+            order by p.nome
         ");
 
         $sth->execute( array( ':id_coleta' => $id ) );

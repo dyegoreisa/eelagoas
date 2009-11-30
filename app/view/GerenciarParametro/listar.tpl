@@ -1,5 +1,5 @@
 <fieldset>
-  <legend>Lista de parametros</legend>
+{include file=$submenu titulo='Lista de par&acirc;metros'}
   <ul>
     {foreach from=$parametros item=parametro}
       <li>

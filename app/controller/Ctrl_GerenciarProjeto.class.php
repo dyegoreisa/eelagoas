@@ -21,7 +21,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
             $smarty->assign( 'projeto', $this->projeto->getData() );
         }
 
-        $smarty->displayHBF( 'editar.tpl' );
+        $smarty->displaySubMenuHBF( 'editar.tpl' );
     }
 
     public function salvar() {
@@ -46,7 +46,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
                         $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar a projeto.' );
 
                 }
-                $smarty->displayHBF( 'salvar.tpl' );
+                $smarty->displaySubMenuHBF( 'salvar.tpl' );
 
             } catch (Exception $e) {
                 $smarty->assign( 'mensagem', 'Problema ao salvar projeto.' . $e->getMessage() );
@@ -55,7 +55,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
 
         } else {
             $smarty->assign( 'mensagem', 'O campo Nome n&atilde;o pode ser vazio.' );
-            $smarty->displayHBF( 'editar.tpl' );
+            $smarty->displaySubMenuHBF( 'editar.tpl' );
         }
     }
 
@@ -70,7 +70,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
             $smarty->assign( 'projetos', $this->projeto->listar() );
         }
 
-        $smarty->displayHBF( 'listar.tpl' );
+        $smarty->displaySubMenuHBF( 'listar.tpl' );
     }
 
     public function buscar( $dados = false ) {
@@ -87,10 +87,10 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
                 $this->listar();
             } else {
                 $smarty->assign('msg', "N&atilde;o foram encontradas informa&ccedil;&otilde;es com a palavra {$dados}");
-                $smarty->displayHBF('buscar.tpl');
+                $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
-            $smarty->displayHBF('buscar.tpl');
+            $smarty->displaySubMenuHBF('buscar.tpl');
         }
     }
 
@@ -106,7 +106,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
                 $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
             }
 
-            $smarty->displayHBF( 'salvar.tpl' );
+            $smarty->displaySubMenuHBF( 'salvar.tpl' );
         }catch( Exception $e ) {
             $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
             $smarty->display( 'error.tpl' );

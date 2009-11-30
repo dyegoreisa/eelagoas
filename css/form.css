@@ -38,14 +38,14 @@ form.cmxform label.error, label.error {
         /* remove the next line when you have trouble in IE6 with labels in list */
         color: red;
         font-style: italic;
-        font-size: larger;      
+        font-size: 18px;      
 }
 
 div.error { display: none; }
 
 input { 
   border: solid AliceBlue; 
-  font-size: large;
+  font-size: 18px;
 }
 
 input:focus { 
@@ -72,7 +72,7 @@ input.ok {
 
 textarea { 
   border: solid AliceBlue;; 
-  font-size: large;
+  font-size: 18px;
 }
 
 textarea:focus { 
@@ -91,7 +91,7 @@ textarea.ok {
 
 select { 
   border: solid AliceBlue;; 
-  font-size: large;
+  font-size: 18px;
 }
 
 select:focus { 
@@ -172,11 +172,6 @@ form.cmxform label.error {
 
 form.cmxform input.submit {
         margin-left: 103px;
-}
-
-div.campo {
-    width: 235px;
-    float: left;
 }
 
 form fieldset#lista_parametros  {
