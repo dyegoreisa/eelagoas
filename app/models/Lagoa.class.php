@@ -110,4 +110,50 @@ class Lagoa extends BaseModel {
             WHERE $clausula
         ";
     }
+
+    public function listarSelectAssocData($campo, $tipoPeriodo) {
+        $this->dbh->exec("SET lc_time_names = 'pt_BR';");
+
+        switch($campo) {
+            case 'dia':
+                $campoSelect = ' DAY(data)   AS dia ';
+                break;
+            case 'mes':
+                $campoSelect = ' MONTH(data) AS mes,  MONTHNAME(data) nome_mes';
+                break;
+            case 'ano':
+                $campoSelect = ' YEAR(data)  AS ano ';
+                break;
+            case 'hora':
+                $campoSelect = ' HOUR(data)  AS hora ';
+                break;
+        }
+
+        $sth = $this->dbh->prepare("
+            SELECT
+                $campoSelect
+            FROM
+                lagoa l 
+                    JOIN coleta c 
+                    ON c.id_lagoa = l.id_lagoa 
+            WHERE
+                l.id_lagoa = :idLagoa AND c.tipo_periodo = :tipoPeriodo
+            ORDER BY $campo ASC
+        ");
+
+        $idLagoa = $this->getId();
+        $sth->execute(array(
+            ':idLagoa'     => $idLagoa,
+            ':tipoPeriodo' => $tipoPeriodo
+        ));
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        $lista = $sth->fetchAll();
+
+        $lista2 = array();
+        foreach ($lista as $val) {
+            $lista2[$val[$campo]] = ($campo == 'mes') ? $val['nome_mes'] : $val[$campo];
+        }
+
+        return $lista2;
+    }
 }

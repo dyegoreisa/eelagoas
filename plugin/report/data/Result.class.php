@@ -52,6 +52,10 @@ class Result
                     }
                     break;
 
+                case 'tipo_periodo':
+                    $where[] = "c.tipo_periodo = '{$val}'";
+                    break;
+
                 case 'data_inicio':
                     if (preg_match('/\d{2}\/\d{4}/', $val) === false) {
                         Mensagem::addAtencao('A data incial informada est&aacute; no formato incorreto, 
@@ -77,9 +81,15 @@ class Result
 
     public function execute()
     {
+        if ($this->filters['tipo_periodo'] == 'mensal') {
+            $formatoData = "date_format(c.data, '%m/%Y %H') AS data";
+        } else {
+            $formatoData = "date_format(c.data, '%d/%m/%Y %H') AS data";
+        }
+
         $sql = "
             SELECT
-                date_format(c.data, '%m/%Y') AS data
+                $formatoData
                 , l.nome   AS nome_lagoa 
                 , pa.nome  AS nome_ponto_amostral 
                 , ca.nome  AS nome_categoria 

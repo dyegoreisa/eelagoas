@@ -1,15 +1,49 @@
 {literal}
 <script type="text/javascript" language="javascript">
+
+    function loadDatas(idLagoa, tipoPeriodo) {
+        $("#dia_selecionar").load(dir + "/GerenciarLagoa/montarMultiSelectData/dia/diario/" + idLagoa);
+        $("#mes_selecionar").load(dir + "/GerenciarLagoa/montarMultiSelectData/mes/" + tipoPeriodo + '/' + idLagoa);
+        $("#ano_selecionar").load(dir + "/GerenciarLagoa/montarMultiSelectData/ano/" + tipoPeriodo + '/' + idLagoa);
+        $("#hora_selecionar").load(dir + "/GerenciarLagoa/montarMultiSelectData/hora/" + tipoPeriodo + '/' + idLagoa);
+    }
+
     $(document).ready(function () {
         dir = $('#dir').val();
 
         $('#projeto').livequery('change', function() {
             $("#lagoa_selecionar").load( dir + "/GerenciarLagoa/montarMultiSelect/" + $(this).val() );
+
+            // Apaga campos
+            $("#ponto_amostral_selecionar > select > option").remove();
+            $("#dia_selecionar > select > option").remove();
+            $("#mes_selecionar > select > option").remove();
+            $("#ano_selecionar > select > option").remove();
+            $("#hora_selecionar > select > option").remove();
         });
 
         $("#lagoa").livequery('change', function () {
-            $("#ponto_amostral_selecionar").load( dir + "/GerenciarPontoAmostral/montarMultiSelect/" + $(this).val() );
+            idLagoa     = $(this).val();
+            tipoPeriodo = $("input:[name=tipo_periodo][checked]").val(); 
+
+            $("#ponto_amostral_selecionar").load( dir + "/GerenciarPontoAmostral/montarMultiSelect/" + idLagoa);
+
+            loadDatas(idLagoa, tipoPeriodo);
         });
+
+        $("input:[name=tipo_periodo]").livequery('click', function () {
+            idLagoa     = $("#lagoa").val();
+            tipoPeriodo = $(this).val();
+
+            if (tipoPeriodo == 'mensal') {
+                $("#campo_dia").hide();
+            } else {
+                $("#campo_dia").show();
+            }
+
+            loadDatas(idLagoa, tipoPeriodo);
+        });
+
     });
 </script>
 {/literal}
@@ -60,14 +94,42 @@
         {html_options options=$select_parametro selected=''}
     </select>
     </div>
+
+    <div class="campo" id="campo_dia">
+    <label for="dia">Dias:</label><br/>
+    <span id="dia_selecionar">
+        <select name="dia[]" id="dia" multiple="multiple" size="5" class="campo"></select>
+    </span>
+    </div>
+
+    <div class="campo">
+    <label for="mes">Meses:</label><br/>
+    <span id="mes_selecionar">
+        <select name="mes[]" id="mes" multiple="multiple" size="5" class="campo"></select>
+    </span>
+    </div>
+
+    <div class="campo">
+    <label for="ano">Anos:</label><br/>
+    <span id="ano_selecionar">
+        <select name="ano[]" id="ano" multiple="multiple" size="5" class="campo"></select>
+    </span>
+    </div>
+
+    <div class="campo">
+    <label for="hora">Horas:</label><br/>
+    <span id="hora_selecionar">
+        <select name="hora[]" id="hora" multiple="multiple" size="5" class="campo"></select>
+    </span>
+    </div>
     <br/>
 
     <fieldset>
         <legend>Per&iacute;odo</legend>
-        <label for="data_inicio">Data inicial:</label><br/>
-        <input type="text" name="data_inicio" id="data_inicio" size="10">(mm/aaaa)<br/>
-        <label for="data_fim">Data final:</label><br/>
-        <input type="text" name="data_fim" id="data_fim" size="10">(mm/aaaa)
+        <input type="radio" name="tipo_periodo" id="periodo_mensal" value="mensal">
+        <label for="periodo_mensal">Mensal</label>&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="tipo_periodo" id="periodo_diario" value="diario" checked>
+        <label for="periodo_diario">Di&aacute;rio</label>
     </fieldset>
 
     <fieldset>
