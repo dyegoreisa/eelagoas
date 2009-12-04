@@ -3,6 +3,7 @@ class Result
 {
     private $filters;
     private $dbh;
+    private $order;
 
     public function __construct()
     {
@@ -17,6 +18,16 @@ class Result
     public function setDBH($dbh)
     {
         $this->dbh = $dbh;
+    }
+
+    public function setOrder($order)
+    {
+        $this->order = $order;
+    }
+
+    public function getOrder()
+    {
+        return $this->order;
     }
     
     public function generateWhere()
@@ -87,6 +98,9 @@ class Result
             $formatoData = "date_format(c.data, '%d/%m/%Y %H') AS data";
         }
 
+        $clausulaWhere = $this->generateWhere();
+        $order         = $this->getOrder();
+
         $sql = "
             SELECT
                 $formatoData
@@ -103,9 +117,9 @@ class Result
                     JOIN coleta_parametro cp ON c.id_coleta = cp.id_coleta 
                     JOIN parametro p ON cp.id_parametro = p.id_parametro
             WHERE 
+                $clausulaWhere
+            ORDER BY $order
         ";
-
-        $sql .= $this->generateWhere();
 
         $sth = $this->dbh->prepare($sql);
 
