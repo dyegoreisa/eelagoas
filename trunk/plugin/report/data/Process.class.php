@@ -161,10 +161,11 @@ class Process
                 , e.nome
                 , pe.descricao
             FROM
-                {$tabela} e
-                JOIN coleta_parametro_{$tabela} cpe ON e.id_{$tabela} = cpe.id_{$tabela}
-                JOIN parametro p ON p.id_parametro = e.id_parametro
-                JOIN coleta_parametro cp ON cp.id_parametro = p.id_parametro
+                coleta c
+                JOIN coleta_parametro cp ON cp.id_coleta = c.id_coleta
+                JOIN parametro p ON p.id_parametro = cp.id_parametro
+                JOIN coleta_parametro_{$tabela} cpe ON cpe.id_coleta_parametro = cp.id_coleta_parametro
+                JOIN {$tabela} e ON e.id_{$tabela} = cpe.id_{$tabela}
                 JOIN parametro_extra pe ON pe.id_parametro_extra = p.id_parametro_extra
             WHERE
                 p.id_parametro = ? AND cp.id_coleta = ?
