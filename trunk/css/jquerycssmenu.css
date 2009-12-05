@@ -1,5 +1,5 @@
 .jquerycssmenu{
-font: bold 12px Verdana;
+font: bold 12px Tahoma,Arial,Helvetica,sans-serif;
 border-bottom: 1px solid black;
 padding-left: 15px; /*offset of tabs relative to browser left edge*/
 }
@@ -61,7 +61,7 @@ top: 0;
 
 /* Sub level menu links style */
 .jquerycssmenu ul li ul li a{
-font: normal 13px Verdana;
+font: normal 12px Tahoma,Arial,Helvetica,sans-serif;
 width: 160px; /*width of sub menus*/
 background: white;
 color: black;

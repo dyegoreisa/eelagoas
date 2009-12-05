@@ -7,3 +7,12 @@ div.campo {
     float: left;
 }
 
+img#logo_principal {
+    float: left;
+}
+
+p#nome_sistema {
+    font-size: 23px;
+    margin: 6px;
+    text-align: center;
+}

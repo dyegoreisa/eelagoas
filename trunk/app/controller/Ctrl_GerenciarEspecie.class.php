@@ -74,7 +74,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
         } elseif( $this->especie->getData() ) {
             $smarty->assign( 'especies', array ( $this->especie->getData() ) );
         } else {
-            $smarty->assign( 'especies', $this->especie->listar(array('campo' => 'nome', 'ordem' => 'ASC')) );
+            $smarty->assign( 'especies', $this->especie->listar(array('campo' => 'nome_parametro, nome', 'ordem' => '')) );
         }
 
         $smarty->displaySubMenuHBF( 'listar.tpl' );

@@ -68,9 +68,11 @@ class Xls extends Render
         // Formatação das linhas intercaladas
         $this->format['row_even'] =& $this->workbook->addFormat();
         $this->format['row_even']->setFgColor(8);
+        $this->format['row_even']->setVAlign('top');
 
         // Formatação das linhas intercaladas
         $this->format['row_odd'] =& $this->workbook->addFormat();
+        $this->format['row_odd']->setVAlign('top');
     }
 
     public function prepareColumns()
@@ -87,12 +89,17 @@ class Xls extends Render
     {
         $this->worksheet =& $this->workbook->addWorksheet($name);
         $this->worksheet->hideScreenGridlines();
-        $this->worksheet->setColumn(0, $this->totalColmuns, 18);
+        $this->worksheet->setColumn(0, $this->totalColmuns, 22);
     }
 
     public function makeFilters()
     {
-        $this->y = 0;
+        $this->y = 2;
+
+        $this->x = 0;
+        $this->printCellFilter(array('index'   => 'projeto', 
+                                     'field'   => 'Projeto: ', 
+                                     'replace' => true));
 
         $this->printCellFilter(array('index'   => 'lagoa', 
                                      'field'   => 'Lagoas: ', 
@@ -110,22 +117,6 @@ class Xls extends Render
                                      'field'   => 'Categoria: ', 
                                      'replace' => true));   
         
-        $this->printCellFilter(array('index'   => 'periodo', 
-                                     'field'   => mb_convert_encoding('Período: ', 'ISO-8859-1', 'UTF-8'), 
-                                     'replace' => false,
-                                     'void'    => true));
-        
-        $this->y++; // Próxima coluna
-        $this->x--; // Não pula linha
-        $this->printCellFilter(array('index'   => 'data_inicio', 
-                                     'field'   => mb_convert_encoding('Início: ', 'ISO-8859-1', 'UTF-8'), 
-                                     'replace' => false));
-        
-        $this->y += 2; // Próximas 2 colunas
-        $this->x--;    // Não pula linha
-        $this->printCellFilter(array('index'   => 'data_fim', 
-                                     'field'   => 'Fim: ', 
-                                     'replace' => false));
         $this->y = 0;
     }
     
@@ -182,7 +173,7 @@ class Xls extends Render
         $this->makeColumns();
         foreach ($this->data as $key => $val) {
             $cyle = ($count % 2) ? 'row_even' : 'row_odd';
-            $this->worksheet->writeRow($this->x, 0, $val, $this->format[$cyle]);
+            $this->worksheet->writeRow($this->x, 0, $val->getFormatedColumns($this->titles), $this->format[$cyle]);
             $this->x++;
             $count++;
         }

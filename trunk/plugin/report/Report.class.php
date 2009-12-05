@@ -5,16 +5,19 @@ require_once 'render/Render.class.php';
 require_once 'render/Html.class.php';
 require_once 'render/Pdf.class.php';
 require_once 'render/Xls.class.php';
+require_once 'data/Process.class.php';
 require_once 'data/Result.class.php';
 require_once 'data/Column.class.php';
 
 class Report
 {
-    private $xml;
     private $html;
     private $pdf;
     private $xls;
-    private $result;
+    private $userName;
+    private $filters;
+    private $reportName;
+    private $process;
 
     /**
      * Lista de objetos de column contendo definições da coluna 
@@ -30,32 +33,42 @@ class Report
      * @access public
      * @return void
      */
-    public function __construct()
+    public function __construct($userName, $filters, $reportName)
     {
-        $this->render = null;
-        $this->xml    = new Xml();
-        $this->result = new Result();
+        $this->render     = null;
+        $this->userName   = $userName;
+        $this->filters    = $filters;
+        $this->reportName = $reportName;
+        $this->process    = new Process($this->filters);
+    }
+
+    private function setData()
+    {
+        $this->render->setProcess($this->process);
+        $this->render->setColumns($this->columns);
+        $this->render->setUserName($this->userName);
+        $this->render->setFilters($this->filters);
+        $this->render->setReportName($this->reportName);
     }
 
     public function setHtml() 
     {
         $this->render = new Html();
-        $this->render->setResult($this->result);
-        $this->render->setColumns($this->columns);
+        $this->setData();
     }
 
     public function setPDF()
     {
         $this->render = new Pdf();
-        $this->render->setResult($this->result);
-        $this->render->setColumns($this->columns);
+        $this->setData();
+        $this->render->prepareColumns();
     }
 
     public function setXls()
     {
         $this->render = new Xls();
-        $this->render->setResult($this->result);
-        $this->render->setColumns($this->columns);
+        $this->setData();
+        $this->render->prepareColumns();
     }
 
     public function getRender()
@@ -63,9 +76,9 @@ class Report
         return $this->render;
     }
 
-    public function getResult()
+    public function getProcess()
     {
-        return $this->result;
+        return $this->process;
     }
 
     public function addColumn($field, $text, $align, $fill, $width)

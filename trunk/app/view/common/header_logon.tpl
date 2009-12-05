@@ -30,6 +30,10 @@
     {/literal}
 </head>
 <body>
+<div>
+    <img src="{$site}/images/logo_principal.jpg" id="logo_principal">
+    <p id="nome_sistema">Sistema de cadastro Limnologia UFRJ</p>
+</div>
 <div id="myjquerymenu" class="jquerycssmenu">
     <ul>
         <li><a href="{$dir}/GerenciarColeta/editar">Cadastrar Coleta</a></li>

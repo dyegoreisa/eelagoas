@@ -4,10 +4,10 @@ abstract class Render
     /**
      * Objeto que contém dados vindo do banco
      * 
-     * @var Result
+     * @var Process
      * @access protected
      */
-    protected $result;
+    protected $process;
 
     /**
      * Lista de parâmetros
@@ -86,10 +86,10 @@ abstract class Render
         return $this->data;
     }
 
-    public function setResult(Result $result) 
+    public function setProcess(Process $process) 
     {
-        $this->result = $result;
-        $this->data   = $this->result->execute();
+        $this->process = $process;
+        $this->data   = $this->process->execute();
     }
 
     public function setColumns(array $columns)

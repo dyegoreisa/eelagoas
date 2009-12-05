@@ -14,8 +14,12 @@ class Lagoa extends BaseModel {
         );
     }
 
-    public function listarSelectAssoc( $idProjeto ) {
-        
+    public function listarSelectAssoc($idProjeto,  $order = false) {
+        $sqlOrder = '';
+        if ($order) {
+            $sqlOrder = " ORDER BY {$order['campo']} {$order['ordem']}";
+        }
+
         $sth = $this->dbh->prepare("
             SELECT 
                 id_lagoa 
@@ -23,8 +27,8 @@ class Lagoa extends BaseModel {
             FROM 
                 lagoa 
             WHERE
-                id_projeto = $idProjeto
-            ORDER BY nome
+                id_projeto IN ($idProjeto)
+            $sqlOrder
         ");
 
         $sth->execute();
@@ -111,7 +115,7 @@ class Lagoa extends BaseModel {
         ";
     }
 
-    public function listarSelectAssocData($campo, $tipoPeriodo) {
+    public function listarSelectAssocData($campo, $tipoPeriodo, $idLagoas) {
         $this->dbh->exec("SET lc_time_names = 'pt_BR';");
 
         switch($campo) {
@@ -137,13 +141,12 @@ class Lagoa extends BaseModel {
                     JOIN coleta c 
                     ON c.id_lagoa = l.id_lagoa 
             WHERE
-                l.id_lagoa = :idLagoa AND c.tipo_periodo = :tipoPeriodo
+                l.id_lagoa IN ($idLagoas) AND c.tipo_periodo = :tipoPeriodo
             ORDER BY $campo ASC
         ");
 
         $idLagoa = $this->getId();
         $sth->execute(array(
-            ':idLagoa'     => $idLagoa,
             ':tipoPeriodo' => $tipoPeriodo
         ));
         $sth->setFetchMode(PDO::FETCH_ASSOC);

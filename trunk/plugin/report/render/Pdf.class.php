@@ -41,6 +41,14 @@ class Pdf extends Render
         $this->titles = $this->getArrayColumnText();
     }
 
+    public function pulaLinhaFiltro($numX, $numY, $numHeight)
+    {
+        $numY = $this->fpdf->GetY() + $numHeight;
+        $this->fpdf->SetXY($numX, $numY);
+
+        return $numY;
+    }
+
     public function makeFilters()
     {
         $intBorder = 1;
@@ -49,51 +57,34 @@ class Pdf extends Render
         $numY = $this->fpdf->GetY();
         $this->fpdf->SetX($numX);
 
-        $this->printCellFilter($numHeight, array('index'   => 'lagoa', 
-                                                  'field'   => 'Lagoas: ', 
-                                                  'replace' => true));
+        $this->printCellFilter($numHeight, array('index'   => 'projeto', 
+                                                 'field'   => 'Projetos: ', 
+                                                 'replace' => true));
         
-        // Pula linha
-        $numY = $this->fpdf->GetY() + $numHeight;
-        $this->fpdf->SetXY($numX, $numY);
+        $numY = $this->pulaLinhaFiltro($numX, $numY, $numHeight);
+
+        $this->printCellFilter($numHeight, array('index'   => 'lagoa', 
+                                                 'field'   => 'Lagoas: ', 
+                                                 'replace' => true));
+        
+        $numY = $this->pulaLinhaFiltro($numX, $numY, $numHeight);
         
         $this->printCellFilter($numHeight, array('index'   => 'ponto_amostral', 
-                                                  'field'   => 'Pontos amostrais: ', 
-                                                  'replace' => true));
+                                                 'field'   => 'Pontos amostrais: ', 
+                                                 'replace' => true));
            
-        // Pula linha
-        $numY = $this->fpdf->GetY() + $numHeight;
-        $this->fpdf->SetXY($numX, $numY);
+        $numY = $this->pulaLinhaFiltro($numX, $numY, $numHeight);
         
         $this->printCellFilter($numHeight, array('index'   => 'parametro', 
-                                                  'field'   => mb_convert_encoding('Parâmetros: ', 'ISO-8859-1', 'UTF-8'), 
-                                                  'replace' => true));
+                                                 'field'   => mb_convert_encoding('Parâmetros: ', 'ISO-8859-1', 'UTF-8'), 
+                                                 'replace' => true));
 
-        // Pula linha
-        $numY = $this->fpdf->GetY() + $numHeight;
-        $this->fpdf->SetXY($numX, $numY);
+        $numY = $this->pulaLinhaFiltro($numX, $numY, $numHeight);
         
         $this->printCellFilter($numHeight, array('index'   => 'categorias', 
-                                                  'field'   => 'Categoria: ', 
-                                                  'replace' => true));   
+                                                 'field'   => 'Categoria: ', 
+                                                 'replace' => true));   
 
-        // Pula linha
-        $numY = $this->fpdf->GetY() + $numHeight;
-        $this->fpdf->SetXY($numX, $numY);
-        
-        $this->printCellFilter($numHeight, array('index'   => 'periodo', 
-                                                  'field'   => mb_convert_encoding('Período: ', 'ISO-8859-1', 'UTF-8'), 
-                                                  'replace' => false,
-                                                  'void'    => true));
-
-        $this->printCellFilter($numHeight, array('index'   => 'data_inicio', 
-                                                  'field'   => mb_convert_encoding('Início: ', 'ISO-8859-1', 'UTF-8'), 
-                                                  'replace' => false));
-        
-        $this->printCellFilter($numHeight, array('index'   => 'data_fim', 
-                                                  'field'   => 'Fim: ', 
-                                                  'replace' => false));
-        
     }
     
     private function printCellFilter($numHeight, $params) 
@@ -177,6 +168,7 @@ class Pdf extends Render
         // logica das linhas        
         $this->fpdf->currentLine = 1;        
         $this->makeColumns();
+
         foreach ($this->data as $key => $data) {
             if ($this->fpdf->currentLine % 2 != 0) {
                 $this->fpdf->SetFillColor(255, 255, 255);
@@ -184,7 +176,7 @@ class Pdf extends Render
                 $this->fpdf->SetFillColor(224, 224, 224);
             }            
             $this->fpdf->SetX(4);
-            $this->fpdf->Row($data);
+            $this->fpdf->Row($data->getFormatedColumns($this->titles));
             $this->fpdf->currentLine++;
         }        
     }
