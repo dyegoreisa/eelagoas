@@ -1,10 +1,14 @@
 html {
-    font-family: arial;
+    font-family: Arial, Sans-serif;
     font-size: 12px;
 }
 
 body {
     margin: 0;
+}
+
+ul {
+    list-style: none;
 }
 
 img#logo {
@@ -47,6 +51,11 @@ table#report {
     width: 98%;
 }
 
+table#report td {
+    vertical-align: top;
+}
+
+
 div#filter ul {
     list-style-image: none;
     list-style-position: outside;
@@ -56,6 +65,12 @@ div#filter ul {
 table#report th{
     background-color:  #606060;
     color:  white;
+}
+
+ul.body{
+    margin-top: 0px;
+    margin-left: -25px;
+    margin-bottom: 0px;
 }
 
 .align_L {

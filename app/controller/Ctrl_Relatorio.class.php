@@ -51,50 +51,52 @@ class Ctrl_Relatorio extends BaseController
         $this->usuario->pegar();
         $userName = $this->usuario->getData('nome');
 
-        $report = new Report();
-        $result = $report->getResult();
-        $result->setDBH($this->getDBH());
-        $result->setFilters($filtros);
+        $report = new Report(
+            $this->usuario->getData('nome'),
+            $filtros,
+            'Relatório'
+        );
 
-        $report->addColumn('data',                'Data: ',           'L', 1, 30);
-        $report->addColumn('nome_lagoa',          'Lagoa: ',          'L', 1, 60);
-        $report->addColumn('nome_ponto_amostral', 'Ponto Amostral: ', 'L', 1, 50);
-        $report->addColumn('nome_categoria',      'Categoria: ',      'L', 1, 60);
-        $report->addColumn('nome_parametro',      'Parâmetro: ',      'L', 1, 50);
-        $report->addColumn('profundidade',        'Profundidade: ',   'R', 1, 25);
-        $report->addColumn('valor',               'Valor: ',          'R', 1, 15);
+        $process = $report->getProcess();
+        $process->setOrder('
+            data, 
+            nome_lagoa, 
+            nome_ponto_amostral, 
+            nome_categoria, 
+            nome_parametro
+        ');
+
+        $report->addColumn('data',                  'Data: ',            'L', 1, 40);
+        $report->addColumn('nome_projeto',          'Projeto: ',         'L', 1, 40);
+        $report->addColumn('nome_lagoa',            'Lagoa: ',           'L', 1, 40);
+        $report->addColumn('nome_ponto_amostral',   'Ponto Amostral: ',  'L', 1, 45);
+        $report->addColumn('nome_categoria',        'Categoria: ',       'L', 1, 50);
+        $report->addColumn('nome_parametro',        'Parâmetro: ',       'L', 1, 60);
+        $report->addColumn('valor',                 'Valor: ',           'R', 1, 15);
 
         switch ($tipoRelatorio) {
             case 'html':
                 $report->setHtml();
                 $render = $report->getRender();
-                $render->setReportName('Relat&oacute;rio');
                 break;
 
             case 'pdf':
                 $report->setPdf();
                 $render = $report->getRender();
-                $render->setReportName('Relatório');
-                $render->prepareColumns();
                 break;
 
             case 'xls':
                 $report->setXls();
                 $render = $report->getRender();
-                $render->setReportName('Relatório');
-                $render->prepareColumns();
                 break;
 
             default:
                 die('Tipo de relatório não informado.');
         }
 
-
-        //$render->setColumns($columns);
-        $render->setFilters($filtros);
-        $render->setUserName($userName);
         $render->setLists(array(
-            'lagoa'          => $this->lagoa->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
+            'projeto'        => $this->projeto->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
+            'lagoa'          => $this->lagoa->listarSelectAssoc(implode(', ', $filtros['projeto']), array('campo' => 'nome', 'ordem' => 'ASC')),
             'categorias'     => $this->categoria->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
             'parametro'      => $this->parametro->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
             'ponto_amostral' => $this->pontoAmostral->listarSelectAssoc($idLagoas)

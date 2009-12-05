@@ -138,11 +138,13 @@ function novoItemParametroExtra() {
     $('#countItens').val(++countItens);
 
     if ($(this).val() == '+') {
-        origem    = 'interno';
-        idExtra   = $(this).attr('idExtra');
+        origem  = 'interno';
+        idExtra = $(this).attr('idExtra');
     } else {
-        origem    = 'externo';
-        idExtra   = $(this).val();
+        origem  = 'externo';
+        idExtra = $(this).val();
+        $('#add_itens' + thisCount).html('');
+        $('#itens_extra' + thisCount).html('');
     }
 
     var url = dir + '/GerenciarColeta/ajaxNovoItemParametroExtra/' 
@@ -163,7 +165,6 @@ function novoItemParametroExtra() {
             $('#itens_extra' + thisCount).append(conteudo);
         }
     });
-
 }
 
 function removeItemExtra() {

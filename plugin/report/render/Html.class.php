@@ -26,6 +26,10 @@ class Html extends Render
     public function makeFilters()
     {
         $filters = array(
+            'projeto' => $this->makeFilter(array('index'   => 'projeto',
+                                                 'field'   => 'Projetos',
+                                                 'replace' => true)),
+
             'lagoa' => $this->makeFilter(array('index'   => 'lagoa',
                                                'field'   => 'Lagoas',
                                                'replace' => true)),
@@ -41,15 +45,6 @@ class Html extends Render
             'categorias' => $this->makeFilter(array('index'   => 'categorias',
                                                     'field'   => 'Categorias',
                                                     'replace' => true)),
-
-            'data_inicio' => $this->makeFilter(array('index'   =>  'data_inicio',
-                                                     'field'   => 'Inicio',
-                                                     'replace' => false)),
-
-            'data_fim' => $this->makeFilter(array('index'   => 'data_fim',
-                                                  'field'   => 'Fim',
-                                                  'replace' => false))
-
         );
 
         return $filters;
@@ -64,6 +59,10 @@ class Html extends Render
         return $titles;
     }
 
+    public function getReportName()
+    {
+        return htmlentities($this->reportName, ENT_QUOTES, 'UTF-8');
+    }
 
     public function render()
     {

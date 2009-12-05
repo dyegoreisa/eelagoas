@@ -20,3 +20,10 @@ define('CACHE_DIR', '');
 define('REP_LOGO_HTML', LOGO_HTML);
 define('REP_LOGO_PDF', LOGO_PDF);
 define('REP_LOGO_XLS', LOGO_XLS);
+
+
+define('DATA_DRIVER', DB_DRIVER);
+define('DATA_HOST', DB_HOST);
+define('DATA_NAME', DB_NAME);
+define('DATA_USER', DB_USER);
+define('DATA_PASSWD', DB_PASSWD);
