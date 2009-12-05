@@ -1,0 +1,18 @@
+html {
+    font-family: Tahoma,Arial,Helvetica,sans-serif;
+}
+
+div.campo {
+    width: 235px;
+    float: left;
+}
+
+img#logo_principal {
+    float: left;
+}
+
+p#nome_sistema {
+    font-size: 23px;
+    margin: 6px;
+    text-align: center;
+}
