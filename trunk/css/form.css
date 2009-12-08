@@ -163,7 +163,6 @@ form.cmxform fieldset fieldset label {
         width: auto;
 }
 
-form.cmxform label { width: 100px; } /* Width of labels */
 form.cmxform fieldset fieldset label { margin-left: 103px; } /* Width plus 3 (html space) */
 form.cmxform label.error {
         margin-left: 10px;
@@ -177,19 +176,19 @@ form.cmxform input.submit {
 form fieldset#lista_parametros  {
     position: absolute;
     left: 385px;
-    top: 154px;
+    top: 200px;
 }
 
 form fieldset#lista_parametros div.box {
     height: 275px;
-    width: 265px;
+    width: 268px;
     overflow: scroll;
 }
 
 form fieldset#lista_novos_parametros  {
     position: absolute;
     left: 678px;
-    top: 149px;
+    top: 195px;
 }
 
 form fieldset#lista_novos_parametros div.box {

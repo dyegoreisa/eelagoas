@@ -40,48 +40,12 @@
         <li><a href="{$dir}/Relatorio/reportInterface">Relat&oacute;rios</a></li>
         <li><a href="#">Gerenciar</a>
             <ul>
-                <li><a href="{$dir}/GerenciarProjeto/listar">Projeto</a>
-                    <ul>
-                        <li><a href="{$dir}/GerenciarProjeto/editar">cadastrar</a></li>
-                        <li><a href="{$dir}/GerenciarProjeto/buscar">buscar</a></li>
-                        <li><a href="{$dir}/GerenciarProjeto/listar">listar</a></li>
-                    </ul>
-                </li>
-                <li><a href="{$dir}/GerenciarLagoa/listar">Lagoa</a>
-                    <ul>
-                        <li><a href="{$dir}/GerenciarLagoa/editar">cadastrar</a></li>
-                        <li><a href="{$dir}/GerenciarLagoa/buscar">buscar</a></li>
-                        <li><a href="{$dir}/GerenciarLagoa/listar">listar</a></li>
-                    </ul>
-                </li>
-                <li><a href="{$dir}/GerenciarCategoria/listar">Categoria</a>
-                    <ul>
-                        <li><a href="{$dir}/GerenciarCategoria/editar">Cadastrar</a></li>
-                        <li><a href="{$dir}/GerenciarCategoria/buscar">Buscar</a></li>
-                        <li><a href="{$dir}/GerenciarCategoria/listar">Listar</a></li>
-                    </ul>
-                </li>
-                <li><a href="{$dir}/GerenciarParametro/listar">Par&acirc;metro</a>
-                    <ul>
-                        <li><a href="{$dir}/GerenciarParametro/editar">Cadastrar</a></li>
-                        <li><a href="{$dir}/GerenciarParametro/buscar">Buscar</a></li>
-                        <li><a href="{$dir}/GerenciarParametro/listar">Listar</a></li>
-                    </ul>
-                </li>
-                <li><a href="{$dir}/GerenciarEspecie/listar">Esp&eacute;cie</a>
-                    <ul>
-                        <li><a href="{$dir}/GerenciarEspecie/editar">Cadastrar</a></li>
-                        <li><a href="{$dir}/GerenciarEspecie/buscar">Buscar</a></li>
-                        <li><a href="{$dir}/GerenciarEspecie/listar">Listar</a></li>
-                    </ul>
-                </li>
-                <li><a href="{$dir}/GerenciarUsuario/listar">Usu&aacute;rio</a>
-                    <ul>
-                        <li><a href="{$dir}/GerenciarUsuario/editar">Cadastrar</a></li>
-                        <li><a href="{$dir}/GerenciarUsuario/buscar">Buscar</a></li>
-                        <li><a href="{$dir}/GerenciarUsuario/listar">Listar</a></li>
-                    </ul>
-                </li>
+                <li><a href="{$dir}/GerenciarProjeto/listar">Projeto</a></li>
+                <li><a href="{$dir}/GerenciarLagoa/listar">Lagoa</a></li>
+                <li><a href="{$dir}/GerenciarCategoria/listar">Categoria</a></li>
+                <li><a href="{$dir}/GerenciarParametro/listar">Par&acirc;metro</a></li>
+                <li><a href="{$dir}/GerenciarEspecie/listar">Esp&eacute;cie</a></li>
+                <li><a href="{$dir}/GerenciarUsuario/listar">Usu&aacute;rio</a></li>
             </ul>
         <li class="left"><a href="{$dir}/Sessao/sair">Sair</a></li>
     </ul>

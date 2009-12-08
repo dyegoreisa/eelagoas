@@ -2,6 +2,7 @@
 font: bold 12px Tahoma,Arial,Helvetica,sans-serif;
 border-bottom: 1px solid black;
 padding-left: 15px; /*offset of tabs relative to browser left edge*/
+height: 26px;
 }
 
 .jquerycssmenu ul{
@@ -18,7 +19,7 @@ float: left;
 z-index: 1000;
 }
 
-.jquerycssmenu ul li.left:last-child {
+.jquerycssmenu ul li.left {
 position: absolute;
 right: 1%;
 }
