@@ -183,22 +183,25 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         $dbh = $this->getDBH();
         $dbh->beginTransaction();
     
-        if( isset( $_POST['nome_projeto'] ) && !isset( $_POST['id_projeto'] ) ) {
+        if(isset($_POST['nome_projeto']) && $_POST['nome_projeto'] != '') {
 
             $this->projeto->setData( array( 'nome' => $_POST['nome_projeto'] ) );
             $ok_projeto = $this->projeto->inserir();
             ( $ok_projeto ) ? Mensagem::addOk("Projeto salvo") : Mensagem::addErro("Ao salvar Projeto");
 
-        } else {
+        } elseif (isset($_POST['id_projeto']) && $_POST['id_projeto'] != -1) {
 
             $this->projeto->setId( $_POST['id_projeto'] );
             $this->projeto->pegar();
             Mensagem::addOk("Selecionado o projeto " . $this->projeto->getData( 'nome' ));
             $ok_projeto = true;
 
+        } else {
+            $ok_projeto = false;
+            Mensagem::addErro('Campo Projeto está vazio.');
         }
 
-        if( isset( $_POST['nome_lagoa'] ) && !isset( $_POST['id_lagoa'] ) ) {
+        if(isset($_POST['nome_lagoa']) && $_POST['nome_lagoa'] != '') {
 
             $this->lagoa->setData( array( 
                 'nome'       => $_POST['nome_lagoa'],
@@ -207,16 +210,19 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $ok_lagoa = $this->lagoa->inserir();
             ( $ok_lagoa ) ? Mensagem::addOk("Lagoa salva") : Mensagem::addErro("Ao salvar Lagoa");
 
-        } else {
+        } elseif (isset($_POST['id_lagoa']) && $_POST['id_lagoa'] != -1) {
 
             $this->lagoa->setId( $_POST['id_lagoa'] );
             $this->lagoa->pegar();
             Mensagem::addOk("Selecionada a lagoa " . $this->lagoa->getData( 'nome' ));
             $ok_lagoa = true;
 
+        } else {
+            $ok_lagoa = false;
+            Mensagem::addErro('Campo lagoa está vazio.');
         }
 
-        if( isset( $_POST['nome_ponto_amostral'] ) && !isset( $_POST['id_ponto_amostral'] ) ) {
+        if(isset($_POST['nome_ponto_amostral']) && $_POST['nome_ponto_amostral'] != '') {
 
             $this->pontoAmostral->setData( 
                 array( 
@@ -227,16 +233,19 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $ok_pontoAmostal = $this->pontoAmostral->inserir();
             ( $ok_pontoAmostal ) ? Mensagem::addOk("Ponto amostral salvo") : Mensagem::addErro("Ao salvar ponto amostral");
 
-        } else {
+        } elseif (isset($_POST['id_ponto_amostral']) && $_POST['id_ponto_amostral'] != -1) {
 
             $this->pontoAmostral->setId( $_POST['id_ponto_amostral'] );
             $this->pontoAmostral->pegar();
             Mensagem::addOk("Selecionado o ponto amostral " . $this->pontoAmostral->getData( 'nome' ));
             $ok_pontoAmostal = true;
 
+        } else {
+            $ok_pontoAmostal = false;
+            Mensagem::addErro('Campo ponto amostral está vazio.');
         }
 
-        if( isset( $_POST['nome_categoria'] ) && !isset( $_POST['id_categoria'] ) ) { 
+        if(isset($_POST['nome_categoria']) && $_POST['nome_categoria'] != '') { 
 
             $this->categoria->setData( array( 
                 'nome'               => $_POST['nome_categoria'] ,
@@ -245,13 +254,16 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $ok_categoria = $this->categoria->inserir();
             ( $ok_categoria ) ? Mensagem::addOk("Categoria salva") : Mensagem::AddErro("Ao salar categoria");
 
-        } else {
+        } elseif (isset($_POST['id_categoria']) && $_POST['id_categoria'] != -1) {
 
             $this->categoria->setId( $_POST['id_categoria'] );
             $this->categoria->pegar();
             Mensagem::addOk("Selecionada a categoria " . $this->categoria->getData( 'nome' ));
             $ok_categoria = true;
 
+        } else {
+            $ok_categoria = false;
+            Mensagem::addErro('Campo categoria está vazio.');
         }
 
         if( isset( $_POST['id_parametros'] ) && is_array( $_POST['id_parametros'] ) ) {
