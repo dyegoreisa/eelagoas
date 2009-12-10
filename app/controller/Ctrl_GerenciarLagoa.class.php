@@ -138,13 +138,13 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
     public function montarSelect( $idProjeto ) {
         $smarty = $this->getSmarty();
         $smarty->assign( 'select_lagoa', $this->lagoa->listarSelectAssoc( $idProjeto ) );
-        $smarty->displayPiece( 'select_lagoa.tpl' );
+        $smarty->displayPiece( 'select_lagoa.tpl', true );
     }
 
     public function montarMultiSelect( $idProjeto ) {
         $smarty = $this->getSmarty();
         $smarty->assign( 'select_lagoa', $this->lagoa->listarSelectAssoc( $idProjeto ) );
-        $smarty->displayPiece( 'multiselect_lagoa.tpl' );
+        $smarty->displayPiece( 'multiselect_lagoa.tpl', true );
     }
 
     public function montarMultiSelectData($campo, $tipoPeriodo, $idLagoas) {
@@ -152,7 +152,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
 
         $smarty->assign('campo', $campo);
         $smarty->assign('options', $this->lagoa->listarSelectAssocData($campo, $tipoPeriodo, $idLagoas));
-        $smarty->displayPiece( 'multiselect_data.tpl' );
+        $smarty->displayPiece( 'multiselect_data.tpl', true );
     }
 }
 
