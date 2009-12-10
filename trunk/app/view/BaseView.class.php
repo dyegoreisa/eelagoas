@@ -164,8 +164,12 @@ abstract class BaseView extends Smarty{
      * @access public
      * @return void
      */
-    public function displayPiece ( $template ) {
-        $this->display( DIR_PIECES . $template );
+    public function displayPiece ($template, $ajax = false) {
+        if ($ajax) {
+            print mb_convert_encoding($this->fetch(DIR_PIECES . $template), 'UTF-8', 'ISO-8859-1');
+        } else {
+            $this->display( DIR_PIECES . $template );
+        }
     }
 
     /**

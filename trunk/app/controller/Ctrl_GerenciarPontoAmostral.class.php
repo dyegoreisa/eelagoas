@@ -117,13 +117,13 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
     public function montarSelect( $id_lagoa ) {
         $smarty = $this->getSmarty();
         $smarty->assign( 'select_ponto_amostral', $this->pontoAmostral->listarSelectAssoc( $id_lagoa ) );
-        $smarty->displayPiece( 'select_ponto_amostral.tpl' );
+        $smarty->displayPiece( 'select_ponto_amostral.tpl', true );
     }
 
     public function montarMultiSelect($lagoas)
     {
         $smarty = $this->getSmarty();
         $smarty->assign( 'select_ponto_amostral', $this->pontoAmostral->listarSelectAssoc( $lagoas ) );
-        $smarty->displayPiece( 'multiselect_ponto_amostral.tpl' );
+        $smarty->displayPiece( 'multiselect_ponto_amostral.tpl', true );
     }
 }
