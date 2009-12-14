@@ -121,7 +121,7 @@ class Process
         } else {
             $formatoData = "date_format(c.data, '%d/%m/%Y %H') AS data";
         }
-Debug::dump($this->filters, 'filter');
+
         $clausulas     = $this->generateClausula();
         $joinExtraAND  = $clausulas['joinAND'];
         $clausulaWhere = $clausulas['where'];

@@ -20,6 +20,7 @@ define('LOGIN', '/Sessao/login/');
  */
 define('R_DIR', ROOT_FOLDER . '/index.php');
 define('R_SITE', 'http://' . $_SERVER['HTTP_HOST'] . ROOT_FOLDER);
+//define('D_ABSOLUTE', '/home/linksimbolico/www' . ROOT_FOLDER);
 define('D_ABSOLUTE', '/home/dyego/projetos' . ROOT_FOLDER);
 
 /**
@@ -32,7 +33,7 @@ define('DB_NAME',   'linksimbolico');
 define('DB_USER',   'linksimbolico');
 define('DB_PASSWD', 'banco123');
 */
-// Configuração local
+//Configuração local
 define('DB_DRIVER', 'mysql');
 define('DB_HOST',   'localhost');
 define('DB_NAME',   'eelagoas');
@@ -69,21 +70,25 @@ define('LIMIT', 50 );
 /**
  * Diretório da instalação de framework
  */
-
-define('SMARTY_TEMPLATE', '');
-define('FPDF', '');
-define('SPREADSHEET', '');
 /*
 define('SMARTY_TEMPLATE', '/home/linksimbolico/www/api/smarty/');
 define('FPDF', '/home/linksimbolico/www/api/fpdf16/');
 define('SPREADSHEET', '/home/linksimbolico/www/api/Spreadsheet/Excel/');
 */
+define('SMARTY_TEMPLATE', '');
+define('FPDF', '');
+define('SPREADSHEET', '');
 
 /**
  * Logos para os relatórios 
  */
- define('LOGO_SITE', ROOT_FOLDER . '/images/logo_longa.png');
- define('LOGO_HTML', ROOT_FOLDER . '/images/logo.jpg');
- define('LOGO_PDF', 'images/logo.jpg');
- define('LOGO_XLS', 'images/logo.bmp');
+define('LOGO_SITE', ROOT_FOLDER . '/images/logo_longa.png');
+define('LOGO_HTML', ROOT_FOLDER . '/images/logo.jpg');
+define('LOGO_PDF', 'images/logo.jpg');
+define('LOGO_XLS', 'images/logo.bmp');
 
+/**
+ * Define se mostra mensagens de erros do PHP 
+ */
+//define('DISPLAY_ERRORS', 'off');
+define('DISPLAY_ERRORS', 'on');

@@ -102,13 +102,12 @@ class Especie extends BaseModel
 
     public function listarSelectAssoc($parametros, $order = false)
     {
-Debug::dump($parametros, 'parametros');
         if (is_array($parametros)) {
             $listaParametros = implode(', ', $parametros);
         } else {
             $listaParametros = $parametros;
         }
-Debug::dump($listaParametros, 'lista parametros');
+
         $clausOrder = '';
         if( $order ) {
             $clausOrder = " ORDER BY {$order['campo']} {$order['ordem']} ";
