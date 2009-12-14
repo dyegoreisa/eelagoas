@@ -98,4 +98,33 @@ class Especie extends BaseModel
         return $sth->fetchAll();
         
     }
+
+
+    public function listarSelectAssoc($parametros, $order = false)
+    {
+Debug::dump($parametros, 'parametros');
+        if (is_array($parametros)) {
+            $listaParametros = implode(', ', $parametros);
+        } else {
+            $listaParametros = $parametros;
+        }
+Debug::dump($listaParametros, 'lista parametros');
+        $clausOrder = '';
+        if( $order ) {
+            $clausOrder = " ORDER BY {$order['campo']} {$order['ordem']} ";
+        }
+
+        $sth = $this->dbh->prepare("
+            SELECT
+                e.id_especie
+                , e.nome
+            FROM especie e
+            WHERE e.id_parametro IN ($listaParametros)
+            $clausOrder
+        ");
+
+        $sth->execute();
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        return $this->assocArray($sth->fetchAll(), 'id_especie', 'nome');
+    }
 }

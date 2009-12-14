@@ -119,5 +119,20 @@ class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
             $smarty->display( 'error.tpl' );
         }
     }
+
+    public function montarMultiSelectExtra($nomeExtra, $categorias, $lagoas = false) {
+        $smarty = $this->getSmarty();
+
+        $this->categoriaExtra->buscar($nomeExtra);
+
+        $smarty->assign('nomeCampo', $nomeExtra);
+        $smarty->assign('label', $this->categoriaExtra->getData('descricao'));
+        $smarty->assign('select_extra', $this->categoriaExtra->listarSelectAssocExtra($categorias, $lagoas));
+        $smarty->displayPiece("multiselect_categoria_extra.tpl", true );
+    }
+
+    public function temCategoriaExtra($categorias) {
+        $this->getSmarty()->displayJson(array($this->categoriaExtra->temExtra($categorias)));
+    }
 }
 

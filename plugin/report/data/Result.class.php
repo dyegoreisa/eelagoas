@@ -17,15 +17,25 @@ class Result
      */
     private $extras;
 
-    public function __construct(array $column = array()) 
+    public function __construct(array $column = array(), $extras = false) 
     {
         $this->columns = $column;
 
         if (isset($this->columns['id_parametro']) && $this->columns['id_parametro'] != '' &&
             isset($this->columns['tabela'])       && $this->columns['tabela'] != ''
         ) {
+            if ($extras) {
+                if (is_array($extras)) {
+                    $listaExtra = implode(', ', $extras);
+                } else {
+                    $listaExtra = $extras;
+                }
+            } else {
+                $listaExtra = false;
+            }
+
             $process = new Process();
-            $this->extras = $process->getExtrasByParametro($this->columns['id_parametro'], $this->columns['id_coleta'], $this->columns['tabela']);
+            $this->extras = $process->getExtrasByParametro($this->columns['id_parametro'], $this->columns['id_coleta'], $this->columns['tabela'], $listaExtra);
         } else {
             $this->extras = array();
         }

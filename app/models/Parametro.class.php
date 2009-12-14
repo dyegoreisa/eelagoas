@@ -50,7 +50,7 @@ class Parametro extends BaseModel
         return $lista2;
     }
 
-    public function listarSelectAssocEspecie()
+    public function listarSelectAssocExtra()
     {
         $sth = $this->dbh->prepare("
             SELECT 
@@ -64,12 +64,6 @@ class Parametro extends BaseModel
 
         $sth->execute();
         $sth->setFetchMode(PDO::FETCH_ASSOC);
-        $lista = $sth->fetchAll();
-
-        $lista2 = array();
-        foreach($lista as $item ) {
-            $lista2[$item['id_parametro']] = $item['nome'];
-        }
-        return $lista2;
+        return $this->assocArray($sth->fetchAll(), 'id_parametro', 'nome');
     }
 }

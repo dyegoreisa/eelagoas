@@ -33,14 +33,7 @@ class Lagoa extends BaseModel {
 
         $sth->execute();
         $sth->setFetchMode(PDO::FETCH_ASSOC);
-        $lista = $sth->fetchAll();
-
-        $lista2 = array();
-        foreach( $lista as $item ) {
-            $lista2[$item['id_lagoa']] = $item['nome'];
-        }
-
-        return $lista2;
+        return $this->assocArray($sth->fetchAll(), 'id_lagoa', 'nome');
     }
 
     public function listar($order = false) {
@@ -134,7 +127,7 @@ class Lagoa extends BaseModel {
         }
 
         $sth = $this->dbh->prepare("
-            SELECT
+            SELECT DISTINCT
                 $campoSelect
             FROM
                 lagoa l 
@@ -150,13 +143,6 @@ class Lagoa extends BaseModel {
             ':tipoPeriodo' => $tipoPeriodo
         ));
         $sth->setFetchMode(PDO::FETCH_ASSOC);
-        $lista = $sth->fetchAll();
-
-        $lista2 = array();
-        foreach ($lista as $val) {
-            $lista2[$val[$campo]] = ($campo == 'mes') ? $val['nome_mes'] : $val[$campo];
-        }
-
-        return $lista2;
+        return $this->assocArray($sth->fetchAll(), $campo, (($campo == 'mes') ? 'nome_mes' : $campo));
     }
 }

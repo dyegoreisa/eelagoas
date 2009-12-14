@@ -370,9 +370,9 @@ abstract class BaseModel {
             $this->setId( '' );
         } 
         elseif( $row_count == 1 ) {
-            $this->setDataAll( $sth->fetchAll() );
-            $this->setData( $sth->fetch() );
-            $this->setId( $this->getData( $this->getNameId() ) );
+            $this->setData($sth->fetch());
+            $this->setDataAll(array($this->getData()));
+            $this->setId($this->getData( $this->getNameId()));
         }
         else {
             $this->setDataAll( array() );
@@ -398,13 +398,24 @@ abstract class BaseModel {
 
         $sth->execute();
         $sth->setFetchMode(PDO::FETCH_ASSOC);
-        $lista = $sth->fetchAll();
 
+        return $this->assocArray($sth->fetchAll(), $this->nameId, $this->nameDesc);
+    }
+
+    /**
+     * Transforma um array bidimencional em um array associativo
+     * 
+     * @param array $array 
+     * @param int $id 
+     * @param string $name 
+     * @access protected
+     * @return array
+     */
+    protected function assocArray(array $array, $id, $name) {
         $lista2 = array();
-        foreach( $lista as $item ) {
-            $lista2[$item[$this->nameId]] = $item[$this->nameDesc];
+        foreach ($array as $item) {
+            $lista2[$item[$id]] = $item[$name];
         }
-
         return $lista2;
     }
 }

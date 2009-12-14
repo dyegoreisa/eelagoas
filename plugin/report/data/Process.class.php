@@ -35,12 +35,10 @@ class Process
         }
     }
 
-    private function generateWhere()
+    private function generateClausula()
     {
-        Mensagem::begin();
-        Mensagem::setSeparador('<br>');
-
-        $where = array();
+        $joinAND = '';
+        $where   = array();
 
         foreach ($this->filters as $key => $val) {
             switch ($key) {
@@ -93,10 +91,27 @@ class Process
                     $where[] = 'HOUR(c.data) IN (' . implode(',', $val) . ')';
                     break;
 
+                case 'especie':
+                    $joinAND = 'AND cp.id_coleta_parametro IN (
+                                    SELECT DISTINCT
+                                        cpe.id_coleta_parametro
+                                    FROM coleta_parametro_especie cpe 
+                                        JOIN especie e ON e.id_especie = cpe.id_especie
+                                    WHERE e.id_especie IN (' . implode(', ', $val) . ')
+                                )';
+                    break;
+
+                case 'profundidade':
+                    $where[] = "(ce.nome = 'profundidade' AND cp.valor_categoria_extra IN (" . implode(', ', $val) . "))";
+                    break;
+
             }
         }
 
-        return implode(' AND ', $where);
+        $clausulas['joinAND'] = $joinAND;
+        $clausulas['where']   = implode(' AND ', $where);
+        
+        return $clausulas;
     }
 
     public function execute()
@@ -106,8 +121,10 @@ class Process
         } else {
             $formatoData = "date_format(c.data, '%d/%m/%Y %H') AS data";
         }
-
-        $clausulaWhere = $this->generateWhere();
+Debug::dump($this->filters, 'filter');
+        $clausulas     = $this->generateClausula();
+        $joinExtraAND  = $clausulas['joinAND'];
+        $clausulaWhere = $clausulas['where'];
         $order         = $this->getOrder();
 
         $sql = "
@@ -131,9 +148,10 @@ class Process
                     JOIN ponto_amostral pa 	 ON c.id_ponto_amostral = pa.id_ponto_amostral 
                     JOIN categoria ca 		 ON c.id_categoria = ca.id_categoria 
                     JOIN categoria_extra ce  ON ce.id_categoria_extra = ca.id_categoria_extra
-                    JOIN coleta_parametro cp ON c.id_coleta = cp.id_coleta 
+                    JOIN coleta_parametro cp ON c.id_coleta = cp.id_coleta $joinExtraAND
                     JOIN parametro p 		 ON cp.id_parametro = p.id_parametro 
                     JOIN parametro_extra pe  ON pe.id_parametro_extra = p.id_parametro_extra
+                    $joinExtra
             WHERE 
                 $clausulaWhere
             ORDER BY $order
@@ -147,14 +165,23 @@ class Process
 
         $dados = array();
         foreach ($sth->fetchAll() as $val) {
-            $dados[] = new Result($val);
+            $dados[] = new Result($val, $this->filters[$val['tabela']]);
         }
 
         return $dados;
     }
 
-    public function getExtrasByParametro($idParametro, $idColeta, $tabela)
+    public function getExtrasByParametro($idParametro, $idColeta, $tabela, $idExtras = false)
     {
+        $clausulaAnd = '';
+        if ($idExtras) {
+            if (is_array($idExtras)) {
+                $clausulaAnd = " AND e.id_{$tabela} IN (" . implode(', ', $idExtras) . ") ";
+            } else {
+                $clausulaAnd = " AND e.id_{$tabela} IN ({$idExtras}) ";
+            }
+        }
+
         $sth = $this->dbh->prepare("
             SELECT DISTINCT
                 e.id_{$tabela}
@@ -169,6 +196,7 @@ class Process
                 JOIN parametro_extra pe ON pe.id_parametro_extra = p.id_parametro_extra
             WHERE
                 p.id_parametro = ? AND cp.id_coleta = ?
+                {$clausulaAnd}
             ORDER BY e.nome
         ");
 
