@@ -14,11 +14,7 @@ require_once 'app/controller/BaseController.class.php';
 // Plugins
 require_once 'plugin/report/Report.class.php';
 
-if ($_SERVER['SERVER_NAME'] == 'localhost') {
-    ini_set('display_errors', 'on');
-} else {
-    ini_set('display_errors', 'off');
-}
+ini_set('display_errors', DISPLAY_ERRORS);
 
 loadModules(DIR_MODELS);
 loadModules(DIR_CONTROLLER);
