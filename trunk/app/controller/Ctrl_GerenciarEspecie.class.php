@@ -15,7 +15,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
     public function editar( $id = false ) {
         $smarty = $this->getSmarty(); 
 
-        $smarty->assign('select_parametros', $this->parametro->listarSelectAssocEspecie());
+        $smarty->assign('select_parametros', $this->parametro->listarSelectAssocExtra());
 
         if( $id ) {
             $this->especie->setId( $id );

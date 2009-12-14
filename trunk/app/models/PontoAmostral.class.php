@@ -32,14 +32,7 @@ class PontoAmotral extends BaseModel
         ");
 
         $sth->execute();
-
         $sth->setFetchMode(PDO::FETCH_ASSOC);
-        $lista = $sth->fetchAll();
-        $lista2 = array();
-        foreach( $lista as $item ) {
-            $lista2[$item['id_ponto_amostral']] = $item['nome'];
-        }
-
-        return $lista2;
+        return $this->assocArray($sth->fetchAll(), 'id_ponto_amostral', 'nome');
     }
 }

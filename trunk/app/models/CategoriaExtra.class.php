@@ -79,4 +79,61 @@ class CategoriaExtra extends BaseModel {
         $sth->setFetchMode(PDO::FETCH_ASSOC);
         return $sth->fetch();
     }
+
+    public function temExtra($categorias) {
+        if (is_array($categorias)) {
+            $listaCategorias = implode(',', $categorias);
+        } else {
+            $listaCategorias = $categorias;
+        }
+
+        $sth = $this->dbh->prepare("
+            SELECT
+                MAX(ce.tem_valor) AS tem_valor
+            FROM
+                categoria ca 
+                    JOIN categoria_extra ce ON ce.id_categoria_extra = ca.id_categoria_extra 
+            WHERE
+                ca.id_categoria IN ($listaCategorias)
+        ");
+
+        $sth->execute();
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        $rs = $sth->fetch();
+        return ($rs['tem_valor'] == 1) ? true : false;
+    }
+
+    public function listarSelectAssocExtra($categorias, $lagoas = false) {
+        if (is_array($categorias)) {
+            $listaCategorias = implode(', ', $categorias);
+        } else {
+            $listaCategorias = $categorias;
+        }
+
+        if ($lagoas) {    
+            if (is_array($lagoas)) {
+                $clausLagoa = ' AND l.id_lagoa IN (' . implode(', ', $lagoas) . ') ';
+            } else {
+                $clausLagoa = " AND l.id_lagoa IN ({$lagoas}) ";
+            }
+        }
+        
+        $sth = $this->dbh->prepare("
+            SELECT
+                DISTINCT cp.valor_categoria_extra
+            FROM
+                coleta_parametro cp 
+                JOIN coleta c ON c.id_coleta = cp.id_coleta
+                JOIN lagoa l ON l.id_lagoa = c.id_lagoa
+            WHERE
+                valor_categoria_extra IS NOT NULL
+                AND c.id_categoria IN ($listaCategorias)
+                $clausLagoa
+        ");
+
+        $sth->execute();
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        return $this->assocArray($sth->fetchAll(), 'valor_categoria_extra', 'valor_categoria_extra');
+        
+    }
 }

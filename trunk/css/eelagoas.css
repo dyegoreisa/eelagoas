@@ -16,3 +16,7 @@ p#nome_sistema {
     margin: 6px;
     text-align: center;
 }
+
+.escondido {
+    display: none;
+}

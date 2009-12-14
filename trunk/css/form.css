@@ -197,5 +197,10 @@ form fieldset#lista_novos_parametros div.box {
     overflow: scroll;
 }
 
+form fieldset.campo{
+    float:left;
+}
+
 
 /*\*//*/ form.cmxform legend { display: inline-block; } /* IE Mac legend fix */
+

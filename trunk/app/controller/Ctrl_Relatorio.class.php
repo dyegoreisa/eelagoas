@@ -45,11 +45,11 @@ class Ctrl_Relatorio extends BaseController
     {   
         $filtros       = $_POST;
         $tipoRelatorio = $_POST['tipo_relatorio'];
-        $idLagoas      = (isset($_POST['lagoa']) && $_POST['lagoa'] != '') ? implode(',', $_POST['lagoa']) : '';
+        $idProjetos    = (isset($_POST['projeto']) && $_POST['projeto'] != '') ? implode(', ', $_POST['projeto']) : '';
+        $idLagoas      = (isset($_POST['lagoa'])   && $_POST['lagoa']   != '') ? implode(', ', $_POST['lagoa'])   : '';
 
         $this->usuario->setId($_SESSION['id_usuario']);
         $this->usuario->pegar();
-        $userName = $this->usuario->getData('nome');
 
         $report = new Report(
             $this->usuario->getData('nome'),
@@ -96,10 +96,10 @@ class Ctrl_Relatorio extends BaseController
 
         $render->setLists(array(
             'projeto'        => $this->projeto->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
-            'lagoa'          => $this->lagoa->listarSelectAssoc(implode(', ', $filtros['projeto']), array('campo' => 'nome', 'ordem' => 'ASC')),
+            'lagoa'          => $this->lagoa->listarSelectAssoc($idProjetos, array('campo' => 'nome', 'ordem' => 'ASC')),
             'categorias'     => $this->categoria->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
             'parametro'      => $this->parametro->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
-            'ponto_amostral' => $this->pontoAmostral->listarSelectAssoc($idLagoas)
+            'ponto_amostral' => $this->pontoAmostral->listarSelectAssoc($idLagoas, array('campo' => 'nome', 'ordem' => 'ASC'))
         ));
         $render->render();
     }

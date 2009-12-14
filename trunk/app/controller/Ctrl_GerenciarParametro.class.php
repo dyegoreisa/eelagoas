@@ -4,12 +4,14 @@ require_once 'Gerenciar.php';
 class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
     protected $parametro;
     protected $parametroExtra;
+    protected $especie;
 
     public function __construct() {
         parent::__construct();
 
         $this->parametro      = new Parametro( $this->getDBH() );
         $this->parametroExtra = new ParametroExtra( $this->getDBH() );
+        $this->especie        = new Especie($this->getDBH());
     }
 
     public function editar( $id = false ) {
@@ -120,6 +122,22 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
             $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
             $smarty->display( 'error.tpl' );
         }
+    }
+
+    public function montarMultiSelectExtra($nomeExtra, $parametros) {
+        $smarty = $this->getSmarty();
+        $extra = $this->$nomeExtra;
+
+        $this->parametroExtra->buscar($nomeExtra);
+
+        $smarty->assign('nomeCampo', $nomeExtra);
+        $smarty->assign('label', $this->parametroExtra->getData('descricao'));
+        $smarty->assign('select_extra', $extra->listarSelectAssoc($parametros));
+        $smarty->displayPiece("multiselect_extra.tpl", true );
+    }
+
+    public function temParametroExtra($parametros) {
+        $this->getSmarty()->displayJson(array($this->parametroExtra->temExtra($parametros)));
     }
 }
 

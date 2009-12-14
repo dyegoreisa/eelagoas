@@ -1,5 +1,5 @@
 <?php
-//include 'debug.class.php';
+include 'debug.class.php';
 require_once 'config/config.inc.php';
 require_once 'lib/lib.inc.php';
 require_once 'lib/Route.class.php';
@@ -14,8 +14,14 @@ require_once 'app/controller/BaseController.class.php';
 // Plugins
 require_once 'plugin/report/Report.class.php';
 
-loadModules( DIR_MODELS );
-loadModules( DIR_CONTROLLER );
+if ($_SERVER['SERVER_NAME'] == 'localhost') {
+    ini_set('display_errors', 'on');
+} else {
+    ini_set('display_errors', 'off');
+}
+
+loadModules(DIR_MODELS);
+loadModules(DIR_CONTROLLER);
 
 session_start();
 
@@ -28,13 +34,13 @@ $smarty->setFooter();
 $route = new Route();
 $route->setRouteDefault( D_ROUTE );
 
-if( session_id() != @$_SESSION['SID'] ) {
+if (session_id() != @$_SESSION['SID']) {
   $route->setRoute( LOGIN ); 
-  $smarty->setHeader( 'common/header_logoff.tpl' );
+  $smarty->setHeader('common/header_logoff.tpl');
 } else {
-  $smarty->setHeader( 'common/header_logon.tpl' );
+  $smarty->setHeader('common/header_logon.tpl');
 }
 
 $route->prepare();
 
-$route->run( $smarty );
+$route->run($smarty);
