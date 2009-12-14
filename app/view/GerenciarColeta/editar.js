@@ -65,7 +65,9 @@ function novoParametro() {
     }
 
     $('#count').val(++i);
-    
+
+    $('#lista_novos_parametros').removeClass('escondido');
+
     $.get(url, function (conteudo) {
         $("#parametro_inserir").append(conteudo);
     });
@@ -96,6 +98,10 @@ function parametroNovaCategoriaExtra() {
 function removeParametro() {
     var parametro = $(this).attr('alt');
     $("#" + parametro ).remove();
+
+    if ($('#parametro_inserir').html() == '') {
+        $('#lista_novos_parametros').addClass('escondido');
+    }
 }
 
 function carregarLagoa(disabled) {

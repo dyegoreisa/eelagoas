@@ -20,3 +20,8 @@ p#nome_sistema {
 .escondido {
     display: none;
 }
+
+[type=button], [type=submit] {
+    cursor: pointer;
+    null: undefined;
+}

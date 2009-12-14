@@ -100,7 +100,7 @@ $(document).ready(onLoad);
     <br/><br/>
 
     <fieldset id="lista_parametros">
-        <legend>Parametros:</legend>
+        <legend>Parametros: <input type="button" class="novo_item" alt="parametro" value="Novo"></legend>
         <div class="box">
             {foreach from=$select_parametro key=id_parametro item=parametro}
 
@@ -115,8 +115,8 @@ $(document).ready(onLoad);
         </div>
     </fieldset>
 
-    <fieldset id="lista_novos_parametros">
-        <legend>Novos parametros: <input type="button" class="novo_item" alt="parametro" value="Novo"></legend>
+    <fieldset id="lista_novos_parametros" class="escondido">
+        <legend>Novos parametros:</legend>
         <div class="box">
             <span id="parametro_inserir"></span>
         </div>
