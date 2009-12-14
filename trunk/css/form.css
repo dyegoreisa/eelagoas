@@ -112,10 +112,6 @@ select.campo {
     width: 230px;
 }
 
-input.button{
-  
-}
-
 form.cmxform .gray * { color: gray; }
 
 
@@ -188,11 +184,11 @@ form fieldset#lista_parametros div.box {
 form fieldset#lista_novos_parametros  {
     position: absolute;
     left: 678px;
-    top: 195px;
+    top: 205px;
 }
 
 form fieldset#lista_novos_parametros div.box {
-    height: 270px;
+    height: 279px;
     width: 290px;
     overflow: scroll;
 }
