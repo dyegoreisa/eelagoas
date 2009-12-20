@@ -224,9 +224,7 @@ abstract class BaseModel {
     public function gerarUpdate(){
         $sql = "UPDATE {$this->table} SET ";
         foreach( $this->data as $campo => $valor ) {
-            if( $valor !== '' ) {
-                $sql .= $campo . ' = ' . $this->dbh->quote($valor) . ', ';
-            }
+            $sql .= $campo . ' = ' . $this->dbh->quote($valor) . ', ';
         }
         $sql = substr( $sql, 0, -2 );    // Retira a última virgula
 

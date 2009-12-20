@@ -44,27 +44,31 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
                 if( isset( $_POST['id_lagoa'] ) && $_POST['id_lagoa'] != '' ) {
                     $this->lagoa->setId( $_POST['id_lagoa'] );
                     if( $this->lagoa->atualizar() )
-                        $smarty->assign( 'mensagem', 'Lagoa alterada.' );
+                        Mensagem::addOk('Lagoa alterada.' );
                     else
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar o registro.' );
+                        Mensagem::addErro('Não foi possível salvar a lagoa.' );
 
                 } else {
                     if( $this->lagoa->inserir() )
-                        $smarty->assign( 'mensagem', 'Lagoa salva!' );
+                        Mensagem::addOk('Lagoa salva!' );
                     else 
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar a lagoa.' );
+                        Mensagem::addErro('Não foi possível salvar a lagoa.' );
 
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
 
             } catch (Exception $e) {
-                $smarty->assign( 'mensagem', 'Problema ao salvar lagoa.' . $e->getMessage() );
+                Mensagem::addErro('Problema ao salvar lagoa.' . $e->getMessage() );
                 $smarty->displayError();
             }
 
         } else {
-            $smarty->assign( 'mensagem', 'O campo Nome ou Projeto n&atilde;o podem ser vazios.' );
-            $smarty->displaySubMenuHBF( 'editar.tpl' );
+            Mensagem::addErro('O campo Nome ou Projeto não podem ser vazios.' );
+            if (isset($_POST['id_lagoa']) && $_POST['id_lagoa'] != '') {
+                $this->editar($_POST['id_lagoa']);
+            } else {
+                $this->editar();
+            }
         }
     }
 
@@ -108,7 +112,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
-                $smarty->assign('msg', "N&atilde;o foram encontradas informa&ccedil;&otilde;es com a palavra {$dados}");
+                Mensagem::addAtencao('Não foi encontrada nenhuma lagoa.');
                 $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
@@ -123,14 +127,14 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
             if( isset( $id ) && $id != '' ) {
                 $this->lagoa->setId( $id );
                 $this->lagoa->excluir(); 
-                $smarty->assign( 'mensagem', 'Registro excluido.' );
+                Mensagem::addOk('Registro excluido.' );
             } else {
-                $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
+                Mensagem::addErro('Não foi possível excluir a lagoa.');
             }
 
             $smarty->displaySubMenuHBF( 'salvar.tpl' );
         }catch( Exception $e ) {
-            $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
+            Mensagem::addErro('Erro ao tentar exluir um registro.' . $e->getMessage() );
             $smarty->display( 'error.tpl' );
         }
     }

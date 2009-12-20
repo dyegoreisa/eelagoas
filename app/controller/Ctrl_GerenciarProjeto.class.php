@@ -34,27 +34,27 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
                     $this->projeto->setId( $_POST['id_projeto'] );
                     $this->projeto->setData( array( 'nome' => $_POST['nome'] ) );
                     if( $this->projeto->atualizar() )
-                        $smarty->assign( 'mensagem', 'Projeto alterada.' );
+                        Mensagem::addOk('Projeto alterada.' );
                     else
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar o registro.' );
+                        Mensagem::addErro('Não foi possível salvar o registro.' );
 
                 } else {
                     $this->projeto->setData( array( 'nome' => $_POST['nome'] ) );
                     if( $this->projeto->inserir() )
-                        $smarty->assign( 'mensagem', 'Projeto salva!' );
+                        Mensagem::addOk('Projeto salva!' );
                     else 
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar a projeto.' );
+                        Mensagem::addErro('Não foi possível salvar a projeto.' );
 
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
 
             } catch (Exception $e) {
-                $smarty->assign( 'mensagem', 'Problema ao salvar projeto.' . $e->getMessage() );
+                Mensagem::addErro('Problema ao salvar projeto.' . $e->getMessage() );
                 $smarty->display( 'error.tpl' );
             }
 
         } else {
-            $smarty->assign( 'mensagem', 'O campo Nome n&atilde;o pode ser vazio.' );
+            Mensagem::addErro('O campo Nome não pode ser vazio.' );
             $smarty->displaySubMenuHBF( 'editar.tpl' );
         }
     }
@@ -86,7 +86,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
-                $smarty->assign('msg', "N&atilde;o foram encontradas informa&ccedil;&otilde;es com a palavra {$dados}");
+                Mensagem::addAtencao('Não foi encontrador nenhum projeto.');
                 $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
@@ -101,15 +101,15 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
             if( isset( $id ) && $id != '' ) {
                 $this->projeto->setId( $id );
                 $this->projeto->excluir(); 
-                $smarty->assign( 'mensagem', 'Registro excluido.' );
+                Mensagem::addOk('Registro excluido.' );
             } else {
-                $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
+                Mensagem::addErro('Não foi possível excluir o registro.');
             }
 
             $smarty->displaySubMenuHBF( 'salvar.tpl' );
         }catch( Exception $e ) {
-            $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
-            $smarty->display( 'error.tpl' );
+            Mensagem::addErro('Erro ao tentar exluir um registro.' . $e->getMessage() );
+            $smarty->displayError();
         }
     }
 }

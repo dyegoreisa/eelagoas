@@ -10,8 +10,8 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
 
         $dbh = $this->getDBH();
 
-        $this->pontoAmostral    = new PontoAmotral( $dbh );
-        $this->lagoa                    = new Lagoa( $dbh );
+        $this->pontoAmostral = new PontoAmotral( $dbh );
+        $this->lagoa         = new Lagoa( $dbh );
     }
      
     public function editar( $id = false ){
@@ -37,27 +37,27 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
                     $this->pontoAmostral->setId( $_POST['id_ponto_amostral'] );
                     $this->pontoAmostral->setData( array( 'nome' => $_POST['nome'] ) );
                     if( $this->pontoAmostral->atualizar() )
-                        $smarty->assign( 'mensagem', 'Ponto Amostral alterada.' );
+                        Mensagem::addOk('Ponto Amostral alterada.' );
                     else
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar o registro.' );
+                        Mensagem::addErro('Não foi possível salvar o registro.' );
 
                 } else {
                     $this->pontoAmostral->setData( array( 'nome' => $_POST['nome'] ) );
                     if( $this->pontoAmostral->inserir() )
-                        $smarty->assign( 'mensagem', 'Ponto Amostral salva!' );
+                        Mensagem::addOk('Ponto Amostral salva!' );
                     else 
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar a pontoAmostral.' );
+                        Mensagem::addErro('Não foi possível salvar a pontoAmostral.' );
 
                 }
                 $smarty->displayHBF( 'salvar.tpl' );
 
             } catch (Exception $e) {
-                $smarty->assign( 'mensagem', 'Problema ao salvar pontoAmostral.' . $e->getMessage() );
-                $smarty->display( 'error.tpl' );
+                Mensagem::addErro('Problema ao salvar pontoAmostral.' . $e->getMessage() );
+                $smarty->displayError();
             }
 
         } else {
-            $smarty->assign( 'mensagem', 'O campo Nome n&atilde;o pode ser vazio.' );
+            Mensagem::addErro('O campo Nome não pode ser vazio.' );
             $smarty->displayHBF( 'editar.tpl' );
         }
     }
@@ -103,7 +103,7 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
                 $this->listar();
             }
             else {
-                $smarty->assign('msg', "N&atilde;o foram encontradas informa&ccedil;&otilde;es com a palavra {$dados}");
+                Mensagem::addAtencao('Não foi encontrador nenhum ponto amostral.');
                 $smarty->displayHBF('buscar.tpl');
             }
         } else {
@@ -112,6 +112,22 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
     }
 
     public function excluir( $id ){
+        $smarty = $this->getSmarty();
+        
+        try{
+            if( isset( $id ) && $id != '' ) {
+                $this->pontoAmostral->setId( $id );
+                $this->pontoAmostral->excluir(); 
+                Mensagem::addOk('Registro excluido.' );
+            } else {
+                Mensagem::addErro('Não foi possível excluir o registro' );
+            }
+
+            $smarty->displaySubMenuHBF( 'salvar.tpl' );
+        }catch( Exception $e ) {
+            Mensagem::addErro('Erro ao tentar exluir um registro.' . $e->getMessage() );
+            $smarty->displayError();
+        }
     }
 
     public function montarSelect( $id_lagoa ) {

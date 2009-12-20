@@ -1,6 +1,6 @@
 <fieldset>
   <legend>Buscar PontoAmostral</legend>
-  {if $msg neq ""}
-    <p>{$msg}</p>
+  {if $mensagem neq ""}
+    <p>{$mensagem}</p>
   {/if}
 </fieldset>

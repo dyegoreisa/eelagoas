@@ -119,6 +119,7 @@ abstract class BaseView extends Smarty{
      * @return void
      */
     public function displayHBF( $body ) {
+        $this->showMensagem(Mensagem::fetch());
         $this->display( $this->getHeader() );
         $this->display( $this->getTpl() . '/' . $body );
         $this->display( $this->getFooter() );
@@ -127,9 +128,12 @@ abstract class BaseView extends Smarty{
     public function displaySubMenuHBF( $body ) {
         $this->assign('modulo', $this->getTpl());
         $this->assign('submenu', ABSOLUTE_PIECES . '/submenu.tpl');
-        $this->display( $this->getHeader() );
-        $this->display( $this->getTpl() . '/' . $body );
-        $this->display( $this->getFooter() );
+        $this->displayHBF($body);
+    } 
+
+    public function addSubMenuItem(array $itens)
+    {
+        $this->assign('linksSubMenu', $itens);
     }
 
     /**
@@ -140,6 +144,7 @@ abstract class BaseView extends Smarty{
      * @return void
      */
     public function displayError() {
+        $this->showMensagem(Mensagem::fetch());
         $this->display( $this->getHeader() );
         $this->display( 'error.tpl' );
         $this->display( $this->getFooter() );
@@ -195,5 +200,10 @@ abstract class BaseView extends Smarty{
         header("Content-Type: text/html; charset=iso-8859-1");
         header('X-JSON: ' . $json);
         print $json;
+    }
+
+    public function showMensagem($mensagem)
+    {
+        $this->assign('mensagem', $mensagem);
     }
 }
