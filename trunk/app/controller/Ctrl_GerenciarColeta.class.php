@@ -177,9 +177,6 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
     public function salvar() {
         $smarty = $this->getSmarty();
 
-        Mensagem::begin();
-        Mensagem::setSeparador('<br>');
-
         $dbh = $this->getDBH();
         $dbh->beginTransaction();
     
@@ -193,7 +190,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
             $this->projeto->setId( $_POST['id_projeto'] );
             $this->projeto->pegar();
-            Mensagem::addOk("Selecionado o projeto " . $this->projeto->getData( 'nome' ));
+            Mensagem::addOk('Selecionado o projeto ' . $this->projeto->getData( 'nome' ));
             $ok_projeto = true;
 
         } else {
@@ -214,7 +211,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
             $this->lagoa->setId( $_POST['id_lagoa'] );
             $this->lagoa->pegar();
-            Mensagem::addOk("Selecionada a lagoa " . $this->lagoa->getData( 'nome' ));
+            Mensagem::addOk('Selecionada a lagoa ' . $this->lagoa->getData( 'nome' ));
             $ok_lagoa = true;
 
         } else {
@@ -483,8 +480,6 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             Mensagem::addErro("Um dos campos estava em branco: Data, Projeto, Lagoa, Ponto amostral ou categoria");
         }
 
-        $smarty->assign( 'mensagem', Mensagem::fetch() );
-
         $smarty->displayHBF( 'mensagem.tpl' );
     }
 
@@ -536,15 +531,15 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             if( isset( $idColeta ) && $idColeta != '' ) {
                 $this->coleta->setId( $idColeta );
                 $this->coleta->excluir(); 
-                $smarty->assign( 'mensagem', 'Registro excluido.' );
+                Mensagem::addOk('Registro excluido.' );
             } else {
-                $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
+                Mensagem::addErro('Não foi possível excluir o registro' );
             }
 
             $smarty->displayHBF( 'salvar.tpl' );
         }catch( Exception $e ) {
-            $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
-            $smarty->display( 'error.tpl' );
+            Mensagem::addErro('Erro ao tentar exluir um registro.' . $e->getMessage() );
+            $smarty->displayError();
         }
     }
 

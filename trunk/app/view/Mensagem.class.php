@@ -16,32 +16,52 @@ class Mensagem
         self::$mensagensErro    = array();
     }
 
+    public static function setSeparador($separador) {
+        self::$separador = $separador;
+    }
+
+    public static function getSeparador() {
+        if (self::$separador == '') {
+            return '<br/>';
+        } else {
+            return self::$separador;
+        }
+    }
+
     public static function addOk($mensagem) {
-        self::$mensagensOk[] = 'OK: ' .  $mensagem;
+        self::$mensagensOk[] = 'OK: ' .  htmlentities($mensagem);
     }
 
     public static function addAtencao($mensagem) {
-        self::$mensagensAtencao[] = 'ATENÇÃO: ' . $mensagem;
+        self::$mensagensAtencao[] = 'ATEN&Ccedil;&Atilde;O: ' . htmlentities($mensagem);
     }
 
     public static function addErro($mensagem) {
-        self::$mensagensErro[] = 'ERRO: ' . $mensagem;
+        self::$mensagensErro[] = 'ERRO: ' . htmlentities($mensagem);
     }
 
     public static function getOk() {
-        return implode(self::$separador, self::$mensagensOk);
+        if (is_array(self::$mensagensOk)) {
+            return implode(self::getSeparador(), self::$mensagensOk);
+        } else {
+            return '';
+        }
     }
 
     public static function getAtencao() {
-        return implode(self::$separador, self::$mensagensAtencao);
+        if (is_array(self::$mensagensAtencao)) {
+            return implode(self::getSeparador(), self::$mensagensAtencao);
+        } else {
+            return '';
+        }
     }
 
     public static function getErro() {
-        return implode(self::$separador, self::$mensagensErro);
-    }
-
-    public static function setSeparador($separador) {
-        self::$separador = $separador;
+        if (is_array(self::$mensagensErro)) {
+            return implode(self::getSeparador(), self::$mensagensErro);
+        } else {
+            return '';
+        }
     }
 
     public static function fetch() {
@@ -55,7 +75,7 @@ class Mensagem
             if (count(self::$mensagensOk)) {
                 $saida[] = self::getOk();
             }
-            return implode(self::$separador, $saida);
+            return implode(self::getSeparador(), $saida);
         }
     }
 }

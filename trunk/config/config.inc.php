@@ -56,7 +56,6 @@ define('ABSOLUTE_PIECES', D_ABSOLUTE . '/' . DIR_VIEW . '/' . DIR_PIECES);
 /**
  * Define os diretórios do Smarty
  */
-//define('TEMPLATES', 'templates');
 define('TEMPLATES', 'app/view');
 define('COMPILED',  'compiled');
 define('CONFIG',    'config');

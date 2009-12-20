@@ -1,5 +1,8 @@
 <?php
-class Ctrl_Relatorio extends BaseController
+
+require_once 'Relatorio.php';
+
+class Ctrl_Relatorio extends BaseController implements Relatorio
 {
     private $projeto;
     private $lagoa;
@@ -22,7 +25,7 @@ class Ctrl_Relatorio extends BaseController
         $this->usuario       = new Usuario($dbh);
     }
     
-    public function reportInterface()
+    public function search()
     {
         $smarty = $this->getSmarty();
         $smarty->assign( 'select_projeto', $this->projeto->listarSelectAssoc(array(
@@ -41,7 +44,7 @@ class Ctrl_Relatorio extends BaseController
     }
 
 
-    public function reportExecute()
+    public function execute()
     {   
         $filtros       = $_POST;
         $tipoRelatorio = $_POST['tipo_relatorio'];

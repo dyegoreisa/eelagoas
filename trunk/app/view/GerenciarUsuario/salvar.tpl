@@ -1,5 +1,5 @@
 <fieldset>
-{include file=$submenu titulo='Cadastrar Usu&aacute;rio'}
+{include file=$submenu titulo=$titulo}
   <p>{$mensagem}</p>
 </fieldset>
 

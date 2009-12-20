@@ -12,7 +12,7 @@ $(document).ready(onLoad);
 <fieldset>
     <legend>Relat&oacute;rio Configur&aacute;vel</legend>
 
-    <form action="{$dir}/Relatorio/reportExecute" method="POST" class="cmxform" target="_blank" >
+    <form action="{$dir}/Relatorio/execute" method="POST" class="cmxform" target="_blank" >
     
         <table border="0">
             <tr>

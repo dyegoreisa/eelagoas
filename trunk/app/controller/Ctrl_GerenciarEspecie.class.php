@@ -42,26 +42,26 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
                 if( isset( $_POST['id_especie'] ) && $_POST['id_especie'] != '' ) {
                     $this->especie->setId( $_POST['id_especie'] );
                     if( $this->especie->atualizar() )
-                        $smarty->assign( 'mensagem', 'Especie alterada.' );
+                        Mensagem::addOk('Especie alterada.' );
                     else
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar o registro.' );
+                        Mensagem::addErro('Não foi possível salvar o registro.' );
 
                 } else {
                     if( $this->especie->inserir() )
-                        $smarty->assign( 'mensagem', 'Especie salva!' );
+                        Mensagem::addOk('Especie salva!' );
                     else 
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar a especie.' );
+                        Mensagem::addErro('Não foi possível salvar a espécie.' );
 
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
 
             } catch (Exception $e) {
-                $smarty->assign( 'mensagem', 'Problema ao salvar especie.' . $e->getMessage() );
+                Mensagem::addErro('Problema ao salvar especie.' . $e->getMessage() );
                 $smarty->displayError();
             }
 
         } else {
-            $smarty->assign( 'mensagem', 'O campo Nome ou Parametro n&atilde;o podem ser vazios.' );
+            Mensagem::addErro('O campo Nome ou Parametro não podem ser vazios.' );
             $this->editar();
         }
     }
@@ -93,7 +93,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
-                $smarty->assign('msg', "N&atilde;o foram encontradas informa&ccedil;&otilde;es com a palavra {$dados}");
+                Mensagem::addAtencao('Não foi encontrado nehuma categoria.');
                 $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
@@ -108,14 +108,14 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
             if( isset( $id ) && $id != '' ) {
                 $this->especie->setId( $id );
                 $this->especie->excluir(); 
-                $smarty->assign( 'mensagem', 'Registro excluido.' );
+                Mensagem::addOk('Registro excluido.' );
             } else {
-                $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
+                Mensagem::addErro('Não foi possível excluir o registro' );
             }
 
             $smarty->displaySubMenuHBF( 'salvar.tpl' );
         }catch( Exception $e ) {
-            $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
+            Mensagem::addErro('Erro ao tentar exluir um registro.' . $e->getMessage() );
             $smarty->display( 'error.tpl' );
         }
     }

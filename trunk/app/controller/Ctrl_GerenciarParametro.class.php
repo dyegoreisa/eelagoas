@@ -46,26 +46,25 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
                     $this->parametro->setId( $_POST['id_parametro'] );
 
                     if($this->parametro->atualizar()) {
-                        $smarty->assign( 'mensagem', 'Parametro alterado!' );
+                        Mensagem::addOk('Parametro alterado!');
                     } else {
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel atualizar o registro.' );
+                        Mensagem::addErro('Não foi possível atualizar o parametro');
                     }
                 } else {
                     if($this->parametro->inserir()) {
-                        $smarty->assign( 'mensagem', 'Parametro salvo!' );
+                        Mensagem::addOk('Parametro salvo!' );
                     } else {
-                        $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel salvar a parametro.' );
+                        Mensagem::addErro('Não foi possível salvar a parametro.' );
                     }
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
 
             } catch (Exception $e) {
-                $smarty->assign( 'mensagem', 'Problema ao salvar parametro.' . $e->getMessage() );
+                Mensagem::addErro('Problema ao salvar parametro.' . $e->getMessage() );
                 $smarty->displayError();
             }
-
         } else {
-            $smarty->assign( 'mensagem', 'O campo Nome n&atilde;o pode ser vazio.' );
+            Mensagem::addErro('O campo Nome n&atilde;o pode ser vazio.' );
             $this->editar();
         }
     }
@@ -97,7 +96,7 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
-                $smarty->assign('msg', "N&atilde;o foram encontradas informa&ccedil;&otilde;es com a palavra {$dados}");
+                Mensagem::addAtencao('Não foi encontrado nenhum parametro.');
                 $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
@@ -112,14 +111,14 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
             if( isset( $id ) && $id != '' ) {
                 $this->parametro->setId( $id );
                 $this->parametro->excluir(); 
-                $smarty->assign( 'mensagem', 'Registro excluido.' );
+                Mensagem::addOk('Registro excluido.' );
             } else {
-                $smarty->assign( 'mensagem', 'N&atilde;o foi poss&iacute;vel excluir o registro' );
+                Mensagem::addErro('Não foi possível excluir o registro' );
             }
 
             $smarty->displaySubMenuHBF( 'salvar.tpl' );
         }catch( Exception $e ) {
-            $smarty->assign( 'mensagem', 'Erro ao tentar exluir um registro.' . $e->getMessage() );
+            Mensagem::addErro('Erro ao tentar exluir um registro.' . $e->getMessage() );
             $smarty->display( 'error.tpl' );
         }
     }
