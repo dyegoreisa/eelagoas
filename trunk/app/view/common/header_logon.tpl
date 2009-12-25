@@ -48,7 +48,12 @@
                 <li><a href="{$dir}/GerenciarUsuario/listar">Usu&aacute;rio</a></li>
                 <li><a href="{$dir}/GerenciarPerfil/listar">Perfil</a></li>
             </ul>
-        <li class="left"><a href="{$dir}/Sessao/sair">Sair</a></li>
+        <li class="left"><a href="#">{$nomeUsuario|upper} > {$nomePerfil|upper}</a>
+            <ul>
+                <li><a href="{$dir}/GerenciarUsuario/alterarSenha/{$idUsuario}">Alterar senha</a></li>
+                <li><a href="{$dir}/Sessao/sair">Sair</a></li>
+            </ul>
+        </li>
     </ul>
 <br class="jquerycssmenu" />
 </div>

@@ -12,7 +12,7 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
 
     public function editar( $id = false )
     {
-        $smarty = $this->getSmarty(); 
+        $smarty = $this->getSmarty();
 
         if ($id) {
             $this->perfil->setId($id);
@@ -21,6 +21,15 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
             $smarty->assign('perfil', $this->perfil->getData());
         }
 
+        // Plugin
+        $acesso = new Acesso_Acesso();
+        $classes = $acesso->carregarClasses(DIR_CONTROLLER, $this->perfil->getId());
+
+        ksort($classes);
+
+        $smarty->assign('classes', $classes);
+        $smarty->assign('simNao', array('S' => 'Sim', 'N' => 'N&atilde;o'));
+
         $smarty->displaySubMenuHBF('editar.tpl');
     }
     
@@ -28,7 +37,11 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
     {
         $smarty = $this->getSmarty();
 
+        $acesso = new Acesso_Acesso();
+
         if (isset($_POST['nome']) && $_POST['nome'] != '') {
+            $permissoesBrutas = $_POST;
+            unset($permissoesBrutas['nome']);
 
             try {
                 $this->perfil->setData(array('nome' => $_POST['nome']));
@@ -38,6 +51,7 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
                     $this->perfil->setId($_POST['id_perfil']);
 
                     if($this->perfil->atualizar()) {
+                        $acesso->salvarPermissoesDoPerfil($this->perfil->getId(), $this->perfil->getData('nome'), $permissoesBrutas);
                         Mensagem::addOk('Perfil alterado.');
                     } else {
                         Mensagem::addErro('Não foi possível alterar o perfil.');
@@ -45,6 +59,7 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
 
                 } else {
                     if($this->perfil->inserir()) {
+                        $acesso->salvarPermissoesDoPerfil($this->perfil->getId(), $this->perfil->getData('nome'), $permissoesBrutas);
                         Mensagem::addOk('Perfil salvo!');
                     } else {
                         Mensagem::addErro('Não foi possível salvar a perfil.');
@@ -117,5 +132,6 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
             $smarty->display( 'error.tpl' );
         }
     }
+
 }
 
