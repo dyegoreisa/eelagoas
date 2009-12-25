@@ -51,7 +51,7 @@ class Ctrl_Relatorio extends BaseController implements Relatorio
         $idProjetos    = (isset($_POST['projeto']) && $_POST['projeto'] != '') ? implode(', ', $_POST['projeto']) : '';
         $idLagoas      = (isset($_POST['lagoa'])   && $_POST['lagoa']   != '') ? implode(', ', $_POST['lagoa'])   : '';
 
-        $this->usuario->setId($_SESSION['id_usuario']);
+        $this->usuario->setId($_SESSION[$_SESSION['SID']]['idUsuario']);
         $this->usuario->pegar();
 
         $report = new Report(

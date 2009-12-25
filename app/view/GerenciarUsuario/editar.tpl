@@ -33,6 +33,13 @@
     <input type="text" name="email" id="email" value="{$usuario.email}">
     <br/><br/>
 
+    <label for="id_perfil">Perfil:</label><br/>
+    <select name="id_perfil" id="id_perfil">
+        <option value="-1"> -- [Selecione] -- </option>
+        {html_options options=$select_perfis selected=$usuario.id_perfil}
+    </select>
+    <br/><br/>
+
     <br/>
 
     {if $usuario.id_usuario neq ""}

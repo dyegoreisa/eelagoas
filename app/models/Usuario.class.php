@@ -19,9 +19,12 @@ class Usuario extends BaseModel {
         $sth = $this->dbh->prepare('
             SELECT
                 u.id_usuario
+                , u.id_perfil
                 , u.nome
+                , p.nome AS nome_perfil
             FROM
                 usuario u
+                JOIN perfil p ON p.id_perfil = u.id_perfil
             WHERE
                 login = :login 
                 AND senha = md5(:senha)
@@ -49,6 +52,7 @@ class Usuario extends BaseModel {
         $sth = $this->dbh->prepare('
             SELECT
                 u.id_usuario
+                , u.id_perfil
                 , u.nome
             FROM
                 usuario u

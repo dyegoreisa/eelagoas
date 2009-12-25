@@ -23,5 +23,9 @@ p#nome_sistema {
 
 [type=button], [type=submit] {
     cursor: pointer;
-    null: undefined;
+    border-style: outset;
+}
+
+h2.alert {
+    color: red;
 }

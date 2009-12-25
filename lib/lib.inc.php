@@ -28,9 +28,7 @@ function loadModules( $dir ) {
     if ( $dh = opendir( $dir ) ) {
         while ( ( $file = readdir( $dh ) ) !== false ) {
             if( preg_match('/^\w+\.class\.php$/', $file) ) {
-                $eval = "require_once '{$dir}/{$file}';";
-                //debug( $eval, '$eval' );
-                eval($eval);
+                require_once "{$dir}/{$file}";
             }
         }
         closedir($dh);

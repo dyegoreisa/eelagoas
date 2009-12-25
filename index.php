@@ -13,6 +13,7 @@ require_once 'app/controller/BaseController.class.php';
 
 // Plugins
 require_once 'plugin/report/Report.class.php';
+require_once 'plugin/acesso/Acesso.class.php';
 
 ini_set('display_errors', DISPLAY_ERRORS);
 
@@ -26,17 +27,31 @@ $smarty->setRootDirectory(R_DIR);
 $smarty->setLiveSite(R_SITE);
 $smarty->setAbsolutePieces(ABSOLUTE_PIECES);
 $smarty->setFooter();
+$smarty->assign('idUsuario', $_SESSION[$_SESSION['SID']]['idUsuario']);
+$smarty->assign('idPerfil', $_SESSION[$_SESSION['SID']]['idPerfil']);
+$smarty->assign('nomeUsuario', $_SESSION[$_SESSION['SID']]['nomeUsuario']);
+$smarty->assign('nomePerfil', $_SESSION[$_SESSION['SID']]['nomePerfil']);
 
 $route = new Route();
-$route->setRouteDefault( D_ROUTE );
+$route->setRouteDefault(D_ROUTE);
 
 if (session_id() != @$_SESSION['SID']) {
-  $route->setRoute( LOGIN ); 
-  $smarty->setHeader('common/header_logoff.tpl');
+    $route->setRoute(LOGIN); 
+    $smarty->setHeader('common/header_logoff.tpl');
 } else {
-  $smarty->setHeader('common/header_logon.tpl');
+    $smarty->setHeader('common/header_logon.tpl');
 }
 
 $route->prepare();
 
-$route->run($smarty);
+$acesso = new Acesso_Acesso();
+try {
+    $temAcesso = $acesso->perfilTemAcessoAoMetodo($_SESSION[$_SESSION['SID']]['idPerfil'], $route->moduleBase, $route->method);
+    if ($temAcesso == 'N') {
+        $route->setRoute("/Main/negado/{$_SESSION[$_SESSION['SID']]['idPerfil']}/{$route->moduleBase}/{$route->method}");
+    } 
+    $route->run($smarty);
+} catch(Exception $e) {
+    // TODO: Fazer esquema de log para não matar a aplicação
+    die('Erro na aplicação: ' . $e->getMessage());
+}

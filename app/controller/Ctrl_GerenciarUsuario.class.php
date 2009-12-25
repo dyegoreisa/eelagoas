@@ -3,17 +3,20 @@ require_once 'Gerenciar.php';
 
 class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
     protected $usuario;
+    protected $perfil;
+
     protected $subMenu;
 
     public function __construct() {
         parent::__construct();
 
         $this->usuario = new Usuario($this->getDBH());
+        $this->perfil  = new Perfil($this->getDBH());
 
         $this->subMenu = array(
             array(
                 'modulo' => 'GerenciarUsuario',
-                'metodo' => 'alterarSenha/' . $_SESSION['id_usuario'],
+                'metodo' => 'alterarSenha/' . $_SESSION[$_SESSION['SID']]['idUsuario'],
                 'texto'  => 'Alterar Senha'
             )
         );
@@ -27,9 +30,10 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
             $this->usuario->setId( $id );
             $this->usuario->pegar();
 
-            $smarty->assign( 'usuario', $this->usuario->getData() );
+            $smarty->assign('usuario', $this->usuario->getData() );
         }
-        
+
+        $smarty->assign('select_perfis', $this->perfil->listarSelectAssoc());
         $smarty->displaySubMenuHBF('editar.tpl');
     }
 
@@ -37,13 +41,17 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
         $smarty = $this->getSmarty();
         $smarty->addSubMenuItem($this->subMenu);
 
-        if (isset( $_POST['nome'] ) && $_POST['nome'] != '') {
+        if (
+            isset( $_POST['nome'] ) && $_POST['nome'] != '' &&
+            isset( $_POST['id_perfil'] ) && $_POST['id_perfil'] != '-1'
+        ) {
             try {
                 if(isset($_POST['id_usuario']) && $_POST['id_usuario'] != '') {
                     $this->usuario->setId( $_POST['id_usuario'] );
-                    $this->usuario->setData(array( 
-                        'nome'  => $_POST['nome'],
-                        'email' => $_POST['email']
+                    $this->usuario->setData(array(
+                        'id_perfil' => $_POST['id_perfil'],
+                        'nome'      => $_POST['nome'],
+                        'email'     => $_POST['email']
                     ));
 
                     if($this->usuario->atualizar()) {
@@ -59,10 +67,11 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
                         $_POST['senha'] == $_POST['confirma_senha']
                     ) {
                         $this->usuario->setData(array( 
-                            'login' => $_POST['login'],
-                            'nome'  => $_POST['nome'],
-                            'senha' => md5($_POST['senha']),
-                            'email' => $_POST['email']
+                            'id_perfil' => $_POST['id_perfil'],
+                            'login'     => $_POST['login'],
+                            'nome'      => $_POST['nome'],
+                            'senha'     => md5($_POST['senha']),
+                            'email'     => $_POST['email']
                         ));
 
                         if($this->usuario->inserir()) {
