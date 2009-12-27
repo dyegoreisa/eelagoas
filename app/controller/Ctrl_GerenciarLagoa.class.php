@@ -76,6 +76,44 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
         $smarty = $this->getSmarty(); 
         $template = 'listar.tpl';
 
+        $acoes = array(
+            array(
+                'modulo' => 'GerenciarColeta',
+                'metodo' => 'buscar',
+                'param'  => 'id_lagoa/',
+                'alt'    => 'Lista coletas',
+                'texto'  => '[ C ]'
+            ),
+            array(
+                'modulo' => 'GerenciarPontoAmostral',
+                'metodo' => 'buscar',
+                'param'  => 'id_lagoa/',
+                'alt'    => 'Lista pontos amostrais',
+                'texto'  => '[ P ]'
+            ),
+            array(
+                'modulo' => 'GerenciarLagoa',
+                'metodo' => 'editar',
+                'alt'    => 'Altera lagoa',
+                'texto'  => '[ A ]'
+            ),
+            array(
+                'modulo' => 'GerenciarLagoa',
+                'metodo' => 'excluir',
+                'alt'    => 'Exclui lagoa',
+                'texto'  => '[ E ]',
+                'class'  => 'excluir'
+            ),
+            array(
+                'modulo' => 'GerenciarProjeto',
+                'metodo' => 'editar',
+                'alt'    => 'Alterar lagoa'
+            )
+        );
+
+        $permissao = new Permissao();
+        $smarty->assign('acoesLagoa', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+
         if ($idProjeto != -1) {
             $smarty->assign( 'lagoas', $this->lagoa->listarPorProjeto($idProjeto, array(
                 'campo' => 'l.nome',

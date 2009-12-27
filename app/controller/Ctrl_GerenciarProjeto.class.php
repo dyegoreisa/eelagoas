@@ -62,6 +62,31 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
     public function listar() {
         $smarty = $this->getSmarty(); 
 
+        $acoes = array(
+            array(
+                'modulo' => 'GerenciarLagoa',
+                'metodo' => 'listar',
+                'alt'    => 'Listar lagoas',
+                'texto'  => '[ L ]'
+            ),
+            array(
+                'modulo' => 'GerenciarProjeto',
+                'metodo' => 'editar',
+                'alt'    => 'Altera projeto',
+                'texto'  => '[ A ]'
+            ),
+            array(
+                'modulo' => 'GerenciarProjeto',
+                'metodo' => 'excluir',
+                'alt'    => 'Exclui projeto',
+                'texto'  => '[ E ]',
+                'class'  => 'excluir'
+            )
+        );
+
+        $permissao = new Permissao();
+        $smarty->assign('acoesProjeto', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+
         if( $this->projeto->getDataAll() ) {
             $smarty->assign( 'projetos', $this->projeto->getDataAll() );
         } elseif( $this->projeto->getData() ) {

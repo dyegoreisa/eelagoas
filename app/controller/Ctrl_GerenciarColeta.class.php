@@ -486,6 +486,25 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
     public function listar() {
         $smarty = $this->getSmarty();
 
+        $acoes = array(
+            array(
+                'modulo' => 'GerenciarColeta',
+                'metodo' => 'editar',
+                'alt'    => 'Altera coleta',
+                'texto'  => '[ A ]'
+            ),
+            array(
+                'modulo' => 'GerenciarColeta',
+                'metodo' => 'excluir',
+                'alt'    => 'Exclui coleta',
+                'texto'  => '[ E ]',
+                'class'  => 'excluir'
+            )
+        );
+
+        $permissao = new Permissao();
+        $smarty->assign('acoesColeta', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+
         $smarty->assign( 'lagoa', $this->lagoa->getData() ); 
 
         if( $this->coleta->getDataAll() ) {

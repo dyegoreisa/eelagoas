@@ -4,7 +4,8 @@ require_once 'config/config.inc.php';
 require_once 'lib/lib.inc.php';
 require_once 'lib/Route.class.php';
 require_once 'lib/Connection.class.php';
-require_once 'lib/Connection.class.php';
+require_once 'lib/Permissao.class.php';
+require_once 'lib/Menu.class.php';
 require_once 'app/view/BaseView.class.php';
 require_once 'app/view/Template.class.php';
 require_once 'app/view/Mensagem.class.php';
@@ -13,7 +14,6 @@ require_once 'app/controller/BaseController.class.php';
 
 // Plugins
 require_once 'plugin/report/Report.class.php';
-require_once 'plugin/acesso/Acesso.class.php';
 
 ini_set('display_errors', DISPLAY_ERRORS);
 
@@ -42,16 +42,21 @@ if (session_id() != @$_SESSION['SID']) {
     $smarty->setHeader('common/header_logon.tpl');
 }
 
-$route->prepare();
+$permissao = new Permissao();
+$menu      = new Menu($permissao, $_SESSION[$_SESSION['SID']]['idPerfil']);
 
-$acesso = new Acesso_Acesso();
+$smarty->assign('menu', $menu->getMenu(R_SITE . '/index.php'));
+
+$route->prepare();
+$route->setTemplate($smarty);
+
 try {
-    $temAcesso = $acesso->perfilTemAcessoAoMetodo($_SESSION[$_SESSION['SID']]['idPerfil'], $route->moduleBase, $route->method);
+    $temAcesso = $permissao->perfilTemAcessoAoMetodo($_SESSION[$_SESSION['SID']]['idPerfil'], $route->moduleBase, $route->method);
     if ($temAcesso == 'N') {
         $route->setRoute("/Main/negado/{$_SESSION[$_SESSION['SID']]['idPerfil']}/{$route->moduleBase}/{$route->method}");
     } 
-    $route->run($smarty);
+    $route->run();
 } catch(Exception $e) {
     // TODO: Fazer esquema de log para não matar a aplicação
-    die('Erro na aplicação: ' . $e->getMessage());
+    die('Erro na aplicação: <hr>' . $e->getMessage());
 }

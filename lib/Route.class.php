@@ -58,6 +58,14 @@ class Route {
     private $params;
 
     /**
+     * smarty 
+     * 
+     * @var Template
+     * @access private
+     */
+    private $smarty;
+
+    /**
      * __construct 
      * 
      * @access public
@@ -143,10 +151,10 @@ class Route {
      * @access public
      * @return void
      */
-    public function run( Template $smarty ) {
+    public function run() {
         $this->prepare();
         $app = new $this->module;
-        call_user_func_array( array( &$app, 'setSmarty' ), array( $smarty, $this->moduleBase ) );
+        call_user_func_array( array( &$app, 'setSmarty' ), array( $this->smarty, $this->moduleBase ) );
         call_user_func_array( array( &$app, $this->method ), $this->params );
     }
 
@@ -204,5 +212,17 @@ class Route {
             $string = "'" . implode("', '", $this->params) . "'";
         }
         return $string;
+    } 
+
+    /**
+     * setTemplate 
+     * 
+     * @param Template $smarty 
+     * @access public
+     * @return void
+     */
+    public function setTemplate(Template $smarty)
+    {
+        $this->smarty = $smarty;
     }
 }

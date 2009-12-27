@@ -3,8 +3,9 @@
   <ul>
     {foreach from=$parametros item=parametro}
       <li>
-        <a href="{$dir}/GerenciarParametro/editar/{$parametro.id_parametro}" alt="Altera parametro">[ A ]</a>
-        <a href="{$dir}/GerenciarParametro/excluir/{$parametro.id_parametro}" alt="Exclui parametro" class="excluir">[ E ]</a>
+        {foreach from=$acoesParametro item=acao}
+            <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$parametro.id_parametro}" alt="{$acao.alt}" class="{$acao.class}">{$acao.texto}</a>
+        {/foreach}
         {$parametro.nome}
       </li>
     {/foreach}

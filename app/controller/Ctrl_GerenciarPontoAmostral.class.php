@@ -65,6 +65,25 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
     public function listar() {
         $smarty = $this->getSmarty(); 
 
+        $acoes = array(
+            array(
+                'modulo' => 'GerenciarPontoAmostral',
+                'metodo' => 'editar',
+                'alt'    => 'Altera ponto amostral',
+                'texto'  => '[ A ]'
+            ),
+            array(
+                'modulo' => 'GerenciarPontoAmostral',
+                'metodo' => 'excluir',
+                'alt'    => 'Exclui ponto amostral',
+                'texto'  => '[ E ]',
+                'class'  => 'excluir'
+            )
+        );
+
+        $permissao = new Permissao();
+        $smarty->assign('acoesPontoAmostral', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+
         $smarty->assign( 'lagoa', $this->lagoa->getData() );
 
         if( $this->pontoAmostral->getDataAll() ) {
