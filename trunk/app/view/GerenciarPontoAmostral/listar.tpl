@@ -3,8 +3,9 @@
   <ul>
     {foreach from=$pontosAmostrais item=pontoAmostral}
       <li>
-        <a href="{$dir}/GerenciarPontoAmostral/editar/{$pontoAmostral.id_ponto_amostral}" alt="Altera pontoAmostral">[ A ]</a>
-        <a href="{$dir}/GerenciarPontoAmostral/excluir/{$pontoAmostral.id_ponto_amostral}" alt="Exclui pontoAmostral" class="excluir">[ E ]</a>
+        {foreach from=$acoesPontoAmostral item=acao}
+            <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$pontoAmostral.id_ponto_amostral}" alt="{$acao.alt}" class="{$acao.class}">{$acao.texto}</a>
+        {/foreach}
         {$pontoAmostral.nome}
       </li>
     {/foreach}

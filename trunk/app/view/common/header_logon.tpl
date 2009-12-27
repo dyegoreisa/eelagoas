@@ -31,11 +31,13 @@
 </head>
 <body>
 <div>
-    <img src="{$site}/images/logo_principal.jpg" id="logo_principal">
+    <a href="{$site}"><img src="{$site}/images/logo_principal.jpg" id="logo_principal" border="0"></a>
     <p id="nome_sistema">Sistema de cadastro Limnologia UFRJ</p>
 </div>
+<br/>
 <div id="myjquerymenu" class="jquerycssmenu">
     <ul>
+    {*
         <li><a href="{$dir}/GerenciarColeta/editar">Cadastrar Coleta</a></li>
         <li><a href="{$dir}/Relatorio/search">Relat&oacute;rios</a></li>
         <li><a href="#">Gerenciar</a>
@@ -48,6 +50,8 @@
                 <li><a href="{$dir}/GerenciarUsuario/listar">Usu&aacute;rio</a></li>
                 <li><a href="{$dir}/GerenciarPerfil/listar">Perfil</a></li>
             </ul>
+    *}
+        {$menu}
         <li class="left"><a href="#">{$nomeUsuario|upper} > {$nomePerfil|upper}</a>
             <ul>
                 <li><a href="{$dir}/GerenciarUsuario/alterarSenha/{$idUsuario}">Alterar senha</a></li>

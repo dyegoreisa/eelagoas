@@ -69,6 +69,30 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
     public function listar() {
         $smarty = $this->getSmarty(); 
 
+        $acoes = array(
+            array(
+                'modulo' => 'GerenciarEspecie',
+                'metodo' => 'editar',
+                'alt'    => 'Altera especie',
+                'texto'  => '[ A ]'
+            ),
+            array(
+                'modulo' => 'GerenciarEspecie',
+                'metodo' => 'excluir',
+                'alt'    => 'Exclui especie',
+                'texto'  => '[ E ]',
+                'class'  => 'excluir'
+            ),
+            array(
+                'modulo' => 'GerenciarParametro',
+                'metodo' => 'editar',
+                'alt'    => 'Altera parametro',
+            )
+        );
+
+        $permissao = new Permissao();
+        $smarty->assign('acoesEspecie', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+
         if( $this->especie->getDataAll() ) {
             $smarty->assign( 'especies', $this->especie->getDataAll() );
         } elseif( $this->especie->getData() ) {

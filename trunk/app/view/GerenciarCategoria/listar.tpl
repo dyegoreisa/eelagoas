@@ -3,8 +3,9 @@
   <ul>
     {foreach from=$categorias item=categoria}
       <li>
-        <a href="{$dir}/GerenciarCategoria/editar/{$categoria.id_categoria}" alt="Altera categoria">[ A ]</a>
-        <a href="{$dir}/GerenciarCategoria/excluir/{$categoria.id_categoria}" alt="Exclui categoria" class="excluir">[ E ]</a>
+        {foreach from=$acoesCategoria item=acao}
+            <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$categoria.id_categoria}" alt="{$acao.alt}" class="{$acao.class}">{$acao.texto}</a>
+        {/foreach}
         {$categoria.nome}
       </li>
     {/foreach}

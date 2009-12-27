@@ -19,11 +19,11 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
             $this->perfil->pegar();
 
             $smarty->assign('perfil', $this->perfil->getData());
+            $classes = $this->perfil->carregarClasses(DIR_CONTROLLER, true);
+        } else {
+            $classes = $this->perfil->carregarClasses(DIR_CONTROLLER, false);
         }
 
-        // Plugin
-        $acesso = new Acesso_Acesso();
-        $classes = $acesso->carregarClasses(DIR_CONTROLLER, $this->perfil->getId());
 
         ksort($classes);
 
@@ -37,8 +37,6 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
     {
         $smarty = $this->getSmarty();
 
-        $acesso = new Acesso_Acesso();
-
         if (isset($_POST['nome']) && $_POST['nome'] != '') {
             $permissoesBrutas = $_POST;
             unset($permissoesBrutas['nome']);
@@ -51,15 +49,14 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
                     $this->perfil->setId($_POST['id_perfil']);
 
                     if($this->perfil->atualizar()) {
-                        $acesso->salvarPermissoesDoPerfil($this->perfil->getId(), $this->perfil->getData('nome'), $permissoesBrutas);
+                        $this->perfil->salvarPermissoesDoPerfil($permissoesBrutas);
                         Mensagem::addOk('Perfil alterado.');
                     } else {
                         Mensagem::addErro('Não foi possível alterar o perfil.');
                     }
-
                 } else {
                     if($this->perfil->inserir()) {
-                        $acesso->salvarPermissoesDoPerfil($this->perfil->getId(), $this->perfil->getData('nome'), $permissoesBrutas);
+                        $this->perfil->salvarPermissoesDoPerfil($permissoesBrutas);
                         Mensagem::addOk('Perfil salvo!');
                     } else {
                         Mensagem::addErro('Não foi possível salvar a perfil.');
@@ -80,6 +77,26 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
     public function listar()
     {
         $smarty = $this->getSmarty(); 
+
+        $acoes = array(
+            array(
+                'modulo' => 'GerenciarPerfil',
+                'metodo' => 'editar',
+                'alt'    => 'Altera perfil',
+                'texto'  => '[ A ]'
+            ),
+            array(
+                'modulo' => 'GerenciarPerfil',
+                'metodo' => 'excluir',
+                'alt'    => 'Exclui perfil',
+                'texto'  => '[ E ]',
+                'class'  => 'excluir'
+            )
+        );
+
+        $permissao = new Permissao();
+        $smarty->assign('acoesPerfil', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+
         if($this->perfil->getDataAll()) {
             $smarty->assign('perfis', $this->perfil->getDataAll());
         } elseif($this->perfil->getData()) {

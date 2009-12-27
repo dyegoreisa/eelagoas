@@ -3,9 +3,13 @@
   <ul>
     {foreach from=$especies item=especie}
       <li>
-        <a href="{$dir}/GerenciarEspecie/editar/{$especie.id_especie}" alt="Altera especie">[ A ]</a>
-        <a href="{$dir}/GerenciarEspecie/excluir/{$especie.id_especie}" alt="Exclui especie" class="excluir">[ E ]</a>
-        <a href="{$dir}/GerenciarParametro/editar/{$especie.id_parametro}" alt="Alterar parametro" >[ {$especie.nome_parametro} ]</a>
+        {foreach from=$acoesEspecie item=acao}
+            {if $acao.modulo eq 'GerenciarParametro'}
+                <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$especie.id_parametro}" alt="{$acao.alt}" >[ {$especie.nome_parametro} ]</a>
+            {else}
+                <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$especie.id_especie}" alt="{$acao.alt}" class="{$acao.class}">{$acao.texto}</a>
+            {/if}
+        {/foreach}
         {$especie.nome}
       </li>
     {/foreach}

@@ -104,6 +104,25 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
         $smarty = $this->getSmarty(); 
         $smarty->addSubMenuItem($this->subMenu);
 
+        $acoes = array(
+            array(
+                'modulo' => 'GerenciarUsuario',
+                'metodo' => 'editar',
+                'alt'    => 'Altera usuario',
+                'texto'  => '[ A ]'
+            ),
+            array(
+                'modulo' => 'GerenciarUsuario',
+                'metodo' => 'excluir',
+                'alt'    => 'Exclui usuario',
+                'texto'  => '[ E ]',
+                'class'  => 'excluir'
+            )
+        );
+
+        $permissao = new Permissao();
+        $smarty->assign('acoesUsuario', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+
         if( $this->usuario->getDataAll() ) {
             $smarty->assign( 'usuarios', $this->usuario->getDataAll() );
         } elseif( $this->usuario->getData() ) {
