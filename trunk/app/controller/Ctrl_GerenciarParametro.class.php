@@ -129,8 +129,11 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
         try{
             if( isset( $id ) && $id != '' ) {
                 $this->parametro->setId( $id );
-                $this->parametro->excluir(); 
-                Mensagem::addOk('Registro excluido.' );
+                if ($this->parametro->excluir()) {
+                    Mensagem::addOk('Registro excluido.' );
+                } else {
+                    Mensagem::addErro('Não foi possível excluir o registro' );
+                }
             } else {
                 Mensagem::addErro('Não foi possível excluir o registro' );
             }

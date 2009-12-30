@@ -125,8 +125,11 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
         try{
             if( isset( $id ) && $id != '' ) {
                 $this->projeto->setId( $id );
-                $this->projeto->excluir(); 
-                Mensagem::addOk('Registro excluido.' );
+                if ($this->projeto->excluir()) {
+                    Mensagem::addOk('Registro excluido.' );
+                } else {
+                    Mensagem::addErro('Não foi possível excluir o registro.');
+                }
             } else {
                 Mensagem::addErro('Não foi possível excluir o registro.');
             }

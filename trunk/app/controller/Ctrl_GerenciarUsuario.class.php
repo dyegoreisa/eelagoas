@@ -163,8 +163,11 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
         try{
             if( isset( $id ) && $id != '' ) {
                 $this->usuario->setId( $id );
-                $this->usuario->excluir(); 
-                Mensagem::addOk('Registro excluido.');
+                if ($this->usuario->excluir()) { 
+                    Mensagem::addOk('Registro excluido.');
+                } else {
+                    Mensagem::addErro('Não foi possível excluir o registro');
+                }
             } else {
                 Mensagem::addErro('Não foi possível excluir o registro');
             }

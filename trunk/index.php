@@ -6,11 +6,11 @@ require_once 'lib/Route.class.php';
 require_once 'lib/Connection.class.php';
 require_once 'lib/Permissao.class.php';
 require_once 'lib/Menu.class.php';
-require_once 'app/view/BaseView.class.php';
+require_once 'lib/BaseView.class.php';
+require_once 'lib/BaseModel.class.php';
+require_once 'lib/BaseController.class.php';
 require_once 'app/view/Template.class.php';
 require_once 'app/view/Mensagem.class.php';
-require_once 'app/models/BaseModel.class.php';
-require_once 'app/controller/BaseController.class.php';
 
 // Plugins
 require_once 'plugin/report/Report.class.php';
@@ -56,7 +56,22 @@ try {
         $route->setRoute("/Main/negado/{$_SESSION[$_SESSION['SID']]['idPerfil']}/{$route->moduleBase}/{$route->method}");
     } 
     $route->run();
+} catch(ReflectionException $re) {
+    switch ($re->getCode()) {
+        case '0':
+            Mensagem::addErro('Url incorreta.');
+            break;
+        case '-1':
+            Mensagem::addErro('Url incorreta.');
+            break;
+        default:
+            Mensagem::addErro('Na aplicação.');
+            break;
+    }
+    $route->setRoute('/Main/run');
+    $route->run();
 } catch(Exception $e) {
-    // TODO: Fazer esquema de log para não matar a aplicação
-    die('Erro na aplicação: <hr>' . $e->getMessage());
+    Mensagem::addErro($e->getMessage());
+    $route->setRoute('/Main/run');
+    $route->run();
 }

@@ -549,8 +549,11 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         try{
             if( isset( $idColeta ) && $idColeta != '' ) {
                 $this->coleta->setId( $idColeta );
-                $this->coleta->excluir(); 
-                Mensagem::addOk('Registro excluido.' );
+                if ($this->coleta->excluir()) {
+                    Mensagem::addOk('Registro excluido.' );
+                } else {
+                    Mensagem::addErro('Não foi possível excluir o registro' );
+                }
             } else {
                 Mensagem::addErro('Não foi possível excluir o registro' );
             }

@@ -154,8 +154,16 @@ class Route {
     public function run() {
         $this->prepare();
         $app = new $this->module;
-        call_user_func_array( array( &$app, 'setSmarty' ), array( $this->smarty, $this->moduleBase ) );
-        call_user_func_array( array( &$app, $this->method ), $this->params );
+        $app->setSmarty($this->smarty, $this->moduleBase);
+
+        $refMethod = new ReflectionMethod($app, $this->method);
+        if (is_array($this->params)) {
+            $refMethod->invokeArgs($app, $this->params);
+        } else {
+            $refMethod->invoke($app);
+        }
+
+
     }
 
     /**

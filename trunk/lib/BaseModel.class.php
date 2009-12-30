@@ -102,11 +102,10 @@ abstract class BaseModel {
      */
     public function inserir() {
         $sql = $this->gerarInsert();
-        //debug( $sql, '$sql' );
         $ok = $this->dbh->exec( $sql );
         if( $this->dbh->errorCode() != 00000 ) {
             $e = $this->dbh->errorInfo();
-            throw new Exception( "<hr>{$e[2]}<br><br><strong>SQL:</strong> {$sql}<hr>" );
+            throw new Exception( "<hr>{$e[2]}<hr>" );
         }
 
         if( $ok ) {
@@ -165,7 +164,6 @@ abstract class BaseModel {
         $sql .= ' LIMIT ' . LIMIT;
 
         $sth = $this->dbh->prepare( $sql );
-        //$sth->debugDumpParams(); //DEBUG 
         $sth->execute();
 
         return $sth->fetchAll();
@@ -185,7 +183,7 @@ abstract class BaseModel {
         $sth->execute( array( ':value' => $this->id ) );
         if( $sth->errorCode() != 00000 ) {
             $e = $sth->errorInfo();
-            throw new Exception( "<hr>{$e[2]}<br><br><strong>SQL:</strong> {$sql}<hr>" );
+            throw new Exception( "<hr>{$e[2]}<hr>" );
         }
 
         $this->data = $sth->fetch();
@@ -202,12 +200,11 @@ abstract class BaseModel {
      */
     public function atualizar(){
         $sql = $this->gerarUpdate();
-        //debug( $sql, 'SQL UPDATE gerado');
 
         $ok = $this->dbh->exec( $sql );
         if( $this->dbh->errorCode() != 00000 ) {
             $e = $this->dbh->errorInfo();
-            throw new Exception( "<hr>{$e[2]}<br><br><strong>SQL:</strong> {$sql}<hr>" );
+            throw new Exception( "<hr>{$e[2]}<hr>" );
         } else {
             $ok = true;
         }
@@ -228,7 +225,7 @@ abstract class BaseModel {
         }
         $sql = substr( $sql, 0, -2 );    // Retira a última virgula
 
-        $sql .= " WHERE {$this->nameId} = {$this->id}";
+        $sql .= " WHERE {$this->nameId} = " . $this->dbh->quote($this->id) . " ";
 
         return $sql;
     }
@@ -240,14 +237,22 @@ abstract class BaseModel {
      * @return void
      */
     public function excluir(){
-        $sql = "DELETE FROM {$this->table} WHERE {$this->nameId} = {$this->id}";
-        $ok = $this->dbh->exec( $sql );
+        $this->dbh->beginTransaction();
+        $sth = $this->dbh->prepare("DELETE FROM {$this->table} WHERE {$this->nameId} = ?");
+        $sth->execute(array($this->id));
+        $sth->rowCount();
         if( $this->dbh->errorCode() != 00000 ) {
             $e = $this->dbh->errorInfo();
-            throw new Exception( "<hr>{$e[2]}<br><br><strong>SQL:</strong> {$sql}<hr>" );
+            throw new Exception( "<hr>{$e[2]}<br>" );
         }
-
-        return ($ok) ? true : false;
+        
+        if ($sth->rowCount() == 1) {
+            $this->dbh->commit();
+            return true;
+        } else {
+            $this->dbh->rollBack();
+            return false;
+        }
     }
 
     /**
@@ -358,7 +363,7 @@ abstract class BaseModel {
         //$sth->debugDumpParams(); // DEBUG 
         if( $sth->errorCode() != 00000 ) {
             $e = $sth->errorInfo();
-            throw new Exception( "<hr>{$e[4]}<br><br><strong>SQL:</strong> {$sql}<hr>" );
+            throw new Exception( "<hr>{$e[4]}<hr>" );
         }
 
         $row_count = $sth->rowCount();

@@ -131,8 +131,11 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
         try{
             if( isset( $id ) && $id != '' ) {
                 $this->especie->setId( $id );
-                $this->especie->excluir(); 
-                Mensagem::addOk('Registro excluido.' );
+                if ($this->especie->excluir()) {
+                    Mensagem::addOk('Registro excluido.' );
+                } else {
+                    Mensagem::addErro('Não foi possível excluir o registro' );
+                }
             } else {
                 Mensagem::addErro('Não foi possível excluir o registro' );
             }

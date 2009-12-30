@@ -49,13 +49,11 @@ class ColetaParametro extends BaseModel {
     }
 
     public function excluir( $idColeta ){
-        $sql = "DELETE FROM coleta_parametro WHERE id_coleta = {$idColeta}";
-        $ok = $this->dbh->exec( $sql );
+        $sth = $this->dbh->prepare('DELETE FROM coleta_parametro WHERE id_coleta = ?');
+        $sth->execute(array($idColeta));
         if( $this->dbh->errorCode() != 00000 ) {
             $e = $this->dbh->errorInfo();
-            throw new Exception( "<hr>{$e[2]}<br>SQL: {$sql}<hr>" );
+            throw new Exception( "<hr>{$e[2]}<hr>" );
         }
-
-        return ($ok) ? true : false;
     }
 }

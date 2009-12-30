@@ -136,8 +136,11 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
         try{
             if( isset( $id ) && $id != '' ) {
                 $this->pontoAmostral->setId( $id );
-                $this->pontoAmostral->excluir(); 
-                Mensagem::addOk('Registro excluido.' );
+                if ($this->pontoAmostral->excluir()) {
+                    Mensagem::addOk('Registro excluido.' );
+                } else {
+                    Mensagem::addErro('Não foi possível excluir o registro' );
+                }
             } else {
                 Mensagem::addErro('Não foi possível excluir o registro' );
             }
