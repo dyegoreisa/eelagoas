@@ -164,8 +164,11 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
         try{
             if( isset( $id ) && $id != '' ) {
                 $this->lagoa->setId( $id );
-                $this->lagoa->excluir(); 
-                Mensagem::addOk('Registro excluido.' );
+                if ($this->lagoa->excluir()) {
+                    Mensagem::addOk('Registro excluido.' );
+                } else {
+                    Mensagem::addErro('Não foi possível excluir a lagoa.');
+                }
             } else {
                 Mensagem::addErro('Não foi possível excluir a lagoa.');
             }

@@ -126,8 +126,11 @@ class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
         try{
             if( isset( $id ) && $id != '' ) {
                 $this->categoria->setId( $id );
-                $this->categoria->excluir(); 
-                Mensagem::addOk('Registro excluido.' );
+                if ($this->categoria->excluir()) { 
+                    Mensagem::addOk('Registro excluido.' );
+                } else {
+                    Mensagem::addErro('Não foi possível excluir o registro' );
+                }
             } else {
                 Mensagem::addErro('Não foi possível excluir o registro' );
             }
