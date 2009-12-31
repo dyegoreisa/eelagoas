@@ -1,11 +1,11 @@
 <fieldset>
 {include file=$submenu titulo='Lista de projetos'}
-    <ul>
+    <ul class="lista">
     {foreach from=$projetos item=projeto}
-        <li>
-            {foreach from=$acoesProjeto item=acao}
-                <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$projeto.id_projeto}" alt="{$acao.alt}" class="{$acao.class}">{$acao.texto}</a>
-            {/foreach}
+        <li class="{cycle values="par, impar"}">
+            {assign var="tplPieace" value="acoes_lista.tpl"}
+            {assign var="id" value=$projeto.id_projeto}
+            {include file=$pieces$tplPieace}
             {$projeto.nome}
         </li>
     {/foreach}

@@ -6,14 +6,16 @@ class ItemMenu
     private $modulo;
     private $metodo;
     private $acesso;
+    private $icone;
     private $itensMenu;
 
-    public function __construct(Permissao $permissao, $idPerfil, $texto, $modulo = null, $metodo = null, array $itensMenu = array())
+    public function __construct(Permissao $permissao, $idPerfil, $texto, $modulo = null, $metodo = null, array $itensMenu = array(), $icone = '')
     {
         $this->permissao = $permissao;
         $this->texto     = $texto;
         $this->modulo    = $modulo;
         $this->metodo    = $metodo;
+        $this->icone     = $icone;
         $this->itensMenu = $itensMenu;
 
         if (isset($modulo) && isset($metodo)) {

@@ -74,19 +74,21 @@ class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
                 'modulo' => 'GerenciarCategoria',
                 'metodo' => 'editar',
                 'alt'    => 'Altera categoria',
-                'texto'  => '[ A ]'
+                'texto'  => '[ A ]',
+                'icone'  => 'editar.png'
             ),
             array(
                 'modulo' => 'GerenciarCategoria',
                 'metodo' => 'excluir',
                 'alt'    => 'Exclui categoria',
                 'texto'  => '[ E ]',
-                'class'  => 'excluir'
+                'class'  => 'excluir',
+                'icone'  => 'excluir.png'
             )
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesCategoria', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
 
         if( $this->categoria->getDataAll() ) {
             $smarty->assign( 'categorias', $this->categoria->getDataAll() );

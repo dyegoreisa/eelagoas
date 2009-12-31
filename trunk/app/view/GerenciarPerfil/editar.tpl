@@ -12,22 +12,21 @@
 
     <fieldset>
         <legend>Permiss&otilde;es</legend>
-        <ul>
+        <table class="grid" border="0">
             {foreach from=$classes item=classe}
-            <li>{$classe.modulo}
-                <ul>
-                    {foreach from=$classe.metodos key=metodo item=acesso}
-                    <li>
-                        {$metodo}:
-                        <select name="{$classe.class}_{$metodo}">
-                            {html_options options=$simNao selected=$acesso}
-                        </select>
-                    </li>
-                    {/foreach}
-                </ul>
-            </li>
+                <tr><th colspan="2">{$classe.modulo}</th></tr>
+                {foreach from=$classe.metodos key=metodo item=acesso}
+                    <tr>
+                        <td>{$metodo}:</td>
+                        <td>
+                            <select name="{$classe.class}_{$metodo}">
+                                {html_options options=$simNao selected=$acesso}
+                            </select>
+                        </td>
+                    </td></tr>
+                {/foreach}
             {/foreach}
-        </ul>
+        </table>
     </fieldset>
 
     <br/>

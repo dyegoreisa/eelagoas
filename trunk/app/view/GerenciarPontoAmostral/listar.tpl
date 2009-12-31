@@ -1,11 +1,11 @@
 <fieldset>
   <legend>Lista de pontos amostrais {$lagoa.nome}</legend>
-  <ul>
+  <ul class="lista">
     {foreach from=$pontosAmostrais item=pontoAmostral}
-      <li>
-        {foreach from=$acoesPontoAmostral item=acao}
-            <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$pontoAmostral.id_ponto_amostral}" alt="{$acao.alt}" class="{$acao.class}">{$acao.texto}</a>
-        {/foreach}
+      <li class="{cycle values="par, impar"}">
+        {assign var="tplPieace" value="acoes_lista.tpl"}
+        {assign var="id" value=$pontoAmostral.id_ponto_amostral}
+        {include file=$pieces$tplPieace}
         {$pontoAmostral.nome}
       </li>
     {/foreach}

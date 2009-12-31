@@ -66,7 +66,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
         }
     }
 
-    public function listar() {
+    public function listar($idParametro = '-1') {
         $smarty = $this->getSmarty(); 
 
         $acoes = array(
@@ -74,14 +74,16 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
                 'modulo' => 'GerenciarEspecie',
                 'metodo' => 'editar',
                 'alt'    => 'Altera especie',
-                'texto'  => '[ A ]'
+                'texto'  => '[ A ]',
+                'icone'  => 'editar.png'
             ),
             array(
                 'modulo' => 'GerenciarEspecie',
                 'metodo' => 'excluir',
                 'alt'    => 'Exclui especie',
                 'texto'  => '[ E ]',
-                'class'  => 'excluir'
+                'class'  => 'excluir',
+                'icone'  => 'excluir.png'
             ),
             array(
                 'modulo' => 'GerenciarParametro',
@@ -91,9 +93,20 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesEspecie', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
 
-        if( $this->especie->getDataAll() ) {
+        if ($idParametro != -1) {
+            $listaEspecies = $this->especie->listarPorParametro($idParametro, array(
+                'campo' => 'e.nome',
+                'ordem' => 'ASC'
+            ));
+            if (count($listaEspecies) < 1) {
+                Mensagem::addAtencao(mb_convert_encoding('Não foram encontradas especie para essa composição.', 'latin1', 'UTF-8'));
+            }
+            
+            $smarty->assign( 'especies', $listaEspecies);
+            $template = 'listarPorProjeto.tpl';
+        } else if( $this->especie->getDataAll() ) {
             $smarty->assign( 'especies', $this->especie->getDataAll() );
         } elseif( $this->especie->getData() ) {
             $smarty->assign( 'especies', array ( $this->especie->getData() ) );
@@ -104,7 +117,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
         $smarty->displaySubMenuHBF( 'listar.tpl' );
     }
 
-    public function buscar( $dados = false ) {
+    public function buscar($campos = '', $dados = false) {
         $smarty = $this->getSmarty();
 
         if( $dados || isset( $_REQUEST['dados'] ) && $_REQUEST['dados'] != '' ) {
@@ -112,7 +125,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
                 $dados = $_REQUEST['dados'];
             }
 
-            $num_linhas = $this->especie->buscar( $dados );
+            $num_linhas = $this->especie->buscar( $dados, $campos);
 
             if( $num_linhas > 0 ) {
                 $this->listar();

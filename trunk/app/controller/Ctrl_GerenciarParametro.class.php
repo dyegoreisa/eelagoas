@@ -74,22 +74,31 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
 
         $acoes = array(
             array(
+                'modulo' => 'GerenciarEspecie',
+                'metodo' => 'listar',
+                'alt'    => 'Listar especie',
+                'texto'  => '[ Es ]',
+                'icone'  => 'especie.png'
+            ),
+            array(
                 'modulo' => 'GerenciarParametro',
                 'metodo' => 'editar',
                 'alt'    => 'Altera parametro',
-                'texto'  => '[ A ]'
+                'texto'  => '[ A ]',
+                'icone'  => 'editar.png'
             ),
             array(
                 'modulo' => 'GerenciarParametro',
                 'metodo' => 'excluir',
                 'alt'    => 'Exclui parametro',
                 'texto'  => '[ E ]',
-                'class'  => 'excluir'
+                'class'  => 'excluir',
+                'icone'  => 'excluir.png'
             )
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesParametro', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
 
         if( $this->parametro->getDataAll() ) {
             $smarty->assign( 'parametros', $this->parametro->getDataAll() );

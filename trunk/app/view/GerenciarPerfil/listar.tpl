@@ -1,11 +1,11 @@
 <fieldset>
 {include file=$submenu titulo='Lista de perfis'}
-  <ul>
+  <ul class="lista">
     {foreach from=$perfis item=perfil}
-      <li>
-        {foreach from=$acoesPerfil item=acao}
-            <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$perfil.id_perfil}" alt="{$acao.alt}" class="{$acao.class}">{$acao.texto}</a>
-        {/foreach}
+      <li class="{cycle values="par, impar"}">
+        {assign var="tplPieace" value="acoes_lista.tpl"}
+        {assign var="id" value=$perfil.id_perfil}
+        {include file=$pieces$tplPieace}
         {$perfil.nome}
       </li>
     {/foreach}

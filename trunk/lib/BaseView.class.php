@@ -130,17 +130,22 @@ abstract class BaseView extends Smarty{
             array(
                 'modulo' => $this->getTpl(),
                 'metodo' => 'editar',
-                'texto'  => 'Cadastrar'
+                'texto'  => 'Cadastrar',
+                'icone'  => 'cadastrar.png'
             ),
             array(
                 'modulo' => $this->getTpl(),
                 'metodo' => 'buscar',
-                'texto'  => 'Buscar'
+                'texto'  => 'Buscar',
+                'icone'  => 'buscar.png'
+
             ),
             array(
                 'modulo' => $this->getTpl(),
                 'metodo' => 'listar',
-                'texto'  => 'Listar'
+                'texto'  => 'Listar',
+                'icone'  => 'listar.png'
+
             )
         );
         $permissao = new Permissao();

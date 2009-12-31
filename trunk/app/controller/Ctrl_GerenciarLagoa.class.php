@@ -3,11 +3,13 @@ require_once 'Gerenciar.php';
 
 class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
     protected $lagoa;
+    protected $projeto;
 
     public function __construct() {
         parent::__construct();
 
-        $this->lagoa = new Lagoa( $this->getDBH() );
+        $this->lagoa   = new Lagoa($this->getDBH());
+        $this->projeto = new Projeto($this->getDBH());
     }
 
     public function editar( $id = false ) {
@@ -82,27 +84,31 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
                 'metodo' => 'buscar',
                 'param'  => 'id_lagoa/',
                 'alt'    => 'Lista coletas',
-                'texto'  => '[ C ]'
+                'texto'  => '[ C ]',
+                'icone'  => 'coleta.png'
             ),
             array(
                 'modulo' => 'GerenciarPontoAmostral',
                 'metodo' => 'buscar',
                 'param'  => 'id_lagoa/',
                 'alt'    => 'Lista pontos amostrais',
-                'texto'  => '[ P ]'
+                'texto'  => '[ P ]',
+                'icone'  => 'pontoAmostral.png'
             ),
             array(
                 'modulo' => 'GerenciarLagoa',
                 'metodo' => 'editar',
                 'alt'    => 'Altera lagoa',
-                'texto'  => '[ A ]'
+                'texto'  => '[ A ]',
+                'icone'  => 'editar.png'
             ),
             array(
                 'modulo' => 'GerenciarLagoa',
                 'metodo' => 'excluir',
                 'alt'    => 'Exclui lagoa',
                 'texto'  => '[ E ]',
-                'class'  => 'excluir'
+                'class'  => 'excluir',
+                'icone'  => 'excluir.png'
             ),
             array(
                 'modulo' => 'GerenciarProjeto',
@@ -112,13 +118,23 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesLagoa', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
 
         if ($idProjeto != -1) {
-            $smarty->assign( 'lagoas', $this->lagoa->listarPorProjeto($idProjeto, array(
+            $listaLagoas = $this->lagoa->listarPorProjeto($idProjeto, array(
                 'campo' => 'l.nome',
                 'ordem' => 'ASC'
-            )));
+            ));
+
+            if (count($listaLagoas) == 0) {
+                Mensagem::addAtencao(mb_convert_encoding('Não foram encontradas lagoas para o projeto selecionado.', 'latin1', 'UTF-8'));
+            }
+
+            $this->projeto->setId($idProjeto);
+            $this->projeto->pegar();
+
+            $smarty->assign('nomeProjeto', $this->projeto->getData('nome'));
+            $smarty->assign( 'lagoas', $listaLagoas);
             $template = 'listarPorProjeto.tpl';
         } elseif( $this->lagoa->getDataAll() ) {
             $smarty->assign( 'lagoas', $this->lagoa->getDataAll() );
