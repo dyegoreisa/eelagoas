@@ -41,7 +41,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
                 } else {
                     $this->projeto->setData( array( 'nome' => $_POST['nome'] ) );
                     if( $this->projeto->inserir() )
-                        Mensagem::addOk('Projeto salva!' );
+                        Mensagem::addOk('Projeto salvo.' );
                     else 
                         Mensagem::addErro('Não foi possível salvar a projeto.' );
 
@@ -67,25 +67,28 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
                 'modulo' => 'GerenciarLagoa',
                 'metodo' => 'listar',
                 'alt'    => 'Listar lagoas',
-                'texto'  => '[ L ]'
+                'texto'  => '[ L ]',
+                'icone'  => 'lagoa.png'
             ),
             array(
                 'modulo' => 'GerenciarProjeto',
                 'metodo' => 'editar',
                 'alt'    => 'Altera projeto',
-                'texto'  => '[ A ]'
+                'texto'  => '[ A ]',
+                'icone'  => 'editar.png'
             ),
             array(
                 'modulo' => 'GerenciarProjeto',
                 'metodo' => 'excluir',
                 'alt'    => 'Exclui projeto',
                 'texto'  => '[ E ]',
-                'class'  => 'excluir'
+                'class'  => 'excluir',
+                'icone'  => 'excluir.png'
             )
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesProjeto', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
 
         if( $this->projeto->getDataAll() ) {
             $smarty->assign( 'projetos', $this->projeto->getDataAll() );

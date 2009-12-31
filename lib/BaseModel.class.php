@@ -293,6 +293,7 @@ abstract class BaseModel {
      * @return void
      *
      * TODO: Fazer critério de relevancia.
+     * TODO: Implementar join
      */
     protected function montarBusca( $dados, $campos = '') {
         $sql = "SELECT * FROM {$this->table} ";

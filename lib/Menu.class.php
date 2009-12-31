@@ -12,13 +12,13 @@ class Menu
             new ItemMenu($permissao, $idPerfil, 'Cadastrar Coleta', 'GerenciarColeta', 'editar'),
             new ItemMenu($permissao, $idPerfil, 'Relat&oacute;rios', 'Relatorio', 'search'),
             new ItemMenu($permissao, $idPerfil, 'Gerenciar', null, null, array(
-                new ItemMenu($permissao, $idPerfil, 'Projeto', 'GerenciarProjeto', 'listar'),
-                new ItemMenu($permissao, $idPerfil, 'Lagoa', 'GerenciarLagoa', 'listar'),
-                new ItemMenu($permissao, $idPerfil, 'Categoria', 'GerenciarCategoria', 'listar'),
-                new ItemMenu($permissao, $idPerfil, 'Par&acirc;metro', 'GerenciarParametro', 'listar'),
-                new ItemMenu($permissao, $idPerfil, 'Esp&eacute;cie', 'GerenciarEspecie', 'listar'),
-                new ItemMenu($permissao, $idPerfil, 'Usu&aacute;rio', 'GerenciarUsuario', 'listar'),
-                new ItemMenu($permissao, $idPerfil, 'Perfil', 'GerenciarPerfil', 'listar')
+                new ItemMenu($permissao, $idPerfil, 'Projeto', 'GerenciarProjeto', 'listar', array(), 'projeto.png'),
+                new ItemMenu($permissao, $idPerfil, 'Lagoa', 'GerenciarLagoa', 'listar', array(), 'lagoa.png'),
+                new ItemMenu($permissao, $idPerfil, 'Categoria', 'GerenciarCategoria', 'listar', array(), 'categoria.png'),
+                new ItemMenu($permissao, $idPerfil, 'Par&acirc;metro', 'GerenciarParametro', 'listar', array(), 'parametro.png'),
+                new ItemMenu($permissao, $idPerfil, 'Esp&eacute;cie', 'GerenciarEspecie', 'listar', array(), 'especie.png'),
+                new ItemMenu($permissao, $idPerfil, 'Usu&aacute;rio', 'GerenciarUsuario', 'listar', array(), 'usuario.png'),
+                new ItemMenu($permissao, $idPerfil, 'Perfil', 'GerenciarPerfil', 'listar', array(), 'perfil.png')
             ))
         );
     }
@@ -32,7 +32,9 @@ class Menu
                     $htmlSubItem = '';
                     foreach ($item->itensMenu as $subItem) {
                         if ($subItem->acesso == 'S') {
-                            $htmlSubItem .= '<li><a href="' . $dir . '/' . $subItem->modulo . '/' . $subItem->metodo .'">' . $subItem->texto . '</a></li>';
+                            $htmlSubItem .= '<li><a href="' . $dir . '/' . $subItem->modulo . '/' . $subItem->metodo .'">'
+                                          . '<img src="' . R_SITE . '/images/' . $subItem->icone . '" border="0" alt=""/>'
+                                          . $subItem->texto . '</a></li>';
                         }
                     }
                     if (!empty($htmlSubItem)) {

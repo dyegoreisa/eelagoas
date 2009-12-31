@@ -1,10 +1,10 @@
 <fieldset>
     <legend>Lista de coletas da lagoa {$lagoa.nome}</legend>
-    <ul>
+    <ul class="lista">
     {foreach from=$coletas item=coleta}
-        <li>
-            {foreach from=$acoesColeta item=acao}
-                <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$coleta.id_coleta}" alt="{$acao.alt}" class="{$acao.class}">{$acao.texto}</a>
+        <li class="{cycle values="par, impar"}">
+            {foreach from=$acoesLista item=acao}
+                <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$coleta.id_coleta}" alt="{$acao.alt}" class="{$acao.class}"><img src="{$site}/images/{$acao.icone}" alt="{$acao.texto}" border="0"/></a>
             {/foreach}
             {$coleta.tipo_periodo} - 
             {if $coleta.tipo_periodo eq 'mensal'}

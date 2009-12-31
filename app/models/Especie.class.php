@@ -74,6 +74,28 @@ class Especie extends BaseModel
         );
     }
 
+    public function listarPorParametro($idParametro, array $ordem) 
+    {
+        $sth = $this->dbh->prepare("
+            SELECT
+                e.id_especie 
+                , e.nome
+                , p.id_parametro
+                , p.nome AS nome_parametro
+            FROM
+                especie e 
+                    JOIN parametro p ON p.id_parametro = e.id_parametro
+            WHERE
+                e.id_parametro = :idParametro
+            ORDER BY {$ordem['campo']} {$ordem['ordem']}
+        ");
+
+        $sth->execute(array(':idParametro' => $idParametro));
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        $lista = $sth->fetchAll();
+        return $lista;
+    }
+
     public function listar($order = false)
     {
         $clausOrder = '';

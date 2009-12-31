@@ -1,13 +1,15 @@
+{if $mensagem neq ''}
+    <p>{$mensagem}</p>
+{/if}
 <fieldset>
 {assign var=titulo value='Lista de lagoas do projeto '}
-{assign var=nome_projeto value=$lagoas.0.nome_projeto}
-{include file=$submenu titulo=$titulo$nome_projeto}
-  <ul>
+{include file=$submenu titulo=$titulo$nomeProjeto}
+  <ul class="lista">
     {foreach from=$lagoas item=lagoa}
-      <li>
-        {foreach from=$acoesLagoa item=acao}
+      <li class="{cycle values="par, impar"}">
+        {foreach from=$acoesLista item=acao}
             {if $acao.modulo neq 'GerenciarProjeto'}
-                <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$acao.param}{$lagoa.id_lagoa}" alt="{$acao.alt}" class="{$acao.class}">{$acao.texto}</a>
+                <a href="{$dir}/{$acao.modulo}/{$acao.metodo}/{$acao.param}{$lagoa.id_lagoa}" alt="{$acao.alt}" class="{$acao.class}"><img src="{$site}/images/{$acao.icone}" alt="{$acao.texto}" border="0"/></a>
             {/if}
         {/foreach}
         {$lagoa.nome}

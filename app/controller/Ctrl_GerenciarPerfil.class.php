@@ -83,19 +83,21 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
                 'modulo' => 'GerenciarPerfil',
                 'metodo' => 'editar',
                 'alt'    => 'Altera perfil',
-                'texto'  => '[ A ]'
+                'texto'  => '[ A ]',
+                'icone'  => 'editar.png'
             ),
             array(
                 'modulo' => 'GerenciarPerfil',
                 'metodo' => 'excluir',
                 'alt'    => 'Exclui perfil',
                 'texto'  => '[ E ]',
-                'class'  => 'excluir'
+                'class'  => 'excluir',
+                'icone'  => 'excluir.png'
             )
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesPerfil', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
 
         if($this->perfil->getDataAll()) {
             $smarty->assign('perfis', $this->perfil->getDataAll());

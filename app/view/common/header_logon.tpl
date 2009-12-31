@@ -37,25 +37,11 @@
 <br/>
 <div id="myjquerymenu" class="jquerycssmenu">
     <ul>
-    {*
-        <li><a href="{$dir}/GerenciarColeta/editar">Cadastrar Coleta</a></li>
-        <li><a href="{$dir}/Relatorio/search">Relat&oacute;rios</a></li>
-        <li><a href="#">Gerenciar</a>
-            <ul>
-                <li><a href="{$dir}/GerenciarProjeto/listar">Projeto</a></li>
-                <li><a href="{$dir}/GerenciarLagoa/listar">Lagoa</a></li>
-                <li><a href="{$dir}/GerenciarCategoria/listar">Categoria</a></li>
-                <li><a href="{$dir}/GerenciarParametro/listar">Par&acirc;metro</a></li>
-                <li><a href="{$dir}/GerenciarEspecie/listar">Esp&eacute;cie</a></li>
-                <li><a href="{$dir}/GerenciarUsuario/listar">Usu&aacute;rio</a></li>
-                <li><a href="{$dir}/GerenciarPerfil/listar">Perfil</a></li>
-            </ul>
-    *}
         {$menu}
         <li class="left"><a href="#">{$nomeUsuario|upper} > {$nomePerfil|upper}</a>
             <ul>
-                <li><a href="{$dir}/GerenciarUsuario/alterarSenha/{$idUsuario}">Alterar senha</a></li>
-                <li><a href="{$dir}/Sessao/sair">Sair</a></li>
+                <li><a href="{$dir}/GerenciarUsuario/alterarSenha/{$idUsuario}"><img src="{$site}/images/senha.png" border="0"/>Alterar senha</a></li>
+                <li><a href="{$dir}/Sessao/sair"><img src="{$site}/images/sair.png" border="0"/>Sair</a></li>
             </ul>
         </li>
     </ul>

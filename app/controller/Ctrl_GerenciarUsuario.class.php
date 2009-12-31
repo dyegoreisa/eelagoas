@@ -17,7 +17,8 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
             array(
                 'modulo' => 'GerenciarUsuario',
                 'metodo' => 'alterarSenha/' . $_SESSION[$_SESSION['SID']]['idUsuario'],
-                'texto'  => 'Alterar Senha'
+                'texto'  => 'Alterar Senha',
+                'icone'  => 'senha.png'
             )
         );
     }
@@ -109,19 +110,21 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
                 'modulo' => 'GerenciarUsuario',
                 'metodo' => 'editar',
                 'alt'    => 'Altera usuario',
-                'texto'  => '[ A ]'
+                'texto'  => '[ A ]',
+                'icone'  => 'editar.png'
             ),
             array(
                 'modulo' => 'GerenciarUsuario',
                 'metodo' => 'excluir',
                 'alt'    => 'Exclui usuario',
                 'texto'  => '[ E ]',
-                'class'  => 'excluir'
+                'class'  => 'excluir',
+                'icone'  => 'excluir.png'
             )
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesUsuario', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
 
         if( $this->usuario->getDataAll() ) {
             $smarty->assign( 'usuarios', $this->usuario->getDataAll() );

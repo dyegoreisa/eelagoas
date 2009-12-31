@@ -491,19 +491,21 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
                 'modulo' => 'GerenciarColeta',
                 'metodo' => 'editar',
                 'alt'    => 'Altera coleta',
-                'texto'  => '[ A ]'
+                'texto'  => '[ A ]',
+                'icone'  => 'editar.png'
             ),
             array(
                 'modulo' => 'GerenciarColeta',
                 'metodo' => 'excluir',
                 'alt'    => 'Exclui coleta',
                 'texto'  => '[ E ]',
-                'class'  => 'excluir'
+                'class'  => 'excluir',
+                'icone'  => 'excluir.png'
             )
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesColeta', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
 
         $smarty->assign( 'lagoa', $this->lagoa->getData() ); 
 
