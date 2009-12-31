@@ -56,9 +56,9 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
                     ));
 
                     if($this->usuario->atualizar()) {
-                        Mensagem::addOk('Usuário alterado.');
+                        Mensagem::addOk(latinToUTF('Usuário alterado.'));
                     } else {
-                        Mensagem::addErro('Não foi possível salvar o registro.');
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar o registro.'));
                     }
                 } else {
                     if(
@@ -76,9 +76,9 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
                         ));
 
                         if($this->usuario->inserir()) {
-                            Mensagem::addOk('Usuário salvo!');
+                            Mensagem::addOk('Usuário salvo.');
                         } else {
-                            Mensagem::addErro('Não foi possível salvar a usuário.');
+                            Mensagem::addErro(latinToUTF('Não foi possível salvar a usuário.'));
                         }
                     } else {
                         Mensagem::addErro('A senha deve ser igual a confirma senha.');
@@ -151,7 +151,7 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
-                Mensagem::addAtencao('Nenhum usuário encontrado.');
+                Mensagem::addAtencao(latinToUTF('Nenhum usuário encontrado.'));
                 $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
@@ -169,10 +169,10 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
                 if ($this->usuario->excluir()) { 
                     Mensagem::addOk('Registro excluido.');
                 } else {
-                    Mensagem::addErro('Não foi possível excluir o registro');
+                    Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
                 }
             } else {
-                Mensagem::addErro('Não foi possível excluir o registro');
+                Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
             }
 
             $smarty->assign('titulo', 'Cadastro de Usuário');
@@ -222,15 +222,15 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
                     $this->displayError();
                 }
             } else {
-                Mensagem::addErro('A senha atual informada está incorreta, favor tente novamente.');
+                Mensagem::addErro(latinToUTF('A senha atual informada está incorreta, favor tente novamente.'));
                 $this->alterarSenha($_POST['id_usuario']);
             }
         } else {
-            Mensagem::addErro('Não foi possível alterar a senha');
+            Mensagem::addErro(latinToUTF('Não foi possível alterar a senha'));
             if (isset($_POST['id_usuario']) && $_POST['id_usuario'] != '') {
                 $this->alterarSenha($_POST['id_usuario']);
             } else {
-                Mensagem::addErro('Usuário não identificado.');
+                Mensagem::addErro(latinToUTF('Usuário não identificado.'));
                 $this->displayError();
             }
         }

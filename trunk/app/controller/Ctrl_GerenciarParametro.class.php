@@ -48,13 +48,13 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
                     if($this->parametro->atualizar()) {
                         Mensagem::addOk('Parametro alterado!');
                     } else {
-                        Mensagem::addErro('Não foi possível atualizar o parametro');
+                        Mensagem::addErro(latinToUTF('Não foi possível atualizar o parametro'));
                     }
                 } else {
                     if($this->parametro->inserir()) {
                         Mensagem::addOk('Parametro salvo!' );
                     } else {
-                        Mensagem::addErro('Não foi possível salvar a parametro.' );
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar a parametro.'));
                     }
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
@@ -64,7 +64,7 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
                 $smarty->displayError();
             }
         } else {
-            Mensagem::addErro('O campo Nome n&atilde;o pode ser vazio.' );
+            Mensagem::addErro(latinToUTF('O campo Nome não pode ser vazio.'));
             $this->editar();
         }
     }
@@ -124,7 +124,7 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
-                Mensagem::addAtencao('Não foi encontrado nenhum parametro.');
+                Mensagem::addAtencao(latinToUTF('Não foi encontrado nenhum parametro.'));
                 $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
@@ -139,12 +139,12 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
             if( isset( $id ) && $id != '' ) {
                 $this->parametro->setId( $id );
                 if ($this->parametro->excluir()) {
-                    Mensagem::addOk('Registro excluido.' );
+                    Mensagem::addOk(latinToUTF('Registro excluído.'));
                 } else {
-                    Mensagem::addErro('Não foi possível excluir o registro' );
+                    Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
                 }
             } else {
-                Mensagem::addErro('Não foi possível excluir o registro' );
+                Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
             }
 
             $smarty->displaySubMenuHBF( 'salvar.tpl' );

@@ -79,3 +79,14 @@ function remove_elementos_array($elementos, $chaves, $inverte = false) {
     }
     return $elementos;
 }
+
+/**
+ * Converte encode de latin1 para UTF-8
+ * 
+ * @param mixed $texto 
+ * @access public
+ * @return void
+ */
+function latinToUTF($texto){
+    return mb_convert_encoding($texto, 'latin1', 'UTF-8');
+}

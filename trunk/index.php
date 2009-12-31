@@ -1,5 +1,5 @@
 <?php
-include 'debug.class.php';
+//include 'debug.class.php';
 require_once 'config/config.inc.php';
 require_once 'lib/lib.inc.php';
 require_once 'lib/Route.class.php';
@@ -65,7 +65,7 @@ try {
             Mensagem::addErro('Url incorreta.');
             break;
         default:
-            Mensagem::addErro('Na aplicação.');
+            Mensagem::addErro(latinToUTF('Na aplicação.'));
             break;
     }
     $route->setRoute('/Main/run');
