@@ -195,7 +195,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
         } else {
             $ok_projeto = false;
-            Mensagem::addErro('Campo Projeto está vazio.');
+            Mensagem::addErro(latinToUTF('Campo Projeto está vazio.'));
         }
 
         if(isset($_POST['nome_lagoa']) && $_POST['nome_lagoa'] != '') {
@@ -205,7 +205,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
                 'id_projeto' => $this->projeto->getId()
             ));
             $ok_lagoa = $this->lagoa->inserir();
-            ( $ok_lagoa ) ? Mensagem::addOk("Lagoa salva") : Mensagem::addErro("Ao salvar Lagoa");
+            ( $ok_lagoa ) ? Mensagem::addOk("Lagoa salva") : Mensagem::addErro("Ao salvar Lagoa.");
 
         } elseif (isset($_POST['id_lagoa']) && $_POST['id_lagoa'] != -1) {
 
@@ -216,7 +216,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
         } else {
             $ok_lagoa = false;
-            Mensagem::addErro('Campo lagoa está vazio.');
+            Mensagem::addErro(latinToUTF('Campo lagoa está vazio.'));
         }
 
         if(isset($_POST['nome_ponto_amostral']) && $_POST['nome_ponto_amostral'] != '') {
@@ -239,7 +239,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
         } else {
             $ok_pontoAmostal = false;
-            Mensagem::addErro('Campo ponto amostral está vazio.');
+            Mensagem::addErro(latinToUTF('Campo ponto amostral está vazio.'));
         }
 
         if(isset($_POST['nome_categoria']) && $_POST['nome_categoria'] != '') { 
@@ -260,7 +260,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
         } else {
             $ok_categoria = false;
-            Mensagem::addErro('Campo categoria está vazio.');
+            Mensagem::addErro(latinToUTF('Campo categoria está vazio.'));
         }
 
         if( isset( $_POST['id_parametros'] ) && is_array( $_POST['id_parametros'] ) ) {
@@ -310,7 +310,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
                 $tipoPeriodo = 'mensal';
             } else {
                 $ok_data = false;
-                Mensagem::addErro('A data informada est&aacute; no formato incorreto, favor informar no formato (dd/mm/aaaa hh) ou (dd/mm/aaaa hh).');
+                Mensagem::addErro(latinToUTF('A data informada está no formato incorreto, favor informar no formato (dd/mm/aaaa hh) ou (dd/mm/aaaa hh).'));
             }
 
             $this->coleta->setData( 
@@ -554,10 +554,10 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
                 if ($this->coleta->excluir()) {
                     Mensagem::addOk('Registro excluido.' );
                 } else {
-                    Mensagem::addErro('Não foi possível excluir o registro' );
+                    Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
                 }
             } else {
-                Mensagem::addErro('Não foi possível excluir o registro' );
+                Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
             }
 
             $smarty->displayHBF( 'salvar.tpl' );

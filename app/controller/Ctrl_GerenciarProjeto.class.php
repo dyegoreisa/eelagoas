@@ -36,14 +36,14 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
                     if( $this->projeto->atualizar() )
                         Mensagem::addOk('Projeto alterada.' );
                     else
-                        Mensagem::addErro('Não foi possível salvar o registro.' );
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar o registro.'));
 
                 } else {
                     $this->projeto->setData( array( 'nome' => $_POST['nome'] ) );
                     if( $this->projeto->inserir() )
                         Mensagem::addOk('Projeto salvo.' );
                     else 
-                        Mensagem::addErro('Não foi possível salvar a projeto.' );
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar a projeto.'));
 
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
@@ -54,7 +54,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
             }
 
         } else {
-            Mensagem::addErro('O campo Nome não pode ser vazio.' );
+            Mensagem::addErro(latinToUTF('O campo Nome não pode ser vazio.'));
             $smarty->displaySubMenuHBF( 'editar.tpl' );
         }
     }
@@ -114,7 +114,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
-                Mensagem::addAtencao('Não foi encontrador nenhum projeto.');
+                Mensagem::addAtencao(latinToUTF('Não foi encontrador nenhum projeto.'));
                 $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
@@ -131,10 +131,10 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
                 if ($this->projeto->excluir()) {
                     Mensagem::addOk('Registro excluido.' );
                 } else {
-                    Mensagem::addErro('Não foi possível excluir o registro.');
+                    Mensagem::addErro(latinToUTF('Não foi possível excluir o registro.'));
                 }
             } else {
-                Mensagem::addErro('Não foi possível excluir o registro.');
+                Mensagem::addErro(latinToUTF('Não foi possível excluir o registro.'));
             }
 
             $smarty->displaySubMenuHBF( 'salvar.tpl' );

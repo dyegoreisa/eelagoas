@@ -44,13 +44,13 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
                     if( $this->especie->atualizar() )
                         Mensagem::addOk('Especie alterada.' );
                     else
-                        Mensagem::addErro('Não foi possível salvar o registro.' );
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar o registro.'));
 
                 } else {
                     if( $this->especie->inserir() )
                         Mensagem::addOk('Especie salva!' );
                     else 
-                        Mensagem::addErro('Não foi possível salvar a espécie.' );
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar a espécie.'));
 
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
@@ -61,7 +61,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
             }
 
         } else {
-            Mensagem::addErro('O campo Nome ou Parametro não podem ser vazios.' );
+            Mensagem::addErro(latinToUTF('O campo Nome ou Parametro não podem ser vazios.'));
             $this->editar();
         }
     }
@@ -101,7 +101,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
                 'ordem' => 'ASC'
             ));
             if (count($listaEspecies) < 1) {
-                Mensagem::addAtencao(mb_convert_encoding('Não foram encontradas especie para essa composição.', 'latin1', 'UTF-8'));
+                Mensagem::addAtencao(latinToUTF('Não foram encontradas especie para essa composição.'));
             }
             
             $smarty->assign( 'especies', $listaEspecies);
@@ -130,7 +130,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
-                Mensagem::addAtencao('Não foi encontrado nehuma categoria.');
+                Mensagem::addAtencao(latinToUTF('Não foi encontrado nehuma categoria.'));
                 $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
@@ -145,12 +145,12 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
             if( isset( $id ) && $id != '' ) {
                 $this->especie->setId( $id );
                 if ($this->especie->excluir()) {
-                    Mensagem::addOk('Registro excluido.' );
+                    Mensagem::addOk(latinToUTF('Registro excluído.'));
                 } else {
-                    Mensagem::addErro('Não foi possível excluir o registro' );
+                    Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
                 }
             } else {
-                Mensagem::addErro('Não foi possível excluir o registro' );
+                Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
             }
 
             $smarty->displaySubMenuHBF( 'salvar.tpl' );

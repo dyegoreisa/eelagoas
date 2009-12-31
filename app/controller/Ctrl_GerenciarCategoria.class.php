@@ -44,13 +44,13 @@ class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
                     if( $this->categoria->atualizar() )
                         Mensagem::addOk('Categoria alterada.' );
                     else
-                        Mensagem::addErro('Não foi possível salvar o registro.' );
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar o registro.'));
 
                 } else {
                     if( $this->categoria->inserir() )
                         Mensagem::addOk('Categoria salva!' );
                     else 
-                        Mensagem::addErro('Não foi possível salvar a categoria.' );
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar a categoria.'));
 
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
@@ -61,7 +61,7 @@ class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
             }
 
         } else {
-            Mensagem::addErro('O campo Nome não pode ser vazio.' );
+            Mensagem::addErro(latinToUTF('O campo Nome não pode ser vazio.'));
             $this->editar();
         }
     }
@@ -131,10 +131,10 @@ class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
                 if ($this->categoria->excluir()) { 
                     Mensagem::addOk('Registro excluido.' );
                 } else {
-                    Mensagem::addErro('Não foi possível excluir o registro' );
+                    Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
                 }
             } else {
-                Mensagem::addErro('Não foi possível excluir o registro' );
+                Mensagem::addErro(latinToUTF('Não foi possível excluir o registro'));
             }
 
             $smarty->displaySubMenuHBF( 'salvar.tpl' );

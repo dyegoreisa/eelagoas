@@ -48,13 +48,13 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
                     if( $this->lagoa->atualizar() )
                         Mensagem::addOk('Lagoa alterada.' );
                     else
-                        Mensagem::addErro('Não foi possível salvar a lagoa.' );
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar a lagoa.'));
 
                 } else {
                     if( $this->lagoa->inserir() )
                         Mensagem::addOk('Lagoa salva!' );
                     else 
-                        Mensagem::addErro('Não foi possível salvar a lagoa.' );
+                        Mensagem::addErro(latinToUTF('Não foi possível salvar a lagoa.'));
 
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
@@ -65,7 +65,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
             }
 
         } else {
-            Mensagem::addErro('O campo Nome ou Projeto não podem ser vazios.' );
+            Mensagem::addErro(latinToUTF('O campo Nome ou Projeto não podem ser vazios.'));
             if (isset($_POST['id_lagoa']) && $_POST['id_lagoa'] != '') {
                 $this->editar($_POST['id_lagoa']);
             } else {
@@ -127,7 +127,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
             ));
 
             if (count($listaLagoas) == 0) {
-                Mensagem::addAtencao(mb_convert_encoding('Não foram encontradas lagoas para o projeto selecionado.', 'latin1', 'UTF-8'));
+                Mensagem::addAtencao(latinToUTF('Não foram encontradas lagoas para o projeto selecionado.'));
             }
 
             $this->projeto->setId($idProjeto);
@@ -166,7 +166,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
             if( $num_linhas > 0 ) {
                 $this->listar();
             } else {
-                Mensagem::addAtencao('Não foi encontrada nenhuma lagoa.');
+                Mensagem::addAtencao(latinToUTF('Não foi encontrada nenhuma lagoa.'));
                 $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
@@ -181,12 +181,12 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
             if( isset( $id ) && $id != '' ) {
                 $this->lagoa->setId( $id );
                 if ($this->lagoa->excluir()) {
-                    Mensagem::addOk('Registro excluido.' );
+                    Mensagem::addOk(latinToUTF('Registro excluído.'));
                 } else {
-                    Mensagem::addErro('Não foi possível excluir a lagoa.');
+                    Mensagem::addErro(latinToUTF('Não foi possível excluir a lagoa.'));
                 }
             } else {
-                Mensagem::addErro('Não foi possível excluir a lagoa.');
+                Mensagem::addErro(latinToUTF('Não foi possível excluir a lagoa.'));
             }
 
             $smarty->displaySubMenuHBF( 'salvar.tpl' );

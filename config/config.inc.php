@@ -20,7 +20,6 @@ define('LOGIN', '/Sessao/login/');
  */
 define('R_DIR', ROOT_FOLDER . '/index.php');
 define('R_SITE', 'http://' . $_SERVER['HTTP_HOST'] . ROOT_FOLDER);
-//define('D_ABSOLUTE', '/home/linksimbolico/www' . ROOT_FOLDER);
 define('D_ABSOLUTE', $_SERVER['DOCUMENT_ROOT'] . ROOT_FOLDER);
 
 /**
