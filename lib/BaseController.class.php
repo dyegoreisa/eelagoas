@@ -65,7 +65,20 @@ abstract class BaseController {
     public function setSmarty( Template $smarty, $tpl ) {
         $this->smarty = $smarty;
         $this->smarty->setTpl( $tpl );
+
+        $this->setAgent();
     } 
+
+    private function setAgent() {
+        $agent = $_SERVER['HTTP_USER_AGENT'];
+        if (preg_match('/[F|f]irefox/', $agent)) {
+            $this->smarty->assign('browser', 'ff');
+        } else if(preg_match('/MSIE/', $agent)) {
+            $this->smarty->assign('browser', 'ie');
+        } else {
+            $this->smarty->assign('browser', 'outros');
+        }
+    }
 
     /**
      * getSmarty 
