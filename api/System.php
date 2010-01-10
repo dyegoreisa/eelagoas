@@ -23,8 +23,8 @@
 /**
  * base class
  */
-require_once '/home/linksimbolico/www/api/PEAR.php';
-require_once '/home/linksimbolico/www/api/Console/Getopt.php';
+require_once 'api/PEAR.php';
+require_once 'api/Console/Getopt.php';
 
 $GLOBALS['_System_temp_files'] = array();
 

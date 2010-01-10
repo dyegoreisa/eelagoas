@@ -5,7 +5,7 @@
 <title>
     {$barra_titulo}
 </title>
-<link rel="stylesheet" type="text/css" href="/eelagoas/plugin/report/render/css/report.css" />
+<link rel="stylesheet" type="text/css" href="{$site}/plugin/report/render/css/report.css" />
 <head>
 <body>
 <img src="{$logo}" id="logo">

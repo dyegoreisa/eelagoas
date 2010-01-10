@@ -33,8 +33,8 @@
 
 //require_once 'PEAR.php';
 //require_once 'Spreadsheet/Excel/Writer/Workbook.php';
-require_once '/home/linksimbolico/www/api/PEAR.php';
-require_once '/home/linksimbolico/www/api/Spreadsheet/Excel/Writer/Workbook.php';
+require_once 'api/PEAR.php';
+require_once 'api/Spreadsheet/Excel/Writer/Workbook.php';
 
 /**
 * Class for writing Excel Spreadsheets. This class should change COMPLETELY.

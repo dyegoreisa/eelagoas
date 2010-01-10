@@ -2,8 +2,12 @@
 /**
  * Caminho do arquivo XML
  */
-define('FILE_XML', '/Projetos/eelagoas/plugin/report/report.xml');
+define('FILE_XML', '');
 
+/**
+ * Endereço do site
+ */
+define('SITE', 'http://' . $_SERVER['HTTP_HOST'] . ROOT_FOLDER);
 
 /**
  * Caminho do diretórios para o smarty 

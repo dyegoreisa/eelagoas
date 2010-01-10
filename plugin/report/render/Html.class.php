@@ -68,6 +68,7 @@ class Html extends Render
     {
         $smarty = $this->smarty;
 
+        $smarty->assign('site', SITE);
         $smarty->assign('barra_titulo', $this->getReportName());
         $smarty->assign('dados', $this->getData());
         $smarty->assign('colunas', $this->getFormattedTitles());

@@ -1,5 +1,9 @@
 <?php
-include 'debug.class.php';
+if (is_file('install/install01.php')) {
+    header('Location: install/install01.php');
+}
+
+//include 'debug.class.php';
 require_once 'config/config.inc.php';
 require_once 'lib/lib.inc.php';
 require_once 'lib/Route.class.php';
