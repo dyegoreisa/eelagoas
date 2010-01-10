@@ -1,9 +1,5 @@
-insert into usuario (login, senha, nome) value ('admin', md5('admin'), 'admin');
-desc parametro_extra;
-insert into parametro_extra (id_parametro_extra, nome, descricao, tem_valor, tem_relacao, tabela) values 
-('1', 'nenhum', 'Nenhum', false, false, null), 
-('2', 'especie', 'Especie', true, true, 'especie');
-
-insert into categoria_extra (id_categoria_extra, nome, descricao, tem_valor, tem_relacao, tabela) values 
-('1', 'nenhum', 'Nenhum', false, false, null), 
-('2', 'profundidade', 'Profundidade', true, false, null);
+INSERT INTO perfil VALUES (1,'Administrador');
+INSERT INTO usuario (id_usuario, id_perfil, login, senha, nome) VALUES (1, 1, 'admin', md5('admin'), 'admin');
+INSERT INTO parametro_extra (id_parametro_extra, nome, descricao, tem_valor, tem_relacao, tabela) VALUES ('1', 'nenhum', 'Nenhum', false, false, null), ('2', 'especie', 'Especie', true, true, 'especie');
+INSERT INTO categoria_extra (id_categoria_extra, nome, descricao, tem_valor, tem_relacao, tabela) VALUES ('1', 'nenhum', 'Nenhum', false, false, null), ('2', 'profundidade', 'Profundidade', true, false, null);
+INSERT INTO acao VALUES (1,1,'buscar','GerenciarCategoria','S'),(2,1,'editar','GerenciarCategoria','S'),(3,1,'excluir','GerenciarCategoria','S'),(4,1,'listar','GerenciarCategoria','S'),(5,1,'salvar','GerenciarCategoria','S'),(6,1,'buscar','GerenciarColeta','S'),(7,1,'editar','GerenciarColeta','S'),(8,1,'excluir','GerenciarColeta','S'),(9,1,'listar','GerenciarColeta','S'),(10,1,'salvar','GerenciarColeta','S'),(11,1,'buscar','GerenciarEspecie','S'),(12,1,'editar','GerenciarEspecie','S'),(13,1,'excluir','GerenciarEspecie','S'),(14,1,'listar','GerenciarEspecie','S'),(15,1,'salvar','GerenciarEspecie','S'),(16,1,'buscar','GerenciarLagoa','S'),(17,1,'editar','GerenciarLagoa','S'),(18,1,'excluir','GerenciarLagoa','S'),(19,1,'listar','GerenciarLagoa','S'),(20,1,'salvar','GerenciarLagoa','S'),(21,1,'buscar','GerenciarParametro','S'),(22,1,'editar','GerenciarParametro','S'),(23,1,'excluir','GerenciarParametro','S'),(24,1,'listar','GerenciarParametro','S'),(25,1,'salvar','GerenciarParametro','S'),(26,1,'buscar','GerenciarPerfil','S'),(27,1,'editar','GerenciarPerfil','S'),(28,1,'excluir','GerenciarPerfil','S'),(29,1,'listar','GerenciarPerfil','S'),(30,1,'salvar','GerenciarPerfil','S'),(31,1,'buscar','GerenciarPontoAmostral','S'),(32,1,'editar','GerenciarPontoAmostral','S'),(33,1,'excluir','GerenciarPontoAmostral','S'),(34,1,'listar','GerenciarPontoAmostral','S'),(35,1,'salvar','GerenciarPontoAmostral','S'),(36,1,'buscar','GerenciarProjeto','S'),(37,1,'editar','GerenciarProjeto','S'),(38,1,'excluir','GerenciarProjeto','S'),(39,1,'listar','GerenciarProjeto','S'),(40,1,'salvar','GerenciarProjeto','S'),(41,1,'buscar','GerenciarUsuario','S'),(42,1,'editar','GerenciarUsuario','S'),(43,1,'excluir','GerenciarUsuario','S'),(44,1,'listar','GerenciarUsuario','S'),(45,1,'salvar','GerenciarUsuario','S'),(46,1,'execute','Relatorio','S'),(47,1,'search','Relatorio','S');

@@ -33,7 +33,7 @@
 */
 
 //require_once 'PEAR.php';
-require_once '/home/linksimbolico/www/api/PEAR.php';
+require_once 'api/PEAR.php';
 
 /**
 * Class for generating Excel XF records (formats)

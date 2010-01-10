@@ -20,8 +20,8 @@
 // $Id: Root.php,v 1.10 2008/02/02 21:00:37 schmidt Exp $
 
 
-require_once '/home/linksimbolico/www/api/OLE/PPS.php';
-require_once '/home/linksimbolico/www/api/System.php';
+require_once 'api/OLE/PPS.php';
+require_once 'api/System.php';
 
 /**
 * Class for creating Root PPS's for OLE containers

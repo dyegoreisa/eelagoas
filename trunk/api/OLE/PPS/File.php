@@ -20,8 +20,8 @@
 // $Id: File.php,v 1.12 2008/02/02 21:00:37 schmidt Exp $
 
 
-require_once '/home/linksimbolico/www/api/OLE/PPS.php';
-require_once '/home/linksimbolico/www/api/System.php';
+require_once 'api/OLE/PPS.php';
+require_once 'api/System.php';
 
 /**
 * Class for creating File PPS's for OLE containers

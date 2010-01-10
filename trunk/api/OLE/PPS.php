@@ -20,8 +20,8 @@
 // $Id: PPS.php,v 1.7 2007/02/13 21:00:42 schmidt Exp $
 
 
-require_once '/home/linksimbolico/www/api/PEAR.php';
-require_once '/home/linksimbolico/www/api/OLE.php';
+require_once 'api/PEAR.php';
+require_once 'api/OLE.php';
 
 /**
 * Class for creating PPS's for OLE containers
