@@ -3,14 +3,12 @@ require_once 'Gerenciar.php';
 
 class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
     protected $parametro;
-    protected $parametroExtra;
     protected $especie;
 
     public function __construct() {
         parent::__construct();
 
         $this->parametro      = new Parametro( $this->getDBH() );
-        $this->parametroExtra = new ParametroExtra( $this->getDBH() );
         $this->especie        = new Especie($this->getDBH());
     }
 
@@ -21,10 +19,9 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
             $this->parametro->setId( $id );
             $this->parametro->pegar();
 
-            $smarty->assign( 'parametro', $this->parametro->getData() );
+            $smarty->assign('composicao', ($this->parametro->getData('composicao') == 1) ? 'checked' :'');
+            $smarty->assign('parametro', $this->parametro->getData() );
         }
-
-        $smarty->assign('select_extra', $this->parametroExtra->listarSelectAssoc());
 
         $smarty->displaySubMenuHBF( 'editar.tpl' );
     }
@@ -32,14 +29,12 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
     public function salvar() {
         $smarty = $this->getSmarty();
 
-        if(isset($_POST['nome'])               && $_POST['nome']     != '' &&
-           isset($_POST['id_parametro_extra']) && $_POST['id_parametro_extra'] != ''
-        ) {
+        if(isset($_POST['nome']) && $_POST['nome'] != '') {
 
             try{
                 $this->parametro->setData( array(
-                    'nome'               => $_POST['nome'],
-                    'id_parametro_extra' => $_POST['id_parametro_extra']
+                    'nome' => $_POST['nome'],
+                    'composicao' => (isset($_POST['composicao']) && $_POST['composicao'] == 1) ? 1 : 0
                 ));
 
                 if( isset( $_POST['id_parametro'] ) && $_POST['id_parametro'] != '' ) {
@@ -74,11 +69,15 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
 
         $acoes = array(
             array(
-                'modulo' => 'GerenciarEspecie',
-                'metodo' => 'listar',
-                'alt'    => 'Listar especie',
-                'texto'  => '[ Es ]',
-                'icone'  => 'especie.png'
+                'modulo'  => 'GerenciarEspecie',
+                'metodo'  => 'listar',
+                'alt'     => 'Listar especie',
+                'texto'   => '[ Es ]',
+                'icone'   => 'especie.png',
+                'compara' => array (
+                    'valor'  => 0, 
+                    'icone2' => 'especie2.png'
+                )
             ),
             array(
                 'modulo' => 'GerenciarParametro',
@@ -154,20 +153,32 @@ class Ctrl_GerenciarParametro extends BaseController implements Gerenciar {
         }
     }
 
-    public function montarMultiSelectExtra($nomeExtra, $parametros) {
-        $smarty = $this->getSmarty();
-        $extra = $this->$nomeExtra;
+    public function eComposicao($parametros) {
+        $partes = explode(',', $parametros);
+        $count = 0;
+        foreach ($partes as $idParametro) {
+            $this->parametro->setId($idParametro);
+            if ($this->parametro->eComposicao()) {
+                $count++;
+            }
+        }
 
-        $this->parametroExtra->buscar($nomeExtra);
-
-        $smarty->assign('nomeCampo', $nomeExtra);
-        $smarty->assign('label', $this->parametroExtra->getData('descricao'));
-        $smarty->assign('select_extra', $extra->listarSelectAssoc($parametros));
-        $smarty->displayPiece("multiselect_extra.tpl", true );
+        if ($count > 0) {
+            $this->getSmarty()->displayJson(array(true));
+        } else {
+            $this->getSmarty()->displayJson(array(false));
+        }
     }
 
-    public function temParametroExtra($parametros) {
-        $this->getSmarty()->displayJson(array($this->parametroExtra->temExtra($parametros)));
+    public function montarMultiSelectEspecie($parametros) {
+        $smarty = $this->getSmarty();
+
+        $smarty->assign('select_especie', $this->especie->listarSelectAssoc($parametros, array(
+            'campo' => 'nome',
+            'ordem' => 'ASC'
+        ))); 
+
+        $smarty->displayPiece('multiselect_especie.tpl');
     }
 }
 

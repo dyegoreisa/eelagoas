@@ -10,10 +10,12 @@ class Menu
     {
         $this->itensMenu = array(
             new ItemMenu($permissao, $idPerfil, 'Cadastrar Coleta', 'GerenciarColeta', 'editar'),
-            new ItemMenu($permissao, $idPerfil, 'Relat&oacute;rios', 'Relatorio', 'search'),
+            new ItemMenu($permissao, $idPerfil, 'Importar Excel', 'Importador', 'selecionar'),
+            new ItemMenu($permissao, $idPerfil, 'Relat&oacute;rios', 'Relatorio', 'selecionar'),
             new ItemMenu($permissao, $idPerfil, 'Gerenciar', null, null, array(
                 new ItemMenu($permissao, $idPerfil, 'Projeto', 'GerenciarProjeto', 'listar', array(), 'projeto.png'),
                 new ItemMenu($permissao, $idPerfil, 'Lagoa', 'GerenciarLagoa', 'listar', array(), 'lagoa.png'),
+                new ItemMenu($permissao, $idPerfil, 'Ponto amostral', 'GerenciarPontoAmostral', 'listar', array(), 'pontoamostral.png'),
                 new ItemMenu($permissao, $idPerfil, 'Categoria', 'GerenciarCategoria', 'listar', array(), 'categoria.png'),
                 new ItemMenu($permissao, $idPerfil, 'Par&acirc;metro', 'GerenciarParametro', 'listar', array(), 'parametro.png'),
                 new ItemMenu($permissao, $idPerfil, 'Esp&eacute;cie', 'GerenciarEspecie', 'listar', array(), 'especie.png'),

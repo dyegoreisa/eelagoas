@@ -93,7 +93,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
                 'param'  => 'id_lagoa/',
                 'alt'    => 'Lista pontos amostrais',
                 'texto'  => '[ P ]',
-                'icone'  => 'pontoAmostral.png'
+                'icone'  => 'pontoamostral.png'
             ),
             array(
                 'modulo' => 'GerenciarLagoa',
@@ -113,7 +113,7 @@ class Ctrl_GerenciarLagoa extends BaseController implements Gerenciar {
             array(
                 'modulo' => 'GerenciarProjeto',
                 'metodo' => 'editar',
-                'alt'    => 'Alterar lagoa'
+                'alt'    => 'Alterar projeto'
             )
         );
 

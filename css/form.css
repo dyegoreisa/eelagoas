@@ -44,7 +44,7 @@ form.cmxform label.error, label.error {
 div.error { display: none; }
 
 input { 
-  border: solid AliceBlue; 
+  border: solid LightBlue; 
   font-size: 18px;
 }
 
@@ -71,7 +71,7 @@ input.ok {
 }
 
 textarea { 
-  border: solid AliceBlue;; 
+  border: solid LightBlue;; 
   font-size: 18px;
 }
 
@@ -90,7 +90,7 @@ textarea.ok {
 }
 
 select { 
-  border: solid AliceBlue;; 
+  border: solid LightBlue;; 
   font-size: 18px;
 }
 
@@ -114,6 +114,9 @@ select.campo {
 
 form.cmxform .gray * { color: gray; }
 
+ul#opcao_pdf {
+
+}
 
 
 /**********************************
@@ -176,9 +179,9 @@ form fieldset#lista_parametros  {
 }
 
 form fieldset#lista_parametros div.box {
-    height: 275px;
-    width: 268px;
-    overflow: scroll;
+    height: 265px;
+    width: 270px;
+    overflow-y: auto;
 }
 
 form fieldset#lista_novos_parametros  {

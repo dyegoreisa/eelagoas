@@ -2,10 +2,6 @@
 
 class Column 
 {
-    private $field;
-    private $text;
-    private $align;
-
     /**
      * Informa se tem fundo transparente
      * 
@@ -13,7 +9,23 @@ class Column
      * @access private
      */
     private $fill;
+    private $field;
+    private $text;
+    private $align;
     private $width;
+    private $height;
+    private $columns;
+    private $id;
+
+    public function setFill($fill)
+    {
+        $this->fill = $fill;
+    }
+
+    public function getFill()
+    {
+        return $this->fill;
+    }
 
     public function setField($field)
     {
@@ -45,16 +57,6 @@ class Column
         return $this->align;
     }
 
-    public function setFill($fill)
-    {
-        $this->fill = $fill;
-    }
-
-    public function getFill()
-    {
-        return $this->fill;
-    }
-
     public function setWidth($width)
     {
         $this->width = $width;
@@ -65,4 +67,52 @@ class Column
         return $this->width;
     }
     
+    public function setHeight($height)
+    {
+        $this->height = $height;
+    }
+
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+    public function setColumns($columns)
+    {
+        $this->columns = $columns;
+    }
+
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setRecursiveWidthByColumns()
+    {
+        $width = 0;
+        $count = 0;
+        if (is_array($this->getColumns())) {
+            foreach ($this->getColumns() as $coluna) {
+                $width += $coluna->setRecursiveWidthByColumns();
+                if (!is_array($coluna->getColumns())) {
+                    $count++;
+                }
+            }
+            $this->setWidth($count + $width);
+        } else {
+            $this->setWidth(0);
+        }
+
+        return $this->getWidth();
+    }
 }

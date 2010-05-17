@@ -12,16 +12,22 @@ $(document).ready(onLoad);
     }
 </style>
 {/literal}
-
+{if $mensagem neq ""}
+    <p>{$mensagem}</p>
+{/if}
 <!-- Form com informações para enviar para o JavaScript -->
 <form>
 <input type="hidden" id="dir" value="{$dir}"/>
 <input type="hidden" id="count" value="0"/>
 <input type="hidden" id="countItens" value="0"/>
 </form>
-
+{if $coleta.id_coleta neq ""}
+    {assign var="label" value="Alterar coleta"}
+{else}
+    {assign var="label" value="Cadastar coleta"}
+{/if}
 <fieldset>
-<legend>Cadastrar Coleta</legend>
+<legend>{$label}</legend>
 
 <form action="{$dir}/GerenciarColeta/salvar" method="POST" class="cmxform" id="editar_coleta">
 
@@ -36,11 +42,6 @@ $(document).ready(onLoad);
             <option value="-1"> -- [Selecione] -- </option>
             {html_options options=$select_projeto selected=$id_projeto}
         </select>
-        <input type="button" class="novo" alt="projeto" value="Novo">
-    </span>
-    <span id="projeto_inserir" class="escondido">
-        <input type="text" name="nome_projeto" id="nome_projeto" value="" disabled>
-        <input type="button" class="cancelar" alt="projeto" value="Cancelar">
     </span>
     <br/><br/>
 
@@ -50,11 +51,6 @@ $(document).ready(onLoad);
             <option value="-1"> -- [Selecione] -- </option>
             {html_options options=$select_lagoa selected=$coleta.id_lagoa}
         </select>
-        <input type="button" class="novo" alt="lagoa" value="Novo">
-    </span>
-    <span id="lagoa_inserir" class="escondido">
-        <input type="text" name="nome_lagoa" id="nome_lagoa" value="" disabled>
-        <input type="button" class="cancelar" alt="lagoa" value="Cancelar">
     </span>
     <br/><br/>
 
@@ -64,11 +60,6 @@ $(document).ready(onLoad);
             <option value="-1"> -- [Selecione] -- </option>
             {html_options options=$select_ponto_amostral selected=$coleta.id_ponto_amostral}
         </select>
-        <input id="button_ponto_amostral" type="button" class="novo" alt="ponto_amostral" value="Novo">
-    </span>
-    <span id="ponto_amostral_inserir" class="escondido">
-        <input type="text" name="nome_ponto_amostral" id="nome_ponto_amostral" value="" disabled>
-        <input type="button" class="cancelar" alt="ponto_amostral" value="Cancelar">
     </span>
     <br/><br/>
 
@@ -78,50 +69,51 @@ $(document).ready(onLoad);
             <option value="-1"> -- [Selecione] -- </option>
             {html_options options=$select_categoria selected=$coleta.id_categoria}
         </select>
-        <input type="button" class="novo" alt="categoria" value="Novo">
-
     </span>
-    <span id="categoria_inserir" class="escondido">
-        <input type="text" name="nome_categoria" id="nome_categoria" value="" disabled>
-        <br/>
-        <label for="id_categoria_extra">Informa&ccedil;&atilde;o extra:</label><br/>
-        <select name="id_categoria_extra" id="id_categoria_extra" disabled="disabled">
-            {html_options options=$select_categoria_extra}
-        </select>
-        <input type="button" class="cancelar" alt="categoria" value="Cancelar">
-    </span><br/>
-    {if $campoExtraCategoria.nome neq 'nenhum' and $campoExtraCategoria.nome neq ''}
-        <span id="categoria_extra">
-            {include file=$parametro_categoria_extra}
-        </span>
-    {else}
-        <span id="categoria_extra"></span>
-    {/if}
     <br/><br/>
 
+    <span id="campo_profundidade" class="{if $tem_profundidade neq 1}escondido{/if}">
+        <label for="v_campo_profundidade">Profundidade:</label><br/>
+        <input type="text" name="profundidade" id="v_campo_profundidade" size="10" value="{$coleta.profundidade}"/>
+        <br/>
+    </span>
+    <br/>
+
     <fieldset id="lista_parametros">
-        <legend>Parametros: <input type="button" class="novo_item" alt="parametro" value="Novo"></legend>
+        <legend>Parametros:</legend>
         <div class="box">
             {foreach from=$select_parametro key=id_parametro item=parametro}
 
-                <label>
-                    <input type="checkbox" name="id_parametros[]" value="{$id_parametro}" alt="valor{$id_parametro}" {if $parametro.id_coleta_parametro neq ""} checked {/if} />{$parametro.nome}
-                </label>
+                <input type="checkbox" name="parametros[{$id_parametro}][id]" id="parametro{$id_parametro}" value="{$id_parametro}" alt="valor{$id_parametro}" {if $parametro.id_coleta_parametro neq ""} checked {/if} />
+                <label for="parametro{$id_parametro}">{$parametro.nome}</label>
                 <br>
 
-                {include file=$dados_parametros}
+                <div class="campos_parametros {if $parametro.id_coleta_parametro eq ""}escondido{/if}" id="valor{$id_parametro}">
+                    {if $parametro.composicao eq true}
+                        <span>Esp&eacute;cies:</span><br/>
+                        <div>
+                            {foreach from=$parametro.especies item=especie}
+                                <div class="campos_parametros">
+                                    <input type="checkbox" name="parametros[{$id_parametro}][especie][{$especie.id_especie}][id]" id="especie{$especie.id_especie}" value="{$especie.id_especie}" alt="qtde{$especie.id_especie}" {if $especie.quantidade neq ""}checked{/if}>
+                                    <label for="especie{$especie.id_especie}">{$especie.nome}</label><br/>
+                                    <span id="qtde{$especie.id_especie}" class="{if $especie.quantidade eq ""}escondido{/if}">
+                                        <label for="v_qtde_especie{$especie.id_especie}">Quantidade:</label>
+                                        <input type="text" name="parametros[{$id_parametro}][especie][{$especie.id_especie}][qtde]" id="v_qtde_especie{$especie.id_especie}" size="5" value="{$especie.quantidade}">
+                                    </span>
+                                </div>
+                            {/foreach}
+                        </div>
+                        <br/>
+                    {else}
+                        <label for="v_valor{$id_parametro}">Valor:</label><br/> 
+                        <input type="text" id="v_valor{$id_parametro}" name="parametros[{$id_parametro}][valor]" size="10" value="{$parametro.valor}">
+                    {/if}
+                    <hr>
+                </div>
 
             {/foreach}
         </div>
     </fieldset>
-
-    <fieldset id="lista_novos_parametros" class="escondido">
-        <legend>Novos parametros:</legend>
-        <div class="box">
-            <span id="parametro_inserir"></span>
-        </div>
-    </fieldset>
-    <br/>
     
     {if $coleta.id_coleta neq ""}
         <input type="hidden" name="id_coleta" value="{$coleta.id_coleta}">

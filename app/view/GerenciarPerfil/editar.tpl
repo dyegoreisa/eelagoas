@@ -1,9 +1,15 @@
 {if $mensagem neq ""}
     <p>{$mensagem}</p>
 {/if}
+{if $perfil.id_perfil neq ""}
+    {assign var="label" value="Alterar perfil"}
+{else}
+    {assign var="label" value="Cadastar perfil"}
+{/if}
 <fieldset>
-{include file=$submenu titulo='Cadastrar Perfil'}
+{include file=$submenu titulo=$label}
 
+<div class="scroll_lista">
 <form action="{$dir}/GerenciarPerfil/salvar" method="POST" class="cmxform">
 
     <label for="login">Nome:</label><br/>
@@ -37,5 +43,6 @@
     <input type="submit" value="Salvar">
 
 <form>
+</div>
 </fieldset>
 

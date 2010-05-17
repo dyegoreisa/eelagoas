@@ -1,8 +1,13 @@
 {if $mensagem neq ""}
   <p>{$mensagem}</p>
 {/if}
+{if $lagoa.id_lagoa neq ""}
+    {assign var="label" value="Alterar lagoa"}
+{else}
+    {assign var="label" value="Cadastrar lagoa"}
+{/if}
 <fieldset>
-{include file=$submenu titulo='Cadastrar Lagoa'}
+{include file=$submenu titulo=$label}
 
 <form action="{$dir}/GerenciarLagoa/salvar" method="POST" class="cmxform">
 

@@ -66,7 +66,11 @@ class Mensagem
 
     public static function fetch() {
         if (count(self::$mensagensErro)) {
-            return self::getErro();
+            $saida[] = self::getErro();
+            if (count(self::$mensagensAtencao)) {
+                $saida[] = self::getAtencao();
+            }
+            return implode(self::getSeparador(), $saida);
         } else {
             $saida = array();
             if (count(self::$mensagensAtencao)) {

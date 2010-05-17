@@ -13,7 +13,7 @@ define('SITE', 'http://' . $_SERVER['HTTP_HOST'] . ROOT_FOLDER);
  * Caminho do diretórios para o smarty 
  */
 define('TEMPLATE_DIR', 'plugin/report/render/templates');
-define('COMPILE_DIR', 'plugin/report/render/templates_c');
+define('COMPILE_DIR', 'compiled');
 define('CONFIG_DIR', '');
 define('CACHE_DIR', '');
 

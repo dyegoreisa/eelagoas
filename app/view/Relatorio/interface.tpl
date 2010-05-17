@@ -12,7 +12,7 @@ $(document).ready(onLoad);
 <fieldset>
     <legend>Relat&oacute;rio Configur&aacute;vel</legend>
 
-    <form action="{$dir}/Relatorio/execute" method="POST" class="cmxform" target="_blank" >
+    <form action="{$dir}/Relatorio/gerar" method="POST" class="cmxform" target="_blank" >
     
         <table border="0">
             <tr>
@@ -45,7 +45,7 @@ $(document).ready(onLoad);
                     </select>
                 </td>
 
-                <td class="campo escondido" id="categoria_extra"></td>
+                <td class="campo escondido" id="campo_profundidade"></td>
             </tr>
             <tr>
                 <td class="campo">
@@ -55,7 +55,7 @@ $(document).ready(onLoad);
                     </select>
                 </td>
 
-                <td class="campo escondido" id="campo_extra"></td>
+                <td class="campo escondido" id="campo_especie"></td>
             </tr>
             <tr>
                 <td class="campo" id="campo_dia">
@@ -105,10 +105,34 @@ $(document).ready(onLoad);
             <input type="radio" name="tipo_relatorio" value="xls" id="radio_xls"><label for="radio_xls">Excel</label>
         </fieldset>
 
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <fieldset class="campo escondido" id="opcao_pdf">
+            <legend>Op&ccedil;&otilde;es do PDF:</legend>
+            <table>
+                {*<tr>
+                    <td><label>Orienta&ccedil;&atilde;o:</label></td>
+                    <td>
+                        <select name="orientacao">
+                            <option value="P">Retrato</option>
+                            <option value="L" selected>Paisagem</option>
+                        </select>
+                    </td>
+                </tr>*}
+                <tr>
+                    <td><label>Formato:</label></td>
+                    <td>
+                        <select name="formato">
+                            <option value="A3">A3</option>
+                            <option value="A4" selected>A4</option>
+                            {*<option value="A5">A5</option>*}
+                            {*<option value="Letter">Carta</option>*}
+                            <option value="Legal">Of&iacute;cio</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <br/>&nbsp;&nbsp;&nbsp;
 
         <input type="submit" value="Gerar">
 

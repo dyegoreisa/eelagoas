@@ -1,7 +1,8 @@
 <?php
 require_once 'Gerenciar.php';
 
-class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
+class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar 
+{
     protected $pontoAmostral;
     protected $lagoa;
 
@@ -17,48 +18,59 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
     public function editar( $id = false ){
         $smarty = $this->getSmarty(); 
 
+        $smarty->assign('select_lagoas', $this->lagoa->listarSelectAssocSimple(array(
+            'campo' => 'nome',
+            'ordem' => 'ASC'
+        )));
+
         if( $id ) {
             $this->pontoAmostral->setId( $id );
             $this->pontoAmostral->pegar();
 
-            $smarty->assign( 'pontoAmostral', $this->pontoAmostral->getData() );
+            $smarty->assign('pontoAmostral', $this->pontoAmostral->getData());
         }
 
-        $smarty->displayHBF( 'editar.tpl' );
+        $smarty->displaySubMenuHBF( 'editar.tpl' );
     }
 
     public function salvar(){
         $smarty = $this->getSmarty();
 
-        if( isset( $_POST['nome'] ) && $_POST['nome'] != '' ) {
-
+        if(isset($_POST['nome']) && $_POST['nome'] != '' &&
+           isset($_POST['id_lagoa']) && $_POST['id_lagoa'] != -1
+        ) {
             try{
-                if( isset( $_POST['id_ponto_amostral'] ) && $_POST['id_ponto_amostral'] != '' ) {
-                    $this->pontoAmostral->setId( $_POST['id_ponto_amostral'] );
-                    $this->pontoAmostral->setData( array( 'nome' => $_POST['nome'] ) );
-                    if( $this->pontoAmostral->atualizar() )
-                        Mensagem::addOk('Ponto Amostral alterada.' );
-                    else
+                if( isset($_POST['id_ponto_amostral']) && $_POST['id_ponto_amostral'] != '') {
+                    $this->pontoAmostral->setId($_POST['id_ponto_amostral']);
+                    $this->pontoAmostral->setData(array(
+                        'nome'     => $_POST['nome'],
+                        'id_lagoa' => $_POST['id_lagoa']
+                    ));
+                    if ($this->pontoAmostral->atualizar()) {
+                        Mensagem::addOk('Ponto Amostral alterada.');
+                    } else {
                         Mensagem::addErro(latinToUTF('Não foi possível salvar o registro.'));
-
+                    }
                 } else {
-                    $this->pontoAmostral->setData( array( 'nome' => $_POST['nome'] ) );
-                    if( $this->pontoAmostral->inserir() )
-                        Mensagem::addOk('Ponto Amostral salva!' );
-                    else 
+                    $this->pontoAmostral->setData(array(
+                        'nome'     => $_POST['nome'],
+                        'id_lagoa' => $_POST['id_lagoa']
+                    ));
+                    if($this->pontoAmostral->inserir()) {
+                        Mensagem::addOk('Ponto Amostral salva!');
+                     } else {
                         Mensagem::addErro(latinToUTF('Não foi possível salvar a pontoAmostral.'));
-
+                    }
                 }
-                $smarty->displayHBF( 'salvar.tpl' );
+                $smarty->displaySubMenuHBF('salvar.tpl');
 
             } catch (Exception $e) {
                 Mensagem::addErro('Problema ao salvar pontoAmostral.' . $e->getMessage() );
                 $smarty->displayError();
             }
-
         } else {
             Mensagem::addErro(latinToUTF('O campo Nome não pode ser vazio.'));
-            $smarty->displayHBF( 'editar.tpl' );
+            $smarty->displaySubMenuHBF( 'editar.tpl' );
         }
     }
 
@@ -80,6 +92,11 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
                 'texto'  => '[ E ]',
                 'class'  => 'excluir',
                 'icone'  => 'excluir.png'
+            ),
+            array(
+                'modulo' => 'GerenciarLagoa',
+                'metodo' => 'editar',
+                'alt'    => 'Alterar Lagoa'
             )
         );
 
@@ -96,7 +113,7 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
             $smarty->assign( 'pontosAmostrais', $this->pontoAmostral->listar() );
         }
 
-        $smarty->displayHBF( 'listar.tpl' );
+        $smarty->displaySubMenuHBF( 'listar.tpl' );
     }
 
     public function buscar($campo = 'id_ponto_amostral', $dados = false){
@@ -125,10 +142,10 @@ class Ctrl_GerenciarPontoAmostral extends BaseController implements Gerenciar {
             }
             else {
                 Mensagem::addAtencao(latinToUTF('Não foi encontrador nenhum ponto amostral.'));
-                $smarty->displayHBF('buscar.tpl');
+                $smarty->displaySubMenuHBF('buscar.tpl');
             }
         } else {
-            $smarty->displayHBF('buscar.tpl');
+            $smarty->displaySubMenuHBF('buscar.tpl');
         }
     }
 

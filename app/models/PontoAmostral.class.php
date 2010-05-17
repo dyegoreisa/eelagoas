@@ -35,4 +35,28 @@ class PontoAmotral extends BaseModel
         $sth->setFetchMode(PDO::FETCH_ASSOC);
         return $this->assocArray($sth->fetchAll(), 'id_ponto_amostral', 'nome');
     }
+
+    public function listar($order = false) {
+        $sqlOrder = '';
+        if ($order) {
+            $sqlOrder = " ORDER BY {$order['campo']} {$order['ordem']}";
+        }
+        $sth = $this->dbh->prepare("
+            SELECT 
+                pa.id_ponto_amostral 
+                , pa.nome
+                , l.id_lagoa
+                , l.nome as nome_lagoa
+            FROM
+                ponto_amostral pa
+                JOIN lagoa l ON l.id_lagoa = pa.id_lagoa
+            $sqlOrder
+        ");
+
+        $sth->execute();
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        $lista = $sth->fetchAll();
+
+        return $lista;
+    }
 }

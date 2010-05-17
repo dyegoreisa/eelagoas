@@ -75,13 +75,19 @@ abstract class BaseModel {
     }
 
     public function getData( $field = false ) {
-        if( $field !== false )
-            return $this->data[$field];
-        else
+        if( $field !== false ) {
+            if (isset($this->data[$field])) {
+                return $this->data[$field];
+            } else {
+                throw new Exception("O campo {$field} não encontrado.");
+                return false;
+            }
+        } else {
             return $this->data;
+        }
     }
     
-    public function setData( $dados ) {
+    public function setData(array $dados ) {
         $this->data = $dados;
     }
 
@@ -91,6 +97,12 @@ abstract class BaseModel {
 
     public function setDataAll( $dataAll ) {
         $this->dataAll = $dataAll;
+    }
+
+    public function getFieldById($id, $field) {
+        $this->setId($id);
+        $this->pegar();
+        return $this->getData($field);
     }
 
     /**
@@ -105,7 +117,7 @@ abstract class BaseModel {
         $ok = $this->dbh->exec( $sql );
         if( $this->dbh->errorCode() != 00000 ) {
             $e = $this->dbh->errorInfo();
-            throw new Exception( "<hr>{$e[2]}<hr>" );
+            throw new Exception( "{$e[2]}" );
         }
 
         if( $ok ) {
@@ -129,7 +141,7 @@ abstract class BaseModel {
         $valores = " VALUES(";
         foreach( $this->data as $campo => $valor ) {
             if( !is_string( $campo ) )
-                throw new Exception('<hr>O nome do campo na tabela n&atilde;o foi informado.<hr>');
+                throw new Exception('O nome do campo na tabela n&atilde;o foi informado.');
 
             if( $valor !== '' ) {
                 $campos  .= $campo . ',';
@@ -183,12 +195,40 @@ abstract class BaseModel {
         $sth->execute( array( ':value' => $this->id ) );
         if( $sth->errorCode() != 00000 ) {
             $e = $sth->errorInfo();
-            throw new Exception( "<hr>{$e[2]}<hr>" );
+            throw new Exception( "{$e[2]}" );
         }
 
         $this->data = $sth->fetch();
 
         return ($this->data == true) ? true : false;
+    }
+
+    public function localizar()
+    {
+        $parameter = array();
+        foreach ($this->data as $key => $data) {
+            $parameter[] = "{$key} = :{$key}";
+        }
+        $parameter = implode(' AND ', $parameter);
+
+        $sth = $this->dbh->prepare("
+            SELECT /*********** LOCALIZAR ***************/
+                {$this->nameId}
+            FROM {$this->table}
+            WHERE {$parameter}
+        ");
+
+        $sth->execute( $this->data );
+        if( $sth->errorCode() != 00000 ) {
+            $e = $sth->errorInfo();
+            throw new Exception( "{$e[2]}" );
+        }
+
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        $data = $sth->fetch();
+        $this->id = $data[$this->nameId];
+
+        return $this->id;
     }
     
     /**
@@ -204,7 +244,7 @@ abstract class BaseModel {
         $ok = $this->dbh->exec( $sql );
         if( $this->dbh->errorCode() != 00000 ) {
             $e = $this->dbh->errorInfo();
-            throw new Exception( "<hr>{$e[2]}<hr>" );
+            throw new Exception( "{$e[2]}" );
         } else {
             $ok = true;
         }
@@ -243,7 +283,7 @@ abstract class BaseModel {
         $sth->rowCount();
         if( $this->dbh->errorCode() != 00000 ) {
             $e = $this->dbh->errorInfo();
-            throw new Exception( "<hr>{$e[2]}<br>" );
+            throw new Exception( "{$e[2]}<br>" );
         }
         
         if ($sth->rowCount() == 1) {
@@ -364,7 +404,7 @@ abstract class BaseModel {
         //$sth->debugDumpParams(); // DEBUG 
         if( $sth->errorCode() != 00000 ) {
             $e = $sth->errorInfo();
-            throw new Exception( "<hr>{$e[4]}<hr>" );
+            throw new Exception( "{$e[4]}" );
         }
 
         $row_count = $sth->rowCount();

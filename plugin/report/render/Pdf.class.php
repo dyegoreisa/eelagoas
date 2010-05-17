@@ -5,6 +5,7 @@ require_once 'lib/myFPDF.class.php';
 class Pdf extends Render
 {
     private $fpdf;
+
     /**
      * Lista de titulos para as colunas
      * 
@@ -12,13 +13,22 @@ class Pdf extends Render
      * @access private
      */
     private $titles;
+
+    private $fatorWidth;
+    private $fatorHeight;
+    private $orientation;
+    private $format;
     
-    public function __construct()
+    public function __construct($orientation = 'L', $format = 'A4')
     {
         parent::__construct();
         $this->fpdf = new myFPDF();
         $this->fpdf->setToday($this->todayBR);
         $this->fpdf->setUserName($this->userName);
+        $this->fatorWidth  = 2;
+        $this->fatorHeight = 6;
+        $this->orientation = $orientation;
+        $this->format      = $format;
     }
     
     public function setUserName($strUserName)
@@ -112,12 +122,6 @@ class Pdf extends Render
         $this->fpdf->SetXY($xBefore, $yBefore);
     }
 
-    public function Titles()
-    {
-        $this->makeColumns();
-        $this->fpdf->SetX(4);
-    }
-
     /**
      * Imprime os nomes das colunas
      * 
@@ -126,59 +130,130 @@ class Pdf extends Render
      */
     private function makeColumns()
     {
-        $this->fpdf->SetFont('Arial', 'B', 9);     
+        $order = array();
+        $this->makeTitle();
+
+        $this->fpdf->SetFont('Arial', 'B', 6);     
         $this->fpdf->SetFillColor(96);
         $this->fpdf->SetTextColor(255);
-        foreach ($this->titles as $key => $val) {
-            if (!isset($x)) {
-                $x = 4;
-                $y = $this->fpdf->GetY() + 5;                
-                $this->fpdf->SetXY($x, $y);
-            } else {
-                $this->fpdf->SetXY($x, $y);
-            }
 
-            $align = (isset($this->fpdf->aligns[$key])) ? $this->fpdf->aligns[$key] : 'L';
-            $this->fpdf->Cell($this->fpdf->widths[$key], 6, mb_convert_encoding($val, 'ISO-8859-1', 'UTF-8'), 0, 1, $align, 1);            
-            $x += $this->fpdf->widths[$key];                
-        }
+        $this->setRecursiveWidth($this->getColumnByField('parametro')); // Faz novamente para pega a largura com fpdf
+        $this->makeRecursiveColumns(4, $this->fpdf->GetY() + 5, $this->getColumns(), &$ordem);
+
         $this->fpdf->SetFillColor(255);
         $this->fpdf->SetTextColor(0);
         $this->fpdf->SetFont('Arial', '', 9);  
+
+        return $ordem;
     }
 
-    public function makeList()
+    public function setRecursiveWidth($column)
     {
-        $this->fpdf->setReportName(mb_convert_encoding($this->getReportName(), 'ISO-8859-1', 'UTF-8'));
-        $this->fpdf->AddPage('L', 'A4');
-        $this->fpdf->AliasNbPages();
+        $width = 0;
+        $count = 0;
+        $stringWidth = $this->fpdf->GetStringWidth($column->getText());
+        $stringWidth = ($stringWidth < 6) ? 6 : $stringWidth;
+        if (is_array($column->getColumns())) {
+            foreach ($column->getColumns() as $coluna) {
+                $width += $this->setRecursiveWidth($coluna);
+            }
+            $column->setWidth($width);
+            $column->setHeight(1);
+        } else {
+            $column->setWidth($stringWidth);
+        }
 
-        $this->makeFilters();
-        
-        $this->totalLines();
-        
-        $this->fpdf->doBorder = false;
-        $this->fpdf->doFills = true;
-        
-        $this->printLines();
+        return $column->getWidth();
+    }
+
+    private function makeRecursiveColumns($x, $y, array $columns, $ordem) 
+    {
+        foreach ($columns as $column) {
+
+            $width  = $column->getWidth() * $this->fatorWidth;
+            $height = $column->getHeight() * $this->fatorHeight;
+            $text   = $column->getText();
+            $align  = (isset($this->fpdf->aligns[$column->getField()])) ? $this->fpdf->aligns[$column->getField()] : 'L';
+
+            $this->fpdf->SetXY($x, $y);
+            $this->fpdf->Cell($width, $height, $text, 1, 1, $align, 1);            
+
+            if (is_array($column->getColumns())) {
+                $this->makeRecursiveColumns($x, $y + 6, $column->getColumns(), &$ordem);
+            } else {
+                $ordem[] = array(
+                    'id'     => $column->getId(), 
+                    'field'  => $column->getField(),
+                    'width'  => $width,
+                    'height' => $height,
+                    'text'   => $text
+                );
+            }
+
+            $x += $width;
+        }
     }
 
     protected function printLines()
     {
         // logica das linhas        
         $this->fpdf->currentLine = 1;        
-        $this->makeColumns();
+        $ordem = $this->makeColumns();
 
-        foreach ($this->data as $key => $data) {
+        $this->fpdf->SetFont('Arial', 'B', 6);     
+
+        foreach ($this->data as $dado) {
+            $widths = $heights = $aligns = $texts = array();
+
+            $this->fpdf->SetX(4);
+
             if ($this->fpdf->currentLine % 2 != 0) {
                 $this->fpdf->SetFillColor(255, 255, 255);
             } else {
                 $this->fpdf->SetFillColor(224, 224, 224);
             }            
-            $this->fpdf->SetX(4);
-            $this->fpdf->Row($data->getFormatedColumns($this->titles));
+
+            for ($i = 0; $i < 6; $i++) {
+                $atribute  = $this->columns[$i]->getField();
+                $widths[]  = $this->columns[$i]->getWidth() * $this->fatorWidth;
+                $heights[] = $this->columns[$i]->getHeight();
+                $texts[]   = $dado->$atribute;
+                $aligns[]  = 'L';
+            }
+
+            $i = 6;
+            while ($i < count($ordem)) {
+                $text = '';
+                foreach ($dado->parametro as $parametro) {
+                    if (!is_array($parametro->composicao)) {
+                        if ($ordem[$i]['field'] == 'id_parametro' && $ordem[$i]['id'] == $parametro->id_parametro) {
+                            $text = $parametro->valor;
+                        }
+                    } else {
+                        foreach ($parametro->composicao as $especie) {
+                            if ($ordem[$i]['field'] == 'id_especie' && $ordem[$i]['id'] == $especie->id_especie) {
+                                $text = $especie->quantidade;
+                            }
+                        }
+                    }
+                }
+
+                $widths[]  = $ordem[$i]['width'];
+                $heights[] = $ordem[$i]['height'];
+                $texts[]   = $text;
+                $aligns[]  = 'L';
+                $i++;
+            }
+
+            $this->fpdf->SetWidths($widths);
+            $this->fpdf->SetHeight($heights);
+            $this->fpdf->SetAligns($aligns);
+            $this->fpdf->border(true);
+
+            $this->fpdf->Row($texts);
+
             $this->fpdf->currentLine++;
-        }        
+        }
     }
 
     /**
@@ -189,9 +264,20 @@ class Pdf extends Render
      */
     public function render()
     {
-        $this->makeList();
+        $this->fpdf->setReportName(mb_convert_encoding($this->getReportName(), 'ISO-8859-1', 'UTF-8'));
+        $this->fpdf->AddPage($this->orientation, $this->format);
+        $this->fpdf->AliasNbPages();
+
+        $this->makeFilters();
         
-        $this->fpdf->Output();
+        $this->totalLines();
+        
+        $this->fpdf->doBorder = false;
+        $this->fpdf->doFills = true;
+        
+        $this->printLines();
+        
+        $this->fpdf->Output('Relatorio.pdf', 'I');
     }
 }
 ?>

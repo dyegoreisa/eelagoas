@@ -26,13 +26,8 @@ class Parametro extends BaseModel
             SELECT 
                 p.id_parametro 
                 , p.nome 
-                , e.id_parametro_extra
-                , e.nome as nome_campo_extra
-                , e.descricao
-                , e.tem_valor
-                , e.tem_relacao
+                , p.composicao
             FROM parametro p
-            JOIN parametro_extra e ON e.id_parametro_extra = p.id_parametro_extra
             ORDER BY p.nome
         ");
 
@@ -50,20 +45,32 @@ class Parametro extends BaseModel
         return $lista2;
     }
 
-    public function listarSelectAssocExtra()
+    public function listarComposicoes()
     {
         $sth = $this->dbh->prepare("
             SELECT 
                 p.id_parametro 
                 , p.nome 
             FROM parametro p
-            JOIN parametro_extra e ON e.id_parametro_extra = p.id_parametro_extra
-            WHERE e.tem_relacao is true
+            WHERE p.composicao is true
             ORDER BY p.nome
         ");
 
         $sth->execute();
         $sth->setFetchMode(PDO::FETCH_ASSOC);
         return $this->assocArray($sth->fetchAll(), 'id_parametro', 'nome');
+    }
+
+    public function eComposicao() {
+        $sth = $this->dbh->prepare("
+            SELECT p.composicao
+            FROM parametro p
+            WHERE p.id_parametro = :id
+            LIMIT 1
+        ");
+
+        $sth->execute(array(':id' => $this->getId()));
+        $profundidade = $sth->fetch();
+        return ($profundidade['composicao'] == 1) ? true : false;
     }
 }

@@ -4,7 +4,7 @@
 /**
  * Pasta principal do sistema 
  */
-define('ROOT_FOLDER', '/ecolagoas');
+define('ROOT_FOLDER', '');
 
 /**
  * Define a rota padrão
@@ -67,7 +67,7 @@ define('LOGO_XLS', 'images/logo.bmp');
 /**
  * Define se mostra mensagens de erros do PHP 
  */
-define('DISPLAY_ERRORS', 'on');
+define('DISPLAY_ERRORS', 'off');
 
 /**
  * Define informações para acesso ao banco de dados

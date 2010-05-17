@@ -1,5 +1,6 @@
 <fieldset>
 {include file=$submenu titulo='Lista de usu&aacute;rios'}
+<div class="scroll_lista">
   <ul class="lista">
     {foreach from=$usuarios item=usuario}
       <li class="{cycle values="par, impar"}">
@@ -10,4 +11,5 @@
       </li>
     {/foreach}
   </ul>
+</div>
 </fieldset>

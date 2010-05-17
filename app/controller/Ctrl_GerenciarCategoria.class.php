@@ -3,13 +3,11 @@ require_once 'Gerenciar.php';
 
 class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
     protected $categoria;
-    protected $categoriaExtra;
 
     public function __construct() {
         parent::__construct();
 
         $this->categoria      = new Categoria( $this->getDBH() );
-        $this->categoriaExtra = new CategoriaExtra( $this->getDBH() );
     }
 
     public function editar( $id = false ) {
@@ -19,10 +17,9 @@ class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
             $this->categoria->setId( $id );
             $this->categoria->pegar();
 
-            $smarty->assign( 'categoria', $this->categoria->getData() );
+            $smarty->assign('e_perfil', ($this->categoria->getData('e_perfil') == 1) ? 'checked' : '');
+            $smarty->assign('categoria', $this->categoria->getData() );
         }
-
-        $smarty->assign('select_extra', $this->categoriaExtra->listarSelectAssoc());
 
         $smarty->displaySubMenuHBF( 'editar.tpl' );
     }
@@ -30,36 +27,32 @@ class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
     public function salvar() {
         $smarty = $this->getSmarty();
 
-        if(isset($_POST['nome'])               && $_POST['nome'] != '' &&
-           isset($_POST['id_categoria_extra']) && $_POST['id_categoria_extra']
-        ) {
+        if(isset($_POST['nome']) && $_POST['nome'] != '') {
 
             try{
-                $this->categoria->setData( array( 
-                    'nome'               => $_POST['nome'],
-                    'id_categoria_extra' => $_POST['id_categoria_extra']
+                $this->categoria->setData(array(
+                    'nome'     => $_POST['nome'],
+                    'e_perfil' => (isset($_POST['e_perfil']) && $_POST['e_perfil'] == 1) ? 1 : 0
                 ));
                 if( isset( $_POST['id_categoria'] ) && $_POST['id_categoria'] != '' ) {
-                    $this->categoria->setId( $_POST['id_categoria'] );
-                    if( $this->categoria->atualizar() )
-                        Mensagem::addOk('Categoria alterada.' );
-                    else
+                    $this->categoria->setId($_POST['id_categoria']);
+                    if($this->categoria->atualizar()) {
+                        Mensagem::addOk('Categoria alterada.');
+                    } else {
                         Mensagem::addErro(latinToUTF('Não foi possível salvar o registro.'));
-
+                    }
                 } else {
-                    if( $this->categoria->inserir() )
-                        Mensagem::addOk('Categoria salva!' );
-                    else 
+                    if($this->categoria->inserir()) {
+                        Mensagem::addOk('Categoria salva!');
+                    } else {
                         Mensagem::addErro(latinToUTF('Não foi possível salvar a categoria.'));
-
+                    }
                 }
                 $smarty->displaySubMenuHBF( 'salvar.tpl' );
-
             } catch (Exception $e) {
                 Mensagem::addErro('Problema ao salvar categoria.' . $e->getMessage() );
                 $smarty->displayError();
             }
-
         } else {
             Mensagem::addErro(latinToUTF('O campo Nome não pode ser vazio.'));
             $this->editar();
@@ -144,19 +137,29 @@ class Ctrl_GerenciarCategoria extends BaseController implements Gerenciar {
         }
     }
 
-    public function montarMultiSelectExtra($nomeExtra, $categorias, $lagoas = false) {
-        $smarty = $this->getSmarty();
+    public function temProfundidade($categorias) {
+        $partes = explode(',', $categorias);
+        $count = 0;
+        foreach ($partes as $idCategoria) {
+            $this->categoria->setId($idCategoria);
+            if ($this->categoria->temProfundidade()) {
+                $count++;
+            }
+        }
 
-        $this->categoriaExtra->buscar($nomeExtra);
-
-        $smarty->assign('nomeCampo', $nomeExtra);
-        $smarty->assign('label', $this->categoriaExtra->getData('descricao'));
-        $smarty->assign('select_extra', $this->categoriaExtra->listarSelectAssocExtra($categorias, $lagoas));
-        $smarty->displayPiece("multiselect_categoria_extra.tpl", true );
+        if ($count > 0) {
+            $this->getSmarty()->displayJson(array(true));
+        } else {
+            $this->getSmarty()->displayJson(array(false));
+        }
     }
 
-    public function temCategoriaExtra($categorias) {
-        $this->getSmarty()->displayJson(array($this->categoriaExtra->temExtra($categorias)));
+    public function montarMultiSelectProfundidade($categorias) {
+        $smarty = $this->getSmarty();
+
+        $smarty->assign('select_profundidade', $this->categoria->listaProfundidades($categorias)); 
+
+        $smarty->displayPiece('multiselect_profundidade.tpl');
     }
 }
 

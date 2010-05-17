@@ -5,7 +5,7 @@ class Process
     private $dbh;
     private $order;
 
-    public function __construct($filters = array())
+    public function __construct(array $filters)
     {
         $this->data = array();
         $this->filters = $filters;
@@ -37,8 +37,7 @@ class Process
 
     private function generateClausula()
     {
-        $joinAND = '';
-        $where   = array();
+        $where = array();
 
         foreach ($this->filters as $key => $val) {
             switch ($key) {
@@ -59,7 +58,7 @@ class Process
                     }
                     break;
 
-                case 'categorias':
+                case 'categoria':
                     if (is_array($val) && count($val) > 0) {
                         $where[] = 'ca.id_categoria IN (' . implode(',', $val) . ')';
                     }
@@ -67,7 +66,26 @@ class Process
 
                 case 'parametro':
                     if (is_array($val) && count($val) > 0) {
-                        $where[] = 'p.id_parametro IN (' . implode(',', $val) . ')';
+                        $where[] = 'c.id_coleta IN (
+                                        SELECT DISTINCT 
+                                            cp.id_coleta 
+                                        FROM parametro p 
+                                            JOIN coleta_parametro cp ON cp.id_parametro = p.id_parametro 
+                                        WHERE p.id_parametro IN (' . implode(',', $val) . ') 
+                                    )';
+                    }
+                    break;
+
+                case 'especie':
+                    if (is_array($val) && count($val) > 0) {
+                        $where[] = 'c.id_coleta IN (
+                                        SELECT DISTINCT 
+                                            cp.id_coleta 
+                                        FROM especie e 
+                                            JOIN coleta_parametro_especie cpe ON cpe.id_especie = e.id_especie 
+                                            JOIN coleta_parametro cp ON cp.id_coleta_parametro = cpe.id_coleta_parametro 
+                                        WHERE e.id_especie IN (' . implode(',', $val) . ')
+                                    )';
                     }
                     break;
 
@@ -76,88 +94,69 @@ class Process
                     break;
 
                 case 'dia':
-                    $where[] = 'DAY(c.data) IN (' . implode(',', $val) . ')';
+                    if (is_array($val) && count($val) > 0) {
+                        $where[] = 'DAY(c.data) IN (' . implode(',', $val) . ')';
+                    }
                     break;
 
                 case 'mes':
-                    $where[] = 'MONTH(c.data) IN (' . implode(',', $val) . ')';
+                    if (is_array($val) && count($val) > 0) {
+                        $where[] = 'MONTH(c.data) IN (' . implode(',', $val) . ')';
+                    }
                     break;
 
                 case 'ano':
-                    $where[] = 'YEAR(c.data) IN (' . implode(',', $val) . ')';
+                    if (is_array($val) && count($val) > 0) {
+                        $where[] = 'YEAR(c.data) IN (' . implode(',', $val) . ')';
+                    }
                     break;
 
                 case 'hora':
-                    $where[] = 'HOUR(c.data) IN (' . implode(',', $val) . ')';
-                    break;
-
-                case 'especie':
-                    $joinAND = 'AND cp.id_coleta_parametro IN (
-                                    SELECT DISTINCT
-                                        cpe.id_coleta_parametro
-                                    FROM coleta_parametro_especie cpe 
-                                        JOIN especie e ON e.id_especie = cpe.id_especie
-                                    WHERE e.id_especie IN (' . implode(', ', $val) . ')
-                                )';
+                    if (is_array($val) && count($val) > 0) {
+                        $where[] = 'HOUR(c.data) IN (' . implode(',', $val) . ')';
+                    }
                     break;
 
                 case 'profundidade':
-                    $where[] = "(ce.nome = 'profundidade' AND cp.valor_categoria_extra IN (" . implode(', ', $val) . "))";
+                    if (is_array($val) && count($val) > 0) {
+                        $where[] = 'c.profundidade IN (' . implode(', ', $val) . ')';
+                    }
                     break;
 
             }
         }
 
-        $clausulas['joinAND'] = $joinAND;
-        $clausulas['where']   = implode(' AND ', $where);
-        
-        return $clausulas;
+        return implode(' AND ', $where);
     }
 
     public function execute()
     {
         if ($this->filters['tipo_periodo'] == 'mensal') {
-            $formatoData = "date_format(c.data, '%m/%Y %H') AS data";
+            $formatoData = "date_format(c.data, '%m/%Y %H') AS data ";
         } else {
-            $formatoData = "date_format(c.data, '%d/%m/%Y %H') AS data";
+            $formatoData = "date_format(c.data, '%d/%m/%Y %H') AS data ";
         }
 
-        $clausulas     = $this->generateClausula();
-        $joinExtraAND  = $clausulas['joinAND'];
-        $clausulaWhere = $clausulas['where'];
-        $order         = $this->getOrder();
+        $clausulas = $this->generateClausula();
 
-        $sql = "
-            SELECT
-                $formatoData
-                , pr.nome                  AS nome_projeto
-                , l.nome                   AS nome_lagoa 
-                , pa.nome                  AS nome_ponto_amostral 
-                , ca.nome                  AS nome_categoria 
-                , p.nome                   AS nome_parametro 
-                , p.id_parametro
-                , c.id_coleta
-                , pe.tabela
-                , ce.descricao             AS nome_categoria_extra
-                , cp.valor 
-                , cp.valor_categoria_extra
-            FROM
-                coleta c 
-                    JOIN lagoa l 		     ON c.id_lagoa = l.id_lagoa 
-                    JOIN projeto pr          ON pr.id_projeto = l.id_projeto
-                    JOIN ponto_amostral pa 	 ON c.id_ponto_amostral = pa.id_ponto_amostral 
-                    JOIN categoria ca 		 ON c.id_categoria = ca.id_categoria 
-                    JOIN categoria_extra ce  ON ce.id_categoria_extra = ca.id_categoria_extra
-                    JOIN coleta_parametro cp ON c.id_coleta = cp.id_coleta $joinExtraAND
-                    JOIN parametro p 		 ON cp.id_parametro = p.id_parametro 
-                    JOIN parametro_extra pe  ON pe.id_parametro_extra = p.id_parametro_extra
-                    $joinExtra
-            WHERE 
-                $clausulaWhere
-            ORDER BY $order
-        ";
-
-        $sth = $this->dbh->prepare($sql);
+        $sth = $this->dbh->prepare("
+            SELECT /* ************** COLETA ************* */
+                c.id_coleta
+                , {$formatoData}
+                , pr.nome AS nome_projeto
+                , l.nome AS nome_lagoa
+                , pa.nome AS nome_ponto_amostral
+                , ca.nome AS nome_categoria
+                , c.profundidade
+                , 'parametro'
+            FROM projeto pr
+                JOIN lagoa l ON l.id_projeto = pr.id_projeto
+                JOIN ponto_amostral pa ON pa.id_lagoa = l.id_lagoa
+                JOIN coleta c ON c.id_lagoa = l.id_lagoa 
+                    AND c.id_ponto_amostral = pa.id_ponto_amostral
+                JOIN categoria ca ON ca.id_categoria = c.id_categoria
+            WHERE {$clausulas}
+        ");
 
         $sth->execute();
 
@@ -165,42 +164,58 @@ class Process
 
         $dados = array();
         foreach ($sth->fetchAll() as $val) {
-            $dados[] = new Result($val, $this->filters[$val['tabela']]);
+            $val['parametro'] = $this->executeParametro($val['id_coleta']);
+            $dados[] = new Result($val);
         }
-
         return $dados;
     }
 
-    public function getExtrasByParametro($idParametro, $idColeta, $tabela, $idExtras = false)
+    private function executeParametro($idColeta)
     {
-        $clausulaAnd = '';
-        if ($idExtras) {
-            if (is_array($idExtras)) {
-                $clausulaAnd = " AND e.id_{$tabela} IN (" . implode(', ', $idExtras) . ") ";
-            } else {
-                $clausulaAnd = " AND e.id_{$tabela} IN ({$idExtras}) ";
-            }
-        }
-
         $sth = $this->dbh->prepare("
-            SELECT DISTINCT
-                e.id_{$tabela}
-                , e.nome
-                , pe.descricao
-            FROM
-                coleta c
+            SELECT
+                p.id_parametro
+                , p.nome AS parametro
+                , cp.valor
+                , p.composicao
+            FROM coleta c
                 JOIN coleta_parametro cp ON cp.id_coleta = c.id_coleta
                 JOIN parametro p ON p.id_parametro = cp.id_parametro
-                JOIN coleta_parametro_{$tabela} cpe ON cpe.id_coleta_parametro = cp.id_coleta_parametro
-                JOIN {$tabela} e ON e.id_{$tabela} = cpe.id_{$tabela}
-                JOIN parametro_extra pe ON pe.id_parametro_extra = p.id_parametro_extra
-            WHERE
-                p.id_parametro = ? AND cp.id_coleta = ?
-                {$clausulaAnd}
-            ORDER BY e.nome
+            WHERE c.id_coleta = :id_coleta
         ");
 
-        $sth->execute(array($idParametro, $idColeta));
+        $sth->execute(array(':id_coleta' => $idColeta));
+
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+
+        $dados = array();
+        foreach ($sth->fetchAll() as $val) {
+            if ($val['composicao'] == 1) {
+                $val['composicao'] = $this->executeEspecie($idColeta, $val['id_parametro']);
+            }
+            $dados[] = new Result($val);
+        }
+        return $dados;
+    }
+
+    private function executeEspecie($idColeta, $idParametro)
+    {
+        $sth = $this->dbh->prepare("
+            SELECT
+                e.id_especie
+                , e.nome AS especie
+                , cpe.quantidade
+            FROM especie e
+                JOIN coleta_parametro_especie cpe ON cpe.id_especie = e.id_especie
+                JOIN coleta_parametro cp ON cp.id_coleta_parametro = cpe.id_coleta_parametro
+            WHERE cp.id_parametro = :id_parametro
+                AND cp.id_coleta = :id_coleta
+        ");
+
+        $sth->execute(array(
+            ':id_parametro' => $idParametro,
+            ':id_coleta'    => $idColeta
+        ));
 
         $sth->setFetchMode(PDO::FETCH_ASSOC);
 
@@ -208,7 +223,106 @@ class Process
         foreach ($sth->fetchAll() as $val) {
             $dados[] = new Result($val);
         }
+        return $dados;
+    }
 
+    public function temComposicao()
+    {
+        $clausulas = $this->generateClausula();
+
+        $sthComposicao = $this->dbh->prepare("
+            SELECT /* *********** TEM COMPOSICAO ************* */
+                sum(p.composicao) AS tem_composisao
+            FROM coleta c 
+                JOIN coleta_parametro cp ON cp.id_coleta = c.id_coleta 
+                JOIN parametro p ON p.id_parametro = cp.id_parametro 
+                JOIN lagoa l ON l.id_lagoa = c.id_lagoa 
+                JOIN projeto pr ON pr.id_projeto = l.id_projeto 
+                JOIN categoria ca ON ca.id_categoria = c.id_categoria
+                JOIN ponto_amostral pa ON pa.id_ponto_amostral = c.id_ponto_amostral
+            WHERE {$clausulas}
+        ");
+        $sthComposicao->execute();
+        $sthComposicao->setFetchMode(PDO::FETCH_ASSOC);
+
+        $dado = $sthComposicao->fetch();
+        
+        return ((int)$dado['tem_composisao'] > 0) ? true : false;
+    }
+
+    public function getTitulosParametro()
+    {
+        $clausulas = $this->generateClausula();
+
+        $sth = $this->dbh->prepare("
+            SELECT DISTINCT /* ***************** PARAMETRO ************** */
+                p.id_parametro 
+                , p.nome
+                , p.composicao 
+            FROM coleta c 
+                JOIN coleta_parametro cp ON cp.id_coleta = c.id_coleta 
+                JOIN parametro p ON p.id_parametro = cp.id_parametro 
+                JOIN lagoa l ON l.id_lagoa = c.id_lagoa 
+                JOIN projeto pr ON pr.id_projeto = l.id_projeto 
+                JOIN categoria ca ON ca.id_categoria = c.id_categoria
+                JOIN ponto_amostral pa ON pa.id_ponto_amostral = c.id_ponto_amostral
+            WHERE {$clausulas}
+            ORDER BY p.composicao, p.nome
+        ");
+
+        $sth->execute();
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+
+        $height = ($this->temComposicao()) ? 2 : 1;
+
+        $dados = array();
+        foreach ($sth->fetchAll() as $val) {
+            $coluna = new Column;
+            $coluna->setText($val['nome']);
+            $coluna->setId($val['id_parametro']);
+            $coluna->setField('id_parametro');
+            $coluna->setHeight($height);
+            if ($val['composicao'] == 1) {
+                $coluna->setColumns($this->getTitulosEspecie($val['id_parametro']));
+            }
+            $dados[] = $coluna;
+        }
+        return $dados;
+    }
+
+    private function getTitulosEspecie($idParametro)
+    {
+        $clausulas = $this->generateClausula();
+
+        $sth = $this->dbh->prepare("
+            SELECT DISTINCT /* ********* ESPECIE ************* */
+                e.id_especie 
+                , e.nome 
+            FROM especie e 
+                JOIN coleta_parametro_especie cpe ON cpe.id_especie = e.id_especie 
+                JOIN coleta_parametro cp ON cp.id_coleta_parametro = cpe.id_coleta_parametro 
+                JOIN coleta c ON c.id_coleta = cp.id_coleta 
+                JOIN lagoa l ON l.id_lagoa = c.id_lagoa 
+                JOIN projeto pr ON pr.id_projeto = l.id_projeto 
+                JOIN categoria ca ON ca.id_categoria = c.id_categoria
+                JOIN ponto_amostral pa ON pa.id_ponto_amostral = c.id_ponto_amostral
+            WHERE {$clausulas} 
+                AND cp.id_parametro = :id_parametro
+            ORDER BY e.nome
+        ");
+
+        $sth->execute(array(':id_parametro' => $idParametro));
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+
+        $dados = array();
+        foreach ($sth->fetchAll() as $val) {
+            $coluna = new Column;
+            $coluna->setText($val['nome']);
+            $coluna->setId($val['id_especie']);
+            $coluna->setField('id_especie');
+            $coluna->setHeight(1);
+            $dados[] = $coluna;
+        }
         return $dados;
     }
 }

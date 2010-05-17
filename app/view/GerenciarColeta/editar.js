@@ -1,106 +1,19 @@
-function abreNovo(seletor){
-    var esconder = "#" + seletor + "_inserir";
-    var mostrar = "#" + seletor + "_selecionar";
-    var desativar = "#id_" + seletor;
-    var ativar = "#nome_" + seletor;
-
-    switch(seletor) {
-        case 'projeto':
-            carregarLagoa('disabled');
-            break;
-
-        case 'lagoa':
-            carregarPontoAmostral('disabled');
-            break;
-
-        case 'categoria':
-            $('#id_categoria_extra').attr("disabled","");
-            $('#id_categoria_extra').val(0);
-            $('#categoria_extra').html('');
-            break;
-    }
-
-    $(esconder).removeClass("escondido");
-    $(mostrar).addClass("escondido");
-    $(desativar).val(0);
-    $(desativar).attr("disabled","disabled");
-    $(ativar).attr("disabled","");
-}
-
-function fechaNovo(seletor) {
-    var esconder = "#" + seletor + "_selecionar";
-    var mostrar = "#" + seletor + "_inserir";
-    var desativar = "#nome_" + seletor;
-    var ativar = "#id_" + seletor;
-
-    $(esconder).removeClass("escondido");
-    $(mostrar).addClass("escondido");
-    $(desativar).val('');
-    $(desativar).attr("disabled","disabled");
-    $(ativar).attr("disabled","");
-    $(ativar).val(0);
-
-    if (seletor == 'categoria') {
-        $('#id_categoria_extra').val(0);
-        $('#categoria_extra').html('');
-    }
-}
-
-function novoParametro() {
-    var i = $('#count').val();
+function exibeProfundidade() {
     var dir = $('#dir').val();
-    var idCategoria = $('#id_categoria').val();
-    var idExtra;
-    var url;
 
-    if (idCategoria == '-1') {
-        var idExtra = $('#id_categoria_extra').val();
-        if (idExtra != '1') {
-            url = dir + '/GerenciarColeta/ajaxNovoParametro/' + i + '/' + idCategoria + '/' + idExtra;
-        } else  {
-            url = dir + '/GerenciarColeta/ajaxNovoParametro/' + i + '/' + idCategoria;
-        }
+    $.get(dir + '/GerenciarColeta/ajaxExibeProfundidade/' + $(this).val(), function (profundidade) {
+        campoProfundidade(profundidade);
+    });
+}
+
+function campoProfundidade(tk) {
+    $("#v_campo_profundidade").val("");
+    if (tk == 'true') {
+        $('#campo_profundidade').removeClass('escondido');
+        $("#v_campo_profundidade").attr("disabled","");
     } else {
-        url = dir + '/GerenciarColeta/ajaxNovoParametro/' + i + '/' + idCategoria;
-    }
-
-    $('#count').val(++i);
-
-    $('#lista_novos_parametros').removeClass('escondido');
-
-    $.get(url, function (conteudo) {
-        $("#parametro_inserir").append(conteudo);
-    });
-}
-
-function parametroCategoriaExtra() {
-    var dir = $('#dir').val();
-
-    $.get(dir + '/GerenciarColeta/ajaxParametroCategoriaExtra/' + $(this).val(), function (conteudo) {
-        $('#categoria_extra').html('');
-        if (conteudo != '') {
-            $('#categoria_extra').append(conteudo);
-        }
-    });
-}
-
-function parametroNovaCategoriaExtra() {
-    var dir = $('#dir').val();
-
-    $.get(dir + '/GerenciarColeta/ajaxParametroNovaCategoriaExtra/' + $(this).val(), function (conteudo) {
-        $('#categoria_extra').html('');
-        if (conteudo != '') {
-            $('#categoria_extra').append(conteudo);
-        }
-    });
-}
-
-function removeParametro() {
-    var parametro = $(this).attr('alt');
-    $("#" + parametro ).remove();
-
-    if ($('#parametro_inserir').html() == '') {
-        $('#lista_novos_parametros').addClass('escondido');
+        $('#campo_profundidade').addClass('escondido');
+        $("#v_campo_profundidade").attr("disabled","disabled");
     }
 }
 
@@ -132,94 +45,13 @@ function carregarPontoAmostral(disabled) {
     });
 }
 
-function novoItemParametroExtra() {
-    var dir        = $('#dir').val()
-    var seletor    = $(this).attr('alt');
-    var countItens = $('#countItens').val();
-    var count      = $('#count').val();
-    var thisCount  = $(this).attr('count');
-    var origem;
-    var idExtra;
-
-    $('#countItens').val(++countItens);
-
-    if ($(this).val() == '+') {
-        origem  = 'interno';
-        idExtra = $(this).attr('idExtra');
-    } else {
-        origem  = 'externo';
-        idExtra = $(this).val();
-        $('#add_itens' + thisCount).html('');
-        $('#itens_extra' + thisCount).html('');
-    }
-
-    var url = dir + '/GerenciarColeta/ajaxNovoItemParametroExtra/' 
-            + count + '/' + countItens + '/' + idExtra + '/' + origem;
-
-    $.get(url, function (conteudo) {
-        if (origem == 'externo') {
-            $('#add_itens' + count).html('');
-            $('#itens_extra' + count).html('');
-        }
-        
-        if (conteudo != '') {
-            if (origem == 'externo') {
-                botao = '<input type="button" value="+" class="add_item_extra" alt="itens_extra' 
-                      + count + '" idExtra="' + idExtra + '" count="' + thisCount + '"/>';
-                $('#add_itens' + thisCount).append(botao);
-            }
-            $('#itens_extra' + thisCount).append(conteudo);
-        }
-    });
-}
-
-function removeItemExtra() {
-    var parametro = $(this).attr('alt');
-    $("#" + parametro ).remove();
-}
-
-function removeItensExtra() {
-    
-}
-
 // Comportamentos 
 function onLoad() {
-    $('.novo_item').livequery('click', novoParametro);
-
-    $('.cancelar_item').livequery('click', removeParametro);
-
     $('#id_projeto').livequery('change', carregarLagoa);
 
     $('#id_lagoa').livequery('change', carregarPontoAmostral);
 
-    $('#id_categoria').livequery('change', parametroCategoriaExtra);
-
-    $('#id_categoria_extra').livequery('change', parametroNovaCategoriaExtra);
-
-    $('.parametro_extra').livequery('change', novoItemParametroExtra);
-
-    $('.add_item_extra').livequery('click', novoItemParametroExtra);
-
-    $('.rem_item_extra').livequery('click', removeItemExtra);
-
-    $('.novo').livequery('click', function() {
-        seletor = $(this).attr('alt');
-        abreNovo(seletor);
-        switch (seletor) {
-            case 'projeto':
-                abreNovo('lagoa');
-                abreNovo('ponto_amostral');
-                break;
-
-            case 'lagoa':
-                abreNovo('ponto_amostral');
-                break;
-        }
-    });
-
-    $(".cancelar").livequery('click', function() {
-        fechaNovo($(this).attr('alt'));
-    });
+    $('#id_categoria').livequery('change', exibeProfundidade);
 
     $(":checkbox").click( function() {
         campos = $(this).attr('alt');

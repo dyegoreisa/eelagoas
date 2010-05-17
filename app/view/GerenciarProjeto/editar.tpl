@@ -1,8 +1,13 @@
 {if $mensagem neq ""}
   <p>{$mensagem}</p>
 {/if}
+{if $projeto.id_projeto neq ""}
+    {assign var="label" value="Alterar projeto"}
+{else}
+    {assign var="label" value="Cadastrar projeto"}
+{/if}
 <fieldset>
-{include file=$submenu titulo='Lista de projetos'}
+{include file=$submenu titulo=$label}
 
 <form action="{$dir}/GerenciarProjeto/salvar" method="POST" class="cmxform">
 

@@ -1,8 +1,13 @@
 {if $mensagem neq ""}
     <p>{$mensagem}</p>
 {/if}
+{if $usuario.id_usuario neq ""} 
+    {assign var="label" value="Alterar usu&aacute;rio"}
+{else}  
+    {assign var="label" value="Cadastar usu&aacute;rio"}
+{/if}
 <fieldset>
-{include file=$submenu titulo='Cadastrar Usu&aacute;rio'}
+{include file=$submenu titulo=$label}
 
 <form action="{$dir}/GerenciarUsuario/salvar" method="POST" class="cmxform">
 

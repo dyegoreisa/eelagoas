@@ -1,5 +1,5 @@
 <fieldset>
-  <legend>Buscar Coleta</legend>
+  <legend>Buscar coleta</legend>
   {if $mensagem neq ""}
     <p>{$mensagem}</p>
   {/if}

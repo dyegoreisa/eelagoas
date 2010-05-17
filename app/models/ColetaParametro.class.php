@@ -17,26 +17,19 @@ class ColetaParametro extends BaseModel {
 
     public function listarSelectAssoc( $id ) {
         $sth = $this->dbh->prepare("
-            select
+            SELECT
                 p.id_parametro
-                , p.nome
+                , p.nome 
                 , cp.id_coleta_parametro
-                , cp.valor
-                , cp.valor_extra
-                , e.id_parametro_extra
-                , e.nome as nome_campo_extra
-                , e.descricao
-                , e.tem_valor
-                , e.tem_relacao
-            from 
-                parametro p 
-                join parametro_extra e on e.id_parametro_extra = p.id_parametro_extra
-                left join coleta_parametro cp on cp.id_parametro = p.id_parametro 
-                and cp.id_coleta = :id_coleta
-            order by p.nome
+                , cp.valor 
+                , p.composicao 
+            FROM parametro p 
+                LEFT JOIN coleta_parametro cp ON cp.id_parametro = p.id_parametro 
+                    AND cp.id_coleta = :id_coleta
+            ORDER BY p.nome
         ");
 
-        $sth->execute( array( ':id_coleta' => $id ) );
+        $sth->execute(array(':id_coleta' => $id));
         $sth->setFetchMode(PDO::FETCH_ASSOC);
         $lista = $sth->fetchAll();
 

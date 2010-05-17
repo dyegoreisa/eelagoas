@@ -189,8 +189,9 @@ class Ctrl_GerenciarUsuario extends BaseController implements Gerenciar {
         $smarty->addSubMenuItem($this->subMenu);
 
         $this->usuario->setId($id);
-        $this->usuario->pegar();
+        $this->usuario->pegar();    
 
+        $smarty->assign('nome_usuario', 'Alterar senha de ' . $this->usuario->getData('nome'));
         $smarty->assign( 'usuario', $this->usuario->getData() );
         $smarty->displaySubMenuHBF('alterarSenha.tpl');
     }

@@ -57,9 +57,9 @@ class Report
         $this->setData();
     }
 
-    public function setPDF()
+    public function setPDF($orientation, $format)
     {
-        $this->render = new Pdf();
+        $this->render = new Pdf($orientation, $format);
         $this->setData();
         $this->render->prepareColumns();
     }
@@ -81,17 +81,26 @@ class Report
         return $this->process;
     }
 
-    public function addColumn($field, $text, $align, $fill, $width)
+    public function addColumn($field, $text, $align, $width)
     {
         $column = new Column();
 
         $column->setField($field);
         $column->setText($text);
         $column->setAlign($align);
-        $column->setFill($fill);
         $column->setWidth($width);
 
         $this->columns[] = $column;
+    }
+
+    public function changeColumn($field, $type, $value)
+    {
+        $method = "set{$type}";
+        foreach ($this->columns as &$column) {
+            if ($column->getField() == $field) {
+                call_user_method_array($method, $column, array($value));
+            }
+        }
     }
 
 }

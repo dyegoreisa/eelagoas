@@ -1,8 +1,8 @@
 <?php
 interface Relatorio
 {
-    public function search();
+    public function selecionar();
 
-    public function execute();
+    public function gerar();
 }
 ?>

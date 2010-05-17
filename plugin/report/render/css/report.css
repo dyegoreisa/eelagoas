@@ -81,6 +81,10 @@ ul.body{
     text-align: right;
 }
 
+.align_C {
+    text-align: center;
+}
+
 .linha1{
     background-color:  #eeeeee;
 }

@@ -52,6 +52,9 @@ class Xls extends Render
         $this->format['columns']->setBold();
         $this->format['columns']->setFgColor(9);
         $this->format['columns']->setColor(10);
+        $this->format['columns']->setVAlign('vcenter');
+        $this->format['columns']->setBorderColor(10);
+        $this->format['columns']->setBorder(1);
 
         // Formatação dos nomes das colunas para colunas de números
         $this->format['columns_number'] =& $this->workbook->addFormat();
@@ -69,10 +72,12 @@ class Xls extends Render
         $this->format['row_even'] =& $this->workbook->addFormat();
         $this->format['row_even']->setFgColor(8);
         $this->format['row_even']->setVAlign('top');
+        $this->format['row_even']->setBorder(1);
 
         // Formatação das linhas intercaladas
         $this->format['row_odd'] =& $this->workbook->addFormat();
         $this->format['row_odd']->setVAlign('top');
+        $this->format['row_odd']->setBorder(1);
     }
 
     public function prepareColumns()
@@ -89,7 +94,7 @@ class Xls extends Render
     {
         $this->worksheet =& $this->workbook->addWorksheet($name);
         $this->worksheet->hideScreenGridlines();
-        $this->worksheet->setColumn(0, $this->totalColmuns, 22);
+        $this->worksheet->setColumn(0, $this->totalColmuns - 2, 22);
     }
 
     public function makeFilters()
@@ -156,41 +161,81 @@ class Xls extends Render
      * @access private
      * @return void
      */
-    private function makeColumns()
+    private function makeColumns(array $ordem)
     {
+        $this->makeTitle();
         $this->y = 0;
-        foreach ($this->titles as $key => $val) {
-            $format = ($this->aligns[$key] == 'R') ? 'columns_number' : 'columns';
-            $this->worksheet->writeString($this->x, $this->y, mb_convert_encoding($val, 'ISO-8859-1', 'UTF-8'), $this->format[$format]);
-            $this->y++;
+        $this->makeRecursiveColumns($this->columns, $this->x, &$ordem);
+        $this->x += $this->level;
+    }
+
+    private function makeRecursiveColumns(array $columns, $xAtual, $ordem)
+    {
+        foreach ($columns as $column) {
+            //$format = ($this->aligns[$column->getField()] == 'R') ? 'columns_number' : 'columns';
+            $format = 'columns';
+            if (is_array($column->getColumns())) {
+                $y = $this->y + ($column->getWidth() - 1);
+
+                $this->worksheet->mergeCells($this->x, $this->y, $this->x, $y);
+                $this->worksheet->writeString($this->x, $this->y, mb_convert_encoding($column->getText(), 'ISO-8859-1', 'UTF-8'), $this->format[$format]);
+                $this->x++;
+                $this->x = $this->makeRecursiveColumns($column->getColumns(), $this->x - 1, &$ordem);
+                $this->y = $y;
+                $this->y++;
+            } else {
+                $x = $this->x + ($column->getHeight() - 1);
+
+                $this->worksheet->mergeCells($this->x, $this->y, $x, $this->y);
+                $this->worksheet->writeString($this->x, $this->y, mb_convert_encoding($column->getText(), 'ISO-8859-1', 'UTF-8'), $this->format[$format]);
+                $this->y++;
+
+                $ordem[] = array(
+                    'id'    => $column->getId(), 
+                    'field' => $column->getField()
+                );
+            }
         }
-        $this->x++;
+        return $xAtual;
     }
 
     protected function printLines()
     {
-        $count = 0;
-        $this->makeColumns();
-        foreach ($this->data as $key => $val) {
-            $cyle = ($count % 2) ? 'row_even' : 'row_odd';
-            $this->worksheet->writeRow($this->x, 0, $val->getFormatedColumns($this->titles), $this->format[$cyle]);
+        $ordem = array();
+        $this->makeColumns(&$ordem);
+        foreach ($this->data as $key => $dado) {
+            $this->y = 0;
+            $cycle = ($key % 2) ? 'row_even' : 'row_odd';
+
+            $this->worksheet->writeString($this->x, 0, $dado->data, $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 1, $dado->nome_projeto, $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 2, $dado->nome_lagoa, $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 3, $dado->nome_ponto_amostral, $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 4, $dado->nome_categoria, $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 5, $dado->profundidade, $this->format[$cycle]);
+
+            for ($i = 6; $i < count($ordem); $i++) {
+                $this->y = $i;
+                foreach ($dado->parametro as $parametro) {
+                    if (!is_array($parametro->composicao)) {
+                        if ($ordem[$i]['field'] == 'id_parametro' && $ordem[$i]['id'] == $parametro->id_parametro) {
+                            $this->worksheet->writeString($this->x, $this->y, $parametro->valor, $this->format[$cycle]);
+                        } else {
+                            $this->worksheet->writeString($this->x, $this->y, '', $this->format[$cycle]);
+                        }
+                    } else {
+                        foreach ($parametro->composicao as $especie) {
+                            if ($ordem[$i]['field'] == 'id_especie' && $ordem[$i]['id'] == $especie->id_especie) {
+                                $this->worksheet->writeString($this->x, $this->y, $especie->quantidade, $this->format[$cycle]);
+                            } else {
+                                $this->worksheet->writeString($this->x, $this->y, '', $this->format[$cycle]);
+                            }
+                        }
+                    }
+                }
+            }
             $this->x++;
-            $count++;
         }
-    }
-
-    public function Titles()
-    {
-        $this->makeColumns();
-    }
-
-    public function makeList()
-    {
-        $this->makeFilters();
-        
-        $this->totalLines();
-        
-        $this->printLines();
     }
 
     /**
@@ -208,7 +253,11 @@ class Xls extends Render
 
         $this->makeHead();
 
-        $this->makeList();
+        $this->makeFilters();
+        
+        $this->totalLines();
+        
+        $this->printLines();
         
         $this->workbook->close();
     }

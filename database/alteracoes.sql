@@ -45,3 +45,6 @@ create table coleta_parametro_especie(
     foreign key (id_coleta_parametro) references coleta_parametro (id_coleta_parametro) on update cascade,
     foreign key (id_especie) references especie (id_especie) on update cascade
 )engine=innodb;
+
+alter table coleta_parametro_especie add unique (id_coleta_parametro, id_especie);
+alter table coleta_parametro add unique (id_coleta, id_parametro);
