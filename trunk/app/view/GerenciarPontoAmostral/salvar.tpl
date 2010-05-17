@@ -1,5 +1,5 @@
 <fieldset>
-  <legend>Cadastrar Ponto Amostral</legend>
+{include file=$submenu titulo='Ponto amostral'}
   <p>{$mensagem}</p>
 </fieldset>
 

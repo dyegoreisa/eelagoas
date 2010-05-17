@@ -25,7 +25,7 @@ class Ctrl_Relatorio extends BaseController implements Relatorio
         $this->usuario       = new Usuario($dbh);
     }
     
-    public function search()
+    public function selecionar()
     {
         $smarty = $this->getSmarty();
         $smarty->assign( 'select_projeto', $this->projeto->listarSelectAssoc(array(
@@ -44,12 +44,14 @@ class Ctrl_Relatorio extends BaseController implements Relatorio
     }
 
 
-    public function execute()
+    public function gerar()
     {   
         $filtros       = $_POST;
         $tipoRelatorio = $_POST['tipo_relatorio'];
-        $idProjetos    = (isset($_POST['projeto']) && $_POST['projeto'] != '') ? implode(', ', $_POST['projeto']) : '';
-        $idLagoas      = (isset($_POST['lagoa'])   && $_POST['lagoa']   != '') ? implode(', ', $_POST['lagoa'])   : '';
+        $idProjetos    = (isset($_POST['projeto'])    && $_POST['projeto']    != '') ? implode(', ', $_POST['projeto']) : '';
+        $idLagoas      = (isset($_POST['lagoa'])      && $_POST['lagoa']      != '') ? implode(', ', $_POST['lagoa'])   : '';
+        $orientacao    = (isset($_POST['orientacao']) && $_POST['orientacao'] != '') ? $_POST['orientacao']             : 'L';
+        $formato       = (isset($_POST['formato'])    && $_POST['formato']    != '') ? $_POST['formato']                : 'A4';
 
         $this->usuario->setId($_SESSION[$_SESSION['SID']]['idUsuario']);
         $this->usuario->pegar();
@@ -69,13 +71,13 @@ class Ctrl_Relatorio extends BaseController implements Relatorio
             nome_parametro
         ');
 
-        $report->addColumn('data',                  'Data: ',            'L', 1, 40);
-        $report->addColumn('nome_projeto',          'Projeto: ',         'L', 1, 40);
-        $report->addColumn('nome_lagoa',            'Lagoa: ',           'L', 1, 40);
-        $report->addColumn('nome_ponto_amostral',   'Ponto Amostral: ',  'L', 1, 45);
-        $report->addColumn('nome_categoria',        'Categoria: ',       'L', 1, 50);
-        $report->addColumn('nome_parametro',        'Parâmetro: ',       'L', 1, 60);
-        $report->addColumn('valor',                 'Valor: ',           'R', 1, 15);
+        $report->addColumn('data',                'Data ',             'L', 1); 
+        $report->addColumn('nome_projeto',        'Projeto ',          'L', 1); 
+        $report->addColumn('nome_lagoa',          'Lagoa ',            'L', 1); 
+        $report->addColumn('nome_ponto_amostral', 'Ponto Amostral ',   'L', 1); 
+        $report->addColumn('nome_categoria',      'Categoria ',        'L', 1); 
+        $report->addColumn('profundidade',        'Profundidade ',     'L', 1); 
+        $report->addColumn('parametro',           'Par&acirc;metros ', 'C', 1); 
 
         switch ($tipoRelatorio) {
             case 'html':
@@ -84,11 +86,20 @@ class Ctrl_Relatorio extends BaseController implements Relatorio
                 break;
 
             case 'pdf':
-                $report->setPdf();
+                $report->changeColumn('data',                'Width', 9);
+                $report->changeColumn('nome_projeto',        'Width', 15);
+                $report->changeColumn('nome_lagoa',          'Width', 9);
+                $report->changeColumn('nome_ponto_amostral', 'Width', 10);
+                $report->changeColumn('nome_categoria',      'Width', 10);
+                $report->changeColumn('profundidade',        'Width', 9);
+                $report->changeColumn('parametro',           'Text', mb_convert_encoding('Parâmetros ', 'latin1', 'UTF-8'));
+                $report->setPdf($orientacao, $formato);
+                
                 $render = $report->getRender();
                 break;
 
             case 'xls':
+                $report->changeColumn('parametro', 'Text', 'Parâmetro');
                 $report->setXls();
                 $render = $report->getRender();
                 break;

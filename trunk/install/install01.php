@@ -1,10 +1,19 @@
 <?php
+if (is_file('../config/instaled')) {
+    header('Location: ../index.php');
+}
 require 'config.inc.php';
+
+$pedacos = explode('/', $_SERVER['SCRIPT_NAME']);
+
+session_start();
+$_SESSION['pasta'] = $pedacos[1];
+
 // Verifica se o aquivo de configurações esta instalado
 if (is_file('../config/config.inc.php')) {
     $mensagem[] = 'O sistema j&aacute; est&aacute; instalado.';
-    $mensagem[] = "Para reinstalar o sistema apague o arquivo 'config/config.inc.php'";
-    $mensagem[] = "Caso  n&atilde;o queira reinstalar renomeie a pasta 'install/'.";
+    $mensagem[] = "Para reinstalar o sistema apague o arquivo 'config/config.inc.php' e 'config/instaled'";
+    $mensagem[] = "Caso  n&atilde;o queira reinstalar, crie um arquivo 'config/instaled' com o conte&uacute;do '1'.";
     $mensagem[] = 'Tente novamente <a href="../index.php">clicando aqui.</a>';
     $negado = -1;
 } else {
@@ -15,15 +24,6 @@ if (is_file('../config/config.inc.php')) {
         $mensagem[] = "Pasta '" . COMPILED . "' com acesso <span style=\"color:green\">liberado</span>.";
     } else {
         $mensagem[] = "Pasta '" . COMPILED . "' com acesso <span style=\"color:red\">negado</span>.";
-        $negado++;
-    }
-
-    $plugin_c = 'plugin/report/render/templates_c';
-    if (@file_put_contents("../{$plugin_c}/teste.txt", 'teste') !== false) {
-        @exec("rm -rf ../{$plugin_c}/*");
-        $mensagem[] = "Pasta '{$plugin_c}' com acesso <span style=\"color:green\">liberado</span>.";
-    } else {
-        $mensagem[] = "Pasta '{$plugin_c}' com acesso <span style=\"color:red\">negado</span>.";
         $negado++;
     }
 

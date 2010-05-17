@@ -125,7 +125,7 @@ abstract class BaseView extends Smarty{
         $this->display( $this->getFooter() );
     }
 
-    public function displaySubMenuHBF( $body ) {
+    public function displaySubMenuHBF($body, $icone = '') {
         $subMenu = array(
             array(
                 'modulo' => $this->getTpl(),
@@ -229,5 +229,10 @@ abstract class BaseView extends Smarty{
     public function showMensagem($mensagem)
     {
         $this->assign('mensagem', $mensagem);
+    }
+    
+    public function setIcone($icone)
+    {
+        $this->assign('icone', $icone);
     }
 }

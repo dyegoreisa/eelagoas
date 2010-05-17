@@ -26,7 +26,7 @@
     <p>{$mensagem}</p>
 {/if}
 <fieldset>
-{include file=$submenu titulo='Alterar senha'}
+{include file=$submenu titulo=$nome_usuario}
 
 <form action="{$dir}/GerenciarUsuario/salvarSenha" method="POST" class="cmxform" id="alterar_senha">
 

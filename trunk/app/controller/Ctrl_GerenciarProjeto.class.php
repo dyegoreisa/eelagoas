@@ -8,7 +8,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
     public function __construct() {
         parent::__construct();
 
-        $this->projeto = new Projeto( $this->getDBH() );
+        $this->projeto = new Projeto($this->getDBH());
     }
 
     public function editar( $id = false ) {
@@ -34,7 +34,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
                     $this->projeto->setId( $_POST['id_projeto'] );
                     $this->projeto->setData( array( 'nome' => $_POST['nome'] ) );
                     if( $this->projeto->atualizar() )
-                        Mensagem::addOk('Projeto alterada.' );
+                        Mensagem::addOk('Projeto alterado.' );
                     else
                         Mensagem::addErro(latinToUTF('Não foi possível salvar o registro.'));
 
@@ -98,7 +98,7 @@ class Ctrl_GerenciarProjeto extends BaseController implements Gerenciar
             $smarty->assign( 'projetos', $this->projeto->listar() );
         }
 
-        $smarty->displaySubMenuHBF( 'listar.tpl' );
+        $smarty->displaySubMenuHBF('listar.tpl');
     }
 
     public function buscar( $dados = false ) {

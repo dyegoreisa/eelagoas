@@ -1,5 +1,5 @@
 <fieldset>
-  <legend>Cadastrar Coleta</legend>
+  <legend>Coleta</legend>
   <p>{$mensagem}</p>
 </fieldset>
 

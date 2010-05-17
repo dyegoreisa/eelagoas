@@ -36,6 +36,26 @@ class Lagoa extends BaseModel {
         return $this->assocArray($sth->fetchAll(), 'id_lagoa', 'nome');
     }
 
+    public function listarSelectAssocSimple($order = false) {
+        $sqlOrder = '';
+        if ($order) {
+            $sqlOrder = " ORDER BY {$order['campo']} {$order['ordem']}";
+        }
+
+        $sth = $this->dbh->prepare("
+            SELECT 
+                id_lagoa 
+                , nome 
+            FROM 
+                lagoa 
+            $sqlOrder
+        ");
+
+        $sth->execute();
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        return $this->assocArray($sth->fetchAll(), 'id_lagoa', 'nome');
+    }
+
     public function listar($order = false) {
         $sqlOrder = '';
         if ($order) {

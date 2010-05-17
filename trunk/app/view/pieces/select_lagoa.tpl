@@ -3,5 +3,4 @@
     <option value="-1"> -- [Selecione] -- </option>
     {html_options options=$select_lagoa selected=$coleta.id_lagoa}
   </select>
-  <input id="button_lagoa" type="button" class="novo" alt="lagoa" value="Novo">
 </span>

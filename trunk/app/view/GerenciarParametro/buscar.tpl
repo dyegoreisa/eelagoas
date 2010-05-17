@@ -1,5 +1,5 @@
 <fieldset>
-{include file=$submenu titulo='Buscar Par&acirc;metro'}
+{include file=$submenu titulo='Buscar par&acirc;metro'}
   {if $mensagem neq ""}
     <p>{$mensagem}</p>
   {/if}

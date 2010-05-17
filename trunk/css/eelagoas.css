@@ -37,58 +37,74 @@ ul.lista{
 a img {
     vertical-align: sub;
 }
+.scroll_lista {
+    height: 450px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
 
 /* coisas de outro sistema */
 table.grid {
-  width: 100%;
-  border: 1px solid #7D96B0;
+    width: 100%;
+    border: 1px solid #7D96B0;
 }
 
 table.grid caption {
-  font-weight: bold;
-  background-color: #069;
-  color: #FFF;
+    font-weight: bold;
+    background-color: #069;
+    color: #FFF;
 }
 
 table.grid th{
-  background-color: #09C;
-  color: #FFF;
+    background-color: #09C;
+    color: #FFF;
 }
 
 table.grid th a {
-  color: #FFFFFF;
-  text-decoration: underline;
+    color: #FFFFFF;
+    text-decoration: underline;
 }
 
 table.grid tr.par td, li.par {
-  background-color: #EEF5FF;
+    background-color: #EEF5FF;
 }
 
 table.grid tr.impar td, li.impar {
-  background-color: #FAFCFF;
+    background-color: #FAFCFF;
 }
 
 table.grid tr:hover td, li.impar:hover, li.par:hover {
-  background-color: #FFFFCC;
+    background-color: #FFFFCC;
 }
 
 table.grid td a {
-  display: block;
+    display: block;
 }
 
 table.grid tr.totais {
-  background: PowderBlue;
-  font-weight: bold;
-  font-size: 12px;
+    background: PowderBlue;
+    font-weight: bold;
+    font-size: 12px;
 }
 
 
 ul.atalhos li {
-  float: left;
-  list-style: none;
-  border-left: solid skyBlue thin;
-  padding-left: 20px;
-  padding-right: 20px;
-  font-size: 20px;
-  margin-top: -2px;
+    float: left;
+    list-style: none;
+    border-left: solid skyBlue thin;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 20px;
+    margin-top: -2px;
+}
+
+img.icone {
+    float: left;
+    height: 32px;
+    margin-right: 4px;
+    margin-top: 4px;
+}
+
+.alerta {
+    color: red;
 }

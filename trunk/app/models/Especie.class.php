@@ -37,7 +37,7 @@ class Especie extends BaseModel
         $this->listaAssoc = $sth->fetchAll();
     }
 
-    public function listarAssocPorParametro($idParametro, $idColeta) 
+    /*public function listarAssocPorParametro($idParametro, $idColeta) 
     {
         $sth = $this->dbh->prepare('
             SELECT
@@ -72,7 +72,7 @@ class Especie extends BaseModel
             'select_assoc' => $lista2,
             'selected'     => $lista3
         );
-    }
+    }*/
 
     public function listarPorParametro($idParametro, array $ordem) 
     {
@@ -147,5 +147,39 @@ class Especie extends BaseModel
         $sth->execute();
         $sth->setFetchMode(PDO::FETCH_ASSOC);
         return $this->assocArray($sth->fetchAll(), 'id_especie', 'nome');
+    }
+
+    public function listarSelected($parametros, $idColeta = false, $order = false)
+    {
+        if (is_array($parametros)) {
+            $listaParametros = implode(', ', $parametros);
+        } else {
+            $listaParametros = $parametros;
+        }
+
+        $clausOrder = '';
+        if( $order ) {
+            $clausOrder = " ORDER BY {$order['campo']} {$order['ordem']} ";
+        }
+
+        $sth = $this->dbh->prepare("
+            SELECT
+                e.id_especie
+                , e.nome
+                , j1.quantidade
+            FROM especie e 
+                LEFT JOIN (	SELECT
+                                cpe.id_especie, cpe.quantidade
+                            FROM coleta_parametro cp 
+                                JOIN coleta_parametro_especie cpe ON cpe.id_coleta_parametro = cp.id_coleta_parametro 
+                            WHERE cp.id_coleta = :id_coleta ) j1 ON j1.id_especie = e.id_especie 
+            WHERE
+                e.id_parametro IN ($listaParametros);
+            $clausOrder
+        ");
+
+        $sth->execute(array('id_coleta' => $idColeta));
+        $sth->setFetchMode(PDO::FETCH_ASSOC);
+        return $sth->fetchAll();
     }
 }

@@ -9,37 +9,9 @@ class Result
      */
     private $columns;
 
-    /**
-     * Array de objetos result com a lista de especie para cada parametro
-     * 
-     * @var mixed
-     * @access private
-     */
-    private $extras;
-
-    public function __construct(array $column = array(), $extras = false) 
+    public function __construct(array $column = array())
     {
         $this->columns = $column;
-
-        if (isset($this->columns['id_parametro']) && $this->columns['id_parametro'] != '' &&
-            isset($this->columns['tabela'])       && $this->columns['tabela'] != ''
-        ) {
-            if ($extras) {
-                if (is_array($extras)) {
-                    $listaExtra = implode(', ', $extras);
-                } else {
-                    $listaExtra = $extras;
-                }
-            } else {
-                $listaExtra = false;
-            }
-
-            $process = new Process();
-            $this->extras = $process->getExtrasByParametro($this->columns['id_parametro'], $this->columns['id_coleta'], $this->columns['tabela'], $listaExtra);
-        } else {
-            $this->extras = array();
-        }
-
     }
 
     public function __get($column)
@@ -47,7 +19,7 @@ class Result
         if (array_key_exists($column, $this->columns)) {
             return $this->columns[$column];
         } else {
-            throw new Exception("Coluna $columns não definida.");
+            throw new Exception("Coluna $column não definida.");
             return null;
         }
     }
@@ -55,11 +27,6 @@ class Result
     public function __set($name, $value)
     {
         $this->columns[$name] = $value;
-    }
-
-    public function getExtras()
-    {
-        return $this->extras;
     }
 
     public function getArrayColumns(array $columns = array())
@@ -73,16 +40,6 @@ class Result
             }
             return $tmp;
         }
-    }
-
-    public function getListExtraSeparads($tab)
-    {
-        $tmp = array();
-        foreach ($this->extras as $val) {
-            $tmp[] = str_repeat(' ', 6) . $val->descricao . ' - ' . $val->nome;
-        }
-
-        return implode($tab, $tmp);
     }
 
     public function getFormatedColumns(array $columns)

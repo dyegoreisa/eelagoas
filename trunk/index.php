@@ -1,9 +1,9 @@
 <?php
-if (is_file('install/install01.php')) {
+if (!is_file('config/instaled')) {
     header('Location: install/install01.php');
 }
 
-//include 'debug.class.php';
+//include 'lib/Debug.class.php';
 require_once 'config/config.inc.php';
 require_once 'lib/lib.inc.php';
 require_once 'lib/Route.class.php';
@@ -18,6 +18,7 @@ require_once 'app/view/Mensagem.class.php';
 
 // Plugins
 require_once 'plugin/report/Report.class.php';
+require_once 'plugin/import/ImportadorExcel.class.php';
 
 ini_set('display_errors', DISPLAY_ERRORS);
 

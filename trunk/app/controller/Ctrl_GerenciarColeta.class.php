@@ -5,14 +5,11 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
     private $lagoa;
     private $pontoAmostral;
     private $categoria;
-    private $categoriaExtra;
     private $parametro;
     private $coleta;
     private $coletaParametro;
     private $coletaParametroEspecie;
-    private $extra;
     private $especie;
-    private $parametroExtra;
     private $parametros;
     private $coletaParametros;
 
@@ -25,18 +22,21 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         $this->lagoa                  = new Lagoa( $dbh );
         $this->pontoAmostral          = new PontoAmotral( $dbh );
         $this->categoria              = new Categoria( $dbh );
-        $this->categoriaExtra         = new CategoriaExtra( $dbh );
         $this->parametro              = new Parametro( $dbh );
         $this->coleta                 = new Coleta( $dbh );
         $this->coletaParametro        = new ColetaParametro( $dbh );
         $this->coletaParametroEspecie = new ColetaParametroEspecie( $dbh );
         $this->especie                = new Especie( $dbh );
-        $this->parametroExtra         = new ParametroExtra( $dbh );
         $this->parametros             = array();
         $this->coletaParametros       = array();
     }
 
-    public function editar( $idColeta = false ) {
+    public function editar($idColeta = false, $mensagem = '') 
+    {
+        if ($mensagem != '') {
+            Mensagem::addAtencao(latinToUTF($mensagem));
+        }
+
         $smarty = $this->getSmarty();
         //$smarty->debugging = true;
 
@@ -50,10 +50,6 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $dadosColeta = $this->coleta->getDataFormated();
             $smarty->assign( 'coleta', $dadosColeta );
 
-            $dadosCategoriaExtra = $this->categoriaExtra->getCampoExtraByIdColeta($idColeta);
-            $smarty->assign('campoExtraCategoria', $dadosCategoriaExtra);
-
-            
             // Obtém dados de lagoa para saber qual o projeto está selecionado
             $this->lagoa->setId( $dadosColeta['id_lagoa'] );
             $this->lagoa->pegar();
@@ -65,25 +61,12 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             $this->projeto->pegar();
             $idProjeto = $this->projeto->getId();
 
+            $this->categoria->setId($dadosColeta['id_coleta']);
+            $smarty->assign('tem_profundidade', $this->categoria->temProfundidade());
+
         }
 
-        // Arquivos de pedaços de templates para carregar
-        $smarty->assign('dados_parametros', ABSOLUTE_PIECES . 'dados_parametro.tpl');
-        $smarty->assign('dado_extra', ABSOLUTE_PIECES . 'dado_extra.tpl');
-        $smarty->assign('parametro_categoria_extra', ABSOLUTE_PIECES . 'parametro_categoria_extra.tpl');
-
-        $listaParameros = $this->getSelectParametros($idColeta);
-
-        // FIXME: Descubir espécie de forma dinâmica
-        foreach ($listaParameros as $key => $val) {
-            $tmp = $this->coletaParametroEspecie->especiesSelecionadas($idColeta, $key, true);
-            if (count($tmp) > 0) {
-                $listaEspeceisSelecionadas[$key] = $tmp;
-            }
-        }
-        $smarty->assign('especiesSelecionadas', $listaEspeceisSelecionadas);
-
-        $smarty->assign('select_parametro', $listaParameros);
+        $smarty->assign('select_parametro', $this->getSelectParametros($idColeta));
         $smarty->assign('select_especie', $this->especie->listarSelectAssoc(array(
             'campo' => 'nome',
             'ordem' => 'ASC'
@@ -98,7 +81,6 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             'campo' => 'nome',
             'ordem' => 'ASC'
         )));
-        $smarty->assign('select_categoria_extra', $this->categoriaExtra->listarSelectAssoc());
         $smarty->displayHBF( 'editar.tpl' );
     }
 
@@ -110,185 +92,67 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         }
 
         foreach ($lista as &$item) {
-            $campoExtra = $item['nome_campo_extra'];
-            if ($item['tem_relacao']) {
-                $tmp = $this->$campoExtra->listarAssocPorParametro($item['id_parametro'], $idColeta);
-                $item[$campoExtra]              = $tmp['select_assoc'];
-                $item["{$campoExtra}_selected"] = $tmp['selected'];
-            }
+            $item['especies'] = $this->especie->listarSelected($item['id_parametro'], $idColeta, array(
+                'campo' => 'nome',
+                'ordem' => 'ASC'
+            ));
         }
 
         return $lista;
     }
 
-    public function ajaxNovoParametro($count, $idCategoria) {
+    public function ajaxNovoParametro($count) {
         $smarty = $this->getSmarty();
-        
-        $args = func_get_args();
-        if (isset($args[2])) { 
-            $campoExtraCategoria = $this->categoriaExtra->getCampoExtraByIdExtra($args[2]);
-        } else  {
-            $campoExtraCategoria = $this->categoriaExtra->getCampoExtraByIdCategoria($idCategoria);
-        }
 
         $smarty->assign('count', $count);
-        $smarty->assign('campoExtraCategoria', $campoExtraCategoria);
-        $smarty->assign('select_parametro_extra', $this->parametroExtra->listarSelectAssoc());
-        $smarty->assign('parametro_categoria_extra', ABSOLUTE_PIECES . 'parametro_categoria_extra.tpl');
         $smarty->displayPiece('novo_parametro.tpl');
     }
 
-    public function ajaxParametroCategoriaExtra($idCategoria) {
-        $smarty = $this->getSmarty();
-
-        $campoExtraCategoria = $this->categoriaExtra->getCampoExtraByIdCategoria($idCategoria);
-
-        if ($campoExtraCategoria != '' && $campoExtraCategoria['nome'] != 'nenhum') {
-            $smarty->assign('campoExtraCategoria', $campoExtraCategoria);
-            $smarty->displayPiece('parametro_categoria_extra.tpl');
-        }
-    }
-
-    public function ajaxParametroNovaCategoriaExtra($idExtra) {
-        $smarty = $this->getSmarty();
-
-        $campoExtraCategoria = $this->categoriaExtra->getCampoExtraByIdExtra($idExtra);
-
-        if ($campoExtraCategoria != '' && $campoExtraCategoria['nome'] != 'nenhum') {
-            $smarty->assign('campoExtraCategoria', $campoExtraCategoria);
-            $smarty->displayPiece('parametro_categoria_extra.tpl');
-        }
-    }
-
-    public function ajaxNovoItemParametroExtra($count, $countItens, $idExtra, $origem) {
-        $smarty = $this->getSmarty();
-
-        $campoExtra = $this->parametroExtra->getCampoExtraByIdExtra($idExtra);
-
-        if ($campoExtra != '' && $campoExtra['nome'] != 'nenhum') {
-            $smarty->assign('campoExtra', $campoExtra);
-            $smarty->assign('count', $count);
-            $smarty->assign('countItens', $countItens);
-            $smarty->assign('origem', $origem);
-            $smarty->displayPiece('novo_item_parametro_extra.tpl');
-        }
-    }
-
     public function salvar() {
+
         $smarty = $this->getSmarty();
 
         $dbh = $this->getDBH();
         $dbh->beginTransaction();
     
-        if(isset($_POST['nome_projeto']) && $_POST['nome_projeto'] != '') {
-
-            $this->projeto->setData( array( 'nome' => $_POST['nome_projeto'] ) );
-            $ok_projeto = $this->projeto->inserir();
-            ( $ok_projeto ) ? Mensagem::addOk("Projeto salvo") : Mensagem::addErro("Ao salvar Projeto");
-
-        } elseif (isset($_POST['id_projeto']) && $_POST['id_projeto'] != -1) {
-
+        if (isset($_POST['id_projeto']) && $_POST['id_projeto'] != -1) {
             $this->projeto->setId( $_POST['id_projeto'] );
             $this->projeto->pegar();
             Mensagem::addOk('Selecionado o projeto ' . $this->projeto->getData( 'nome' ));
             $ok_projeto = true;
-
         } else {
             $ok_projeto = false;
             Mensagem::addErro(latinToUTF('Campo Projeto está vazio.'));
         }
 
-        if(isset($_POST['nome_lagoa']) && $_POST['nome_lagoa'] != '') {
-
-            $this->lagoa->setData( array( 
-                'nome'       => $_POST['nome_lagoa'],
-                'id_projeto' => $this->projeto->getId()
-            ));
-            $ok_lagoa = $this->lagoa->inserir();
-            ( $ok_lagoa ) ? Mensagem::addOk("Lagoa salva") : Mensagem::addErro("Ao salvar Lagoa.");
-
-        } elseif (isset($_POST['id_lagoa']) && $_POST['id_lagoa'] != -1) {
-
+        if (isset($_POST['id_lagoa']) && $_POST['id_lagoa'] != -1) {
             $this->lagoa->setId( $_POST['id_lagoa'] );
             $this->lagoa->pegar();
             Mensagem::addOk('Selecionada a lagoa ' . $this->lagoa->getData( 'nome' ));
             $ok_lagoa = true;
-
         } else {
             $ok_lagoa = false;
             Mensagem::addErro(latinToUTF('Campo lagoa está vazio.'));
         }
 
-        if(isset($_POST['nome_ponto_amostral']) && $_POST['nome_ponto_amostral'] != '') {
-
-            $this->pontoAmostral->setData( 
-                array( 
-                    'nome'     => $_POST['nome_ponto_amostral'],
-                    'id_lagoa' => $this->lagoa->getId()
-                ) 
-            );
-            $ok_pontoAmostal = $this->pontoAmostral->inserir();
-            ( $ok_pontoAmostal ) ? Mensagem::addOk("Ponto amostral salvo") : Mensagem::addErro("Ao salvar ponto amostral");
-
-        } elseif (isset($_POST['id_ponto_amostral']) && $_POST['id_ponto_amostral'] != -1) {
-
+        if (isset($_POST['id_ponto_amostral']) && $_POST['id_ponto_amostral'] != -1) {
             $this->pontoAmostral->setId( $_POST['id_ponto_amostral'] );
             $this->pontoAmostral->pegar();
             Mensagem::addOk("Selecionado o ponto amostral " . $this->pontoAmostral->getData( 'nome' ));
             $ok_pontoAmostal = true;
-
         } else {
             $ok_pontoAmostal = false;
             Mensagem::addErro(latinToUTF('Campo ponto amostral está vazio.'));
         }
 
-        if(isset($_POST['nome_categoria']) && $_POST['nome_categoria'] != '') { 
-
-            $this->categoria->setData( array( 
-                'nome'               => $_POST['nome_categoria'] ,
-                'id_categoria_extra' => $_POST['id_categoria_extra']
-            ));
-            $ok_categoria = $this->categoria->inserir();
-            ( $ok_categoria ) ? Mensagem::addOk("Categoria salva") : Mensagem::AddErro("Ao salar categoria");
-
-        } elseif (isset($_POST['id_categoria']) && $_POST['id_categoria'] != -1) {
-
+        if (isset($_POST['id_categoria']) && $_POST['id_categoria'] != -1) {
             $this->categoria->setId( $_POST['id_categoria'] );
             $this->categoria->pegar();
             Mensagem::addOk("Selecionada a categoria " . $this->categoria->getData( 'nome' ));
             $ok_categoria = true;
-
         } else {
             $ok_categoria = false;
             Mensagem::addErro(latinToUTF('Campo categoria está vazio.'));
-        }
-
-        if( isset( $_POST['id_parametros'] ) && is_array( $_POST['id_parametros'] ) ) {
-            foreach( $_POST['id_parametros'] as $id_parametro ) {
-                if (!empty($id_parametro)) { 
-                    $this->parametros[$id_parametro] = new Parametro( $dbh );
-                    $this->parametros[$id_parametro]->setId( $id_parametro );
-                    $this->parametros[$id_parametro]->pegar();
-                }
-            }
-        } else {
-            $mensagem_cache = "N&atilde;o foi selecionado nenhum parametro";
-        }
-
-        // Verifica se foi enviado valores para os parametros
-        if (isset($_POST['valor']) && is_array($_POST['valor'])) {
-            $valores = $_POST['valor'];
-        } else {
-            $valores = array();
-            $mensagem_cache_valor = "N&atilde;o foi informado nenhum valor de parametro.";
-        }
-
-        // Verifica se foi enviado valores para os novos parametros
-        if (isset($_POST['valor_novo']) && is_array($_POST['valor_novo'])) {
-            $valoresNovos = $_POST['valor_novo'];
-        } else {
-            $valoresNovos = array();
-            $mensagem_cache_novo_valor = "N&atilde;o foi informado nenhum valor de parametro novo;";
         }
 
         // Insere coleta
@@ -319,7 +183,8 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
                     'tipo_periodo'      => $tipoPeriodo,
                     'id_lagoa'          => $this->lagoa->getId(),
                     'id_ponto_amostral' => $this->pontoAmostral->getId(),
-                    'id_categoria'      => $this->categoria->getId()
+                    'id_categoria'      => $this->categoria->getId(),
+                    'profundidade'      => (isset($_POST['profundidade']) && $_POST['profundidade'] != "") ? $_POST['profundidade'] : 0
                 )
             );
 
@@ -330,133 +195,57 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
 
                 $this->coletaParametro->excluir( $_POST['id_coleta'] );
             } else {
-                $ok_coleta = $this->coleta->inserir();
-                ( $ok_coleta ) ? Mensagem::addOk("coleta salvo") : Mensagem::addErro("Ao salvar coleta");
-            }
-
-            $relacaoExtra  = (isset($_POST['relacao_extra'])) ? $_POST['relacao_extra'] : array();
-            $valoresExtras = array();
-
-            $ok_novosParametros = false;
-            if (isset($_POST['nome_parametros']) && is_array($_POST['nome_parametros']) &&
-                isset($_POST['id_parametro_extra']) && is_array($_POST['id_parametro_extra'])
-            ) {
-                $nomesParametros     = $_POST['nome_parametros'];
-                $idsParametrosExtras = $_POST['id_parametro_extra'];
-                $itensExtras         = (isset($_POST['item_extra'])) ? $_POST['item_extra'] : array();
-                $ok_parametrosCount  = 0;
-                $ok_itensExtraCount  = 0;
-                foreach ($nomesParametros as $key => $nomeParametro) {
-                    $this->parametros[] = $novoParametro = new Parametro($dbh);
-                    $novoParametro->setData(array(
-                        'nome'               => $nomeParametro,
-                        'id_parametro_extra' => $idsParametrosExtras[$key]
-                    ));
-                    $idParametro = $novoParametro->inserir();
-                    if (!$idParametro) {
-                        $ok_parametrosCount++;
-                    }
-                    
-                    $parametroExtra = new ParametroExtra($dbh);
-                    $parametroExtra->setId($idsParametrosExtras[$key]);
-                    $parametroExtra->pegar();
-                    $nomeClasse = ucfirst($parametroExtra->getData('tabela'));
-
-                    if ($nomeClasse != 'Nenhuma' && is_array($itensExtras) 
-                        && isset($itensExtras[$key])
-                    ) {
-                        $reflection = new ReflectionClass($nomeClasse);
-                        $ok_itensExtraCount = 0;
-                        foreach ($itensExtras[$key] as $nomeItemExtra) {
-                            $itemExtra = $reflection->newInstance($dbh);
-                            // FIXME: Deve pegar os nomes dos campo de forma dinâmica
-                            $itemExtra->setData(array(
-                                'id_parametro' => $idParametro,
-                                'nome'         => $nomeItemExtra
-                            ));
-                            $idItemExtra = $itemExtra->inserir();
-                            if (!$idItemExtra) {
-                                $ok_itensExtraCount++;
-                            }
-
-                            $relacaoExtra[$idParametro][] = $idItemExtra;
-                        }
-                        $valoresExtras[$idParametro] = $parametroExtra->getData('tabela');
-                    }
-
-                    $valores[$idParametro] = (isset($valoresNovos[$key])) ? $valoresNovos[$key] : '';
-                }
-
-                if ($ok_parametrosCount == 0 && $ok_itensExtraCount == 0) {
-                    $ok_novosParametros = true;
+                if ($this->coleta->localizar()) {
+                    $this->go("/GerenciarColeta/editar/{$this->coleta->getId()}/A coleta já existe, faça as alterações necessárias.");
                 } else {
-                    Mensagem::addErro("Ao salvar parametros.");
-                    $ok_novosParametros = false;
+                    try {
+                        $ok_coleta = $this->coleta->inserir();
+                    } catch (Exception $e) {
+                        $ok_coleta = false;
+                    }
+                    ( $ok_coleta ) ? Mensagem::addOk("coleta salvo") : Mensagem::addErro("Ao salvar coleta");
                 }
-            } else {
-                $ok_novosParametros = true; // Seta como true quando não tem parametros novos
             }
 
-            $ok_parametros = false;
-            foreach( $this->parametros as $parametro ) {
-                $dadosColetaParametro = array();
-
-                $dadosColetaParametro['id_coleta']    = $this->coleta->getId();
-                $dadosColetaParametro['id_parametro'] = $parametro->getId();
-                if (isset($valores[$parametro->getId()])) {
-                    $dadosColetaParametro['valor'] = $valores[$parametro->getId()];
-                }
-
-                if (isset($relacaoExtra[$parametro->getId()]) 
-                    && is_array($relacaoExtra[$parametro->getId()])
-                ) {
-                    // FIXME: fazer com que a tabela espécie seja descobera o html tem que de alguma forma enviar os idsParametrosExtras
-                    $dadosColetaParametro['valor_extra'] = 'especie';
-                }
-
-                if (isset($_POST['valor_categoria_extra']) && $_POST['valor_categoria_extra'] != '') {
-                    $dadosColetaParametro['valor_categoria_extra'] = $_POST['valor_categoria_extra'];
-                }
-
-                $this->coletaParametros[$parametro->getId()] = new ColetaParametro($dbh);
-                $this->coletaParametros[$parametro->getId()]->setData($dadosColetaParametro);
-                $ok_coletaParametro = $this->coletaParametros[$parametro->getId()]->inserir();
-
-                if( $ok_coletaParametro ) {
+            if ($ok_coleta) {
+                // regras de parametros
+                if($this->temParametro($_POST['parametros'])) {
+                    foreach ($_POST['parametros'] as $parametro) {
+                        if (isset($parametro['id']) && $parametro['id'] != "") {
+                            if (isset($parametro['valor']) && $parametro['valor'] != "") {
+                                $tmpValor = $parametro['valor'];
+                            } elseif (isset($parametro['especie']) && is_array($parametro['especie']) && count($parametro['especie']) > 0) {
+                                $tmpValor = $this->contaEspecie($parametro['especie']);
+                            } else {
+                                $tmpValor = 0;
+                            }
+                            $this->coletaParametro->setData(array(
+                                'id_coleta'    => $this->coleta->getId(),
+                                'id_parametro' => $parametro['id'],
+                                'valor'        => $tmpValor
+                            ));
+                            $this->coletaParametro->inserir();
+                            
+                            if (isset($parametro['especie']) && is_array($parametro['especie']) && count($parametro['especie']) > 0) {
+                                foreach ($parametro['especie'] as $especie) {
+                                    if (isset($especie['id']) && $especie['id'] != "") {
+                                        $this->coletaParametroEspecie->setData(array(
+                                            'id_coleta_parametro' => $this->coletaParametro->getId(),
+                                            'id_especie'          => $especie['id'],
+                                            'quantidade'          => $especie['qtde']
+                                        ));
+                                        $this->coletaParametroEspecie->inserir();
+                                    }
+                                }
+                            }
+                        }
+                    }
                     $ok_parametros = true;
                 } else {
-                    Mensagem::addErro("Ao salvar coleta parametros.");
                     $ok_parametros = false;
-                    break;
                 }
-            }
-
-            $countItensExtra = 0;
-            $countErrors     = 0;
-            foreach ($this->parametros as $parametro) {
-                if (isset($relacaoExtra[$parametro->getId()]) 
-                    && is_array($relacaoExtra[$parametro->getId()])
-                ) {
-                    $countItensExtra++;
-                    // TODO: fazer com que a tabela espécie seja descobera
-                    foreach ($relacaoExtra[$parametro->getId()] as $idEspecie) {
-                        $this->coletaParametroEspecie->setData(array(
-                            'id_coleta_parametro' => $this->coletaParametros[$parametro->getId()]->getId(),
-                            'id_especie'          => $idEspecie
-                        ));
-                        $ok_coletaParametroEspecie = $this->coletaParametroEspecie->inserir();
-                        if (!$ok_coletaParametroEspecie) {
-                            $countErrors++;
-                        }
-                    }
-                }
-            }
-
-            if ($countItensExtra > 0 && $countErrors > 0) {
-                Mensagem::addErro("Ao salvar item do parametro extra.");
-                $ok_coletaParametros = false;
             } else {
-                $ok_coletaParametros = true;
+                $ok_parametros = false;
             }
 
             if( 
@@ -467,9 +256,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
                 $ok_parametros       !== false && 
                 $ok_coleta           !== false && 
                 $ok_coletaParametro  !== false &&
-                $ok_data             !== false &&
-                $ok_novosParametros  !== false &&
-                $ok_coletaParametros !== false
+                $ok_data             !== false
             ) {
                 $dbh->commit();
             } else {
@@ -510,11 +297,16 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         $smarty->assign( 'lagoa', $this->lagoa->getData() ); 
 
         if( $this->coleta->getDataAll() ) {
-            $smarty->assign( 'coletas', $this->coleta->getDataAll() );
+            $dadosColeta = $this->coleta->getDataAll();
         } else {
-            $smarty->assign( 'coletas', $this->coleta->listar() );
+            $dadosColeta = $this->coleta->listar();
         }
 
+        foreach ($dadosColeta as &$dado) {
+            $dado['categoria']      = $this->categoria->getFieldById($dado['id_categoria'], 'nome');
+            $dado['ponto_amostral'] = $this->pontoAmostral->getFieldById($dado['id_ponto_amostral'], 'nome');
+        }
+        $smarty->assign('coletas', $dadosColeta);
         $smarty->displayHBF('listar.tpl');
     }
 
@@ -565,6 +357,31 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
             Mensagem::addErro('Erro ao tentar exluir um registro.' . $e->getMessage() );
             $smarty->displayError();
         }
+    }
+
+    public function ajaxExibeProfundidade($id_categoria) {
+        $this->categoria->setId($id_categoria); 
+
+        $this->getSmarty()->displayJson($this->categoria->temProfundidade());
+    }
+
+    private function temParametro($parametros) {
+        foreach($parametros as $parametro) {
+            if(isset($parametro['id']) && $parametro['id'] != "") {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function contaEspecie($especies) {
+        $count = 0;
+        foreach ($especies as $especie) {
+            if(isset($especie['id']) && $especie['id'] != "") {
+                $count++;
+            }
+        }
+        return $count;
     }
 
 }

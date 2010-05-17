@@ -1,17 +1,38 @@
 <?php
+if (is_file('../config/instaled')) {
+    header('Location: ../index.php');
+}
 session_start();
 $negado = 0;
 // Verificar dados do banco para conexao
 try {
-    $dsn = "{$_SESSION['DB_DRIVER']}:host={$_SESSION['DB_HOST']};dbname={$_SESSION['DB_NAME']}";
-    $dbh = new PDO($dsn, $_SESSION['DB_USER'], $_SESSION['DB_PASSWD']);
+    $dsnRoot = "{$_SESSION['DB_DRIVER']}:host={$_SESSION['DB_HOST']}";
+    $dbhRoot = new PDO($dsnRoot, $_SESSION['DB_USER_ROOT'], $_SESSION['DB_PASSWD_ROOT']);
+
+    // criar o banco
+    $dbhRoot->exec("CREATE DATABASE {$_SESSION['DB_NAME']}");
+    // cria o usuário
+    $dbhRoot->exec("GRANT ALL ON {$_SESSION['DB_NAME']}.* TO {$_SESSION['DB_USER']}@{$_SESSION['DB_HOST']} IDENTIFIED BY '{$_SESSION['DB_PASSWD']}';");
+
+    unset($dbhRoot);
+
+    // Faz conexão com os novos dados
+    try {
+        $dsn = "{$_SESSION['DB_DRIVER']}:host={$_SESSION['DB_HOST']};dbname={$_SESSION['DB_NAME']}";
+        $dbh= new PDO($dsn, $_SESSION['DB_USER'], $_SESSION['DB_PASSWD']);
+    } catch (PDOException $e) {
+        $mensagem[] = 'N&atilde;o foi poss&iacute;vel estabelecer uma conex&atilde;o com banco de dados.';
+        $negado++;
+    }
 } catch (PDOException $e) {
-    $mensagem[] = 'N&atilde;o foi poss&iacute;vel estabelecer uma conex&atilde;o com banco de dados.';
+    $mensagem[] = 'N&atilde;o foi poss&iacute;vel estabelecer uma conex&atilde;o com banco de dados com root.';
     $negado++;
 }
 
+
 // criar as tabelas
 if ($negado == 0) {
+
     $ddl = file('../database/ddl.sql');
     $create = '';
     foreach ($ddl as $linha) {

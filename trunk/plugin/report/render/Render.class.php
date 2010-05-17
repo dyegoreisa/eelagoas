@@ -75,6 +75,14 @@ abstract class Render
      */
     protected $reportName;
 
+    /**
+     * Nível do cabeçalho
+     * 
+     * @var mixed
+     * @access protected
+     */
+    protected $level;
+
     public function __construct() 
     {
         $this->todayBR = date("d/m/Y H:i");
@@ -100,6 +108,15 @@ abstract class Render
     public function getColumns()
     {
         return $this->columns;
+    }
+
+    public function getColumnByField($field) 
+    {
+        foreach ($this->columns as $column) {
+            if ($field == $column->getField()) {
+                return $column;
+            }
+        }
     }
 
     public function setFilters(array $filters)
@@ -225,6 +242,26 @@ abstract class Render
             'field' => $params['field'],
             'value' => $text
         );
+    }
+
+    protected function makeTitle()
+    {
+        $titulos = $this->getColumns();
+        $dados   = $this->getData();
+        $process = new Process($this->filters);
+        $this->level  = ($process->temComposicao()) ? 3 : 2;
+
+        foreach ($titulos as &$titulo) {
+            if ($titulo->getField() == 'parametro') {
+                $titulo->setColumns($process->getTitulosParametro());
+                $titulo->setWidth($titulo->setRecursiveWidthByColumns());
+                $titulo->setHeight(1);
+            } else {
+                $titulo->setHeight($this->level);
+            }
+        }
+
+        return $titulos;
     }
 
     public function getDataByParam($key, $index) 

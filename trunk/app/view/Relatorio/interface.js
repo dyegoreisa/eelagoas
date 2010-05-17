@@ -50,28 +50,40 @@ function onLoad() {
     $('#categoria').livequery('change', function () {
         categorias = $(this).val();
         lagoas     = $('#lagoa').val();
-        $.getJSON(dir + '/GerenciarCategoria/temCategoriaExtra/' + categorias, function(dados) {
+        $.getJSON(dir + '/GerenciarCategoria/temProfundidade/' + categorias, function(dados) {
             if (dados[0] == true) { 
-                $('#categoria_extra').removeClass('escondido');
-                loadCampo('#categoria_extra', dir + '/GerenciarCategoria/montarMultiSelectExtra/profundidade/' + categorias);
+                $('#campo_profundidade').removeClass('escondido');
+                loadCampo('#campo_profundidade', dir + '/GerenciarCategoria/montarMultiSelectProfundidade/' + categorias);
             } else {
-                $('#categoria_extra').addClass('escondido');
-                $('#categoria_extra').html('');
+                $('#campo_profundidade').addClass('escondido');
+                $('#campo_profundidade').html('');
             }
         });
     });
 
     $('#parametro').livequery('change', function () {
         parametro = $(this).val();
-        $.getJSON(dir + '/GerenciarParametro/temParametroExtra/' + parametro, function(dados) {
+        $.getJSON(dir + '/GerenciarParametro/eComposicao/' + parametro, function(dados) {
             if (dados[0] == true) { 
-                $('#campo_extra').removeClass('escondido');
-                loadCampo('#campo_extra', dir + '/GerenciarParametro/montarMultiSelectExtra/especie/' + parametro);
+                $('#campo_especie').removeClass('escondido');
+                loadCampo('#campo_especie', dir + '/GerenciarParametro/montarMultiSelectEspecie/' + parametro);
             } else {
-                $('#campo_extra').addClass('escondido');
-                $('#campo_extra').html('');
+                $('#campo_especie').addClass('escondido');
+                $('#campo_especie').html('');
             }
         });
+    });
+
+    $('input:[name=tipo_relatorio]').livequery('change', function () {
+        if ($(this).val() == 'pdf') {
+            if ($(this).attr('checked')) {
+                $('#opcao_pdf').removeClass('escondido');
+            } else {
+                $('#opcao_pdf').addClass('escondido');
+            }
+        } else {
+            $('#opcao_pdf').addClass('escondido');
+        }
     });
 
 }

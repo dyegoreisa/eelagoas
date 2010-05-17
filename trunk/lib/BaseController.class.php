@@ -66,6 +66,8 @@ abstract class BaseController {
         $this->smarty = $smarty;
         $this->smarty->setTpl( $tpl );
 
+        $this->smarty->assign('icone', strtolower(preg_replace('/Gerenciar/', '', $tpl)));
+
         $this->setAgent();
     } 
 
