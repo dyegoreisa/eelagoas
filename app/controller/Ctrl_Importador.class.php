@@ -75,11 +75,30 @@ class Ctrl_Importador extends BaseController implements Importar{
 
         if (isset($_SESSION['importar_excel']) && $_SESSION['importar_excel'] != '') {
             $excel = new ImportadorExcel();
-            $excel->insertData($_SESSION['importar_excel']);
+            $erro = $excel->insertData($_SESSION['importar_excel']);
+
+            switch($erro)
+            {
+                case 0:
+                    $msg = 'Nenhum dado foi importado.';
+                    break;
+
+                case 1:
+                    $msg = 'Dados importados corretamente.';
+                    break;
+
+                case 2:
+                    $msg = 'Alguns dados n&atilde;o foram importados corretamente.';
+                    break;
+            }
+
         } else { 
             Mensagem::addErro(latinToUTF('Perdeu a sessão, tente novamente.'));
-            $smarty->assign('erro', 'erro');
+            $erro = 0;
         }
+
+        $smarty->assign('erro', $erro);
+        $smarty->assign('msg', $msg);
 
         $smarty->displayHBF('importar.tpl');
     }
