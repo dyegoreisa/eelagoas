@@ -67,6 +67,13 @@ class ImportadorExcel
         );
     }
 
+    /**
+     * Insere dados no banco de uma planilha excel
+     * 
+     * @param array $dados 
+     * @access public
+     * @return int - 0 para erro, 1 para Ok e 2 para alguns erros
+     */
     public function insertData(array $dados) 
     {
         $this->data            = $dados['excel'];
@@ -76,7 +83,7 @@ class ImportadorExcel
 
         $this->setEspeciesPorComposicao();
 
-        $this->montaArrayColeta($idProjeto);
+        return $this->montaArrayColeta($idProjeto);
     }
 
     private function setEspeciesPorComposicao()
@@ -110,6 +117,7 @@ class ImportadorExcel
 
         $this->dbh->beginTransaction();
         $ok = 0;
+        $er = 0;
         // Pega os dados diretamente relacionados a coleta. Pulando o cabeçalho
         for ($x = 4; $x < $this->data->sheets[0]['numRows']; $x++) {
             $tpl = array();
@@ -122,8 +130,11 @@ class ImportadorExcel
                 }
             }
             if ($tmpColeta->salvar($idProjeto) !== false) {
-                $this->montaArrayParametro($tmpColeta, $x, count($indicesColeta));
+                $erro      = $this->montaArrayParametro($tmpColeta, $x, count($indicesColeta));
+                $erroMaior = ($erro > $erroMaior) ? $erro : $erroMaior;
                 $ok++;
+            } else {
+                $er++;
             }
 
             $arrayColetas[] = $tmpColeta;
@@ -131,16 +142,20 @@ class ImportadorExcel
 
         if ($ok == 0) {
             $this->dbh->rollBack();
+            Mensagem::addAtencao(latinToUTF("Não foi possível inserir as coletas."));
+            $saida = 0;
         } else {
             $this->dbh->commit();
+            $saida = ($er == 0 && $erroMaior == 1) ? 1 : 2;
         }
 
-        return $arrayColetas;
+        return $saida;
     }
 
     private function montaArrayParametro(import_models_coleta $coleta, $x, $y)
     {
         $ok = 0;
+        $er = 0;
         $arrayParametros = array();
         for (; $y <= $this->data->sheets[0]['numRows']; $y++) {
             
@@ -156,8 +171,11 @@ class ImportadorExcel
                         $tmpColetaParametro->composicao    = true;
 
                         if ($tmpColetaParametro->salvar($coleta->idColeta) !== false ) {
-                            $this->montaArrayEspecie($tmpColetaParametro, $nomeComposicao, $x, $y);
+                            $erro      = $this->montaArrayEspecie($tmpColetaParametro, $nomeComposicao, $x, $y);
+                            $erroMaior = ($erro > $erroMaior) ? $erro : $erroMaior;
                             $ok++;
+                        } else {
+                            $er++;
                         }
 
                         $arrayParametros[] = $tmpColetaParametro;
@@ -168,7 +186,10 @@ class ImportadorExcel
 
                     if ($tmpColetaParametro->salvar($coleta->idColeta) !== false ) {
                         $ok++;
+                    } else {
+                        $er++;
                     }
+                    $erroMaior = 1;
 
                     $arrayParametros[] = $tmpColetaParametro;
                 }
@@ -178,14 +199,36 @@ class ImportadorExcel
         if ($ok == 0) {
             $this->dbh->rollBack();
             $this->dbh->beginTransaction();
+            switch($coleta->tipoPeriodo)
+            {
+                case 'diario':
+                    $data = date("d/m/Y h", strtotime($coleta->data));
+                    break;
+
+                case 'mensal':
+                    $data = date("m/Y h", strtotime($coleta->data));
+                    break;
+            }
+            Mensagem::addAtencao(latinToUTF("
+                Não foi possível inserir alguns parametros da coleta {$data}
+                - {$coleta->nomeLagoa}
+                - {$coleta->nomePontoAmostral}
+                - {$coleta->nomeCategoria}.
+            "));
+            $saida = 0;
+        } else {
+            $saida = ($er == 0 && $erroMaior == 1) ? 1 : 2;
         }
 
         $coleta->parametros = $arrayParametros;
+
+        return $saida;
     }
 
     private function montaArrayEspecie(import_models_coletaParametro $coletaParametro, $nomeComposicao, $x, $y)
     {
         $ok = 0;
+        $er = 0;
         $arrayEspecies = array();
         foreach ($this->especiesPorComposicao as $key => $item) {
             if ($nomeComposicao == $item['nomeComposicao']) {
@@ -196,6 +239,8 @@ class ImportadorExcel
 
                     if ($tmpColetaParametroEspecie->salvar($coletaParametro->idColetaParametro, $coletaParametro->idParametro) !== false) {
                         $ok++;
+                    } else {
+                        $er++;
                     }
 
                     $arrayEspecies[] = $tmpColetaParametroEspecie;
@@ -206,9 +251,15 @@ class ImportadorExcel
         if ($ok == 0) {
             $this->dbh->rollBack();
             $this->dbh->beginTransaction();
+            Mensagem::addAtencao(latinToUTF("Não foi possível inserir algumas especies do parametro {$coletaParametro->nomeParametro}."));
+            $saida = 0;
+        } else {
+            $saida = ($er == 0) ? 1 : 2;
         }
 
         $coletaParametro->especies = $arrayEspecies;
+
+        return $saida;
     }
 }
 ?>

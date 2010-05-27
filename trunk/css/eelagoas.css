@@ -108,3 +108,11 @@ img.icone {
 .alerta {
     color: red;
 }
+
+p#mostrar_log_mensagem {
+    cursor: pointer;
+}
+
+p#esconder_log_mensagem {
+    cursor: pointer;
+}
