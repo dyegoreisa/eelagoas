@@ -1,6 +1,5 @@
 function onLoad() {
     $('#mostrar_log_mensagem > a').click(function() {
-        console.info('esconder');
         $('.log_mensagem').removeClass('escondido'); 
         $('#esconder_log_mensagem').removeClass('escondido');
         $('#mostrar_log_mensagem').addClass('escondido');

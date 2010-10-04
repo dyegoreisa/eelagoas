@@ -37,7 +37,7 @@ class Ctrl_Importador extends BaseController implements Importar{
             $smarty->assign('nome_projeto', $this->projeto->getData('nome'));
 
             if ($_FILES['arquivo']['type'] == 'application/vnd.ms-excel') {
-                if ($_FILES['arquivo']['size'] < 200000) {
+                if ($_FILES['arquivo']['size'] < 2000000) {
                     if ($_FILES['arquivo']['error'] >= 0) {
                         $excel = new ImportadorExcel();
                         $excel->setFile($_FILES['arquivo']['tmp_name']);
@@ -74,6 +74,8 @@ class Ctrl_Importador extends BaseController implements Importar{
         $smarty = $this->getSmarty();
 
         if (isset($_SESSION['importar_excel']) && $_SESSION['importar_excel'] != '') {
+            Mensagem::setSeparador("\n");
+
             $excel = new ImportadorExcel();
             $erro = $excel->insertData($_SESSION['importar_excel']);
 
@@ -84,11 +86,7 @@ class Ctrl_Importador extends BaseController implements Importar{
                     break;
 
                 case 1:
-                    $msg = 'Dados importados corretamente.';
-                    break;
-
-                case 2:
-                    $msg = 'Alguns dados n&atilde;o foram importados corretamente.';
+                    $msg = 'Dados importados.';
                     break;
             }
 

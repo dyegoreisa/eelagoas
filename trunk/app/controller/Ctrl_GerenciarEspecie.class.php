@@ -93,7 +93,7 @@ class Ctrl_GerenciarEspecie extends BaseController implements Gerenciar {
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($acoes));
 
         if ($idParametro != -1) {
             $listaEspecies = $this->especie->listarPorParametro($idParametro, array(

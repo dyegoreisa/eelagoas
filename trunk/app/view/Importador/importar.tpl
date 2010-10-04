@@ -6,7 +6,7 @@ $(document).ready(onLoad);
 <span id="mostrar_log_mensagem">[ <a href="#">Log de mensagens</a> ]</span>
 <span id="esconder_log_mensagem" class="escondido">[ <a href="#">Fechar</a> ]</span>
 <div class="log_mensagem escondido">
-    <p>{$mensagem}</p>
+    <div class="scroll_log"><pre>{$mensagem}</pre></div>
 </div>
 {/if}
 <fieldset>

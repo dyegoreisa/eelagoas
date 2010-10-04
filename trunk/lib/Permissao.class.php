@@ -2,10 +2,14 @@
 class Permissao
 {
     private $dbh;
+    private $cache;
+    private $perfil;
 
     public function __construct()
     {
         $this->connect();
+        $this->cache = TRUE;
+        $this->perfil = $_SESSION[$_SESSION['SID']]['idPerfil'];
     }
 
     private function connect()
@@ -20,10 +24,15 @@ class Permissao
             die;
         }
     }
-
-    public function temAcesso($idPerfil, $modulo, $acao)
+    
+    public function semCache($cache = FALSE)
     {
-        $rs = $this->selectPermissao($idPerfil, $modulo, $acao);
+        $this->cache = $cache;
+    }
+
+    public function temAcesso($modulo, $acao)
+    {
+        $rs = $this->selectPermissao($modulo, $acao);
         if ($rs) {
             return $rs['acesso'];
         } else {
@@ -31,29 +40,35 @@ class Permissao
         }
     }
 
-    private function selectPermissao($idPerfil, $modulo, $acao)
+    private function selectPermissao($modulo, $acao)
     {
-        $sth = $this->dbh->prepare('
-            SELECT * 
-            FROM acao 
-            WHERE id_perfil = :idPerfil 
-                AND nome = :acao
-                AND modulo = :modulo 
-        ');
+        if ($this->cache && isset($_SESSION[$_SESSION['SID']]['permissoes'][$this->perfil][$acao][$modulo])) {
+            $resultado = $_SESSION[$_SESSION['SID']]['permissoes'][$this->perfil][$acao][$modulo];
+        } else {
+            $sth = $this->dbh->prepare('
+                SELECT * 
+                FROM acao 
+                WHERE id_perfil = :idPerfil 
+                    AND nome = :acao
+                    AND modulo = :modulo 
+            ');
 
-        $sth->execute(array(
-            'idPerfil' => $idPerfil,
-            'acao'     => $acao,
-            'modulo'   => $modulo
-        ));
+            $sth->execute(array(
+                'idPerfil' => $this->perfil,
+                'acao'     => $acao,
+                'modulo'   => $modulo
+            ));
 
-        $sth->setFetchMode(PDO::FETCH_ASSOC);
-        return $sth->fetch();
+            $sth->setFetchMode(PDO::FETCH_ASSOC);
+            $resultado = $_SESSION[$_SESSION['SID']]['permissoes'][$this->perfil][$acao][$modulo] = $sth->fetch();
+        }
+        
+        return $resultado;
     }
 
-    public function perfilTemAcessoAoMetodo($idPerfil, $modulo, $metodo)
+    public function perfilTemAcessoAoMetodo($modulo, $metodo)
     {
-        $acesso = $this->temAcesso($idPerfil, $modulo, $metodo);
+        $acesso = $this->temAcesso($modulo, $metodo);
 
         $refClass = new ReflectionClass('Ctrl_' . $modulo);
         $interface = $refClass->getInterfaces();
@@ -72,11 +87,11 @@ class Permissao
         }
     }
 
-    public function getListaPermitida($idPerfil, array $lista)
+    public function getListaPermitida(array $lista)
     {
         $listaPermitida = array();
         foreach ($lista as $item) {
-            if ($this->perfilTemAcessoAoMetodo($idPerfil, $item['modulo'], $item['metodo']) == 'S') {
+            if ($this->perfilTemAcessoAoMetodo($item['modulo'], $item['metodo']) == 'S') {
                 $listaPermitida[] = $item;
             }
         }

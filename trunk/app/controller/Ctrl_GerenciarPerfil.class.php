@@ -97,7 +97,7 @@ class Ctrl_GerenciarPerfil extends BaseController implements Gerenciar {
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($acoes));
 
         if($this->perfil->getDataAll()) {
             $smarty->assign('perfis', $this->perfil->getDataAll());

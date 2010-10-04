@@ -111,9 +111,10 @@ class Ctrl_Relatorio extends BaseController implements Relatorio
         $render->setLists(array(
             'projeto'        => $this->projeto->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
             'lagoa'          => $this->lagoa->listarSelectAssoc($idProjetos, array('campo' => 'nome', 'ordem' => 'ASC')),
-            'categorias'     => $this->categoria->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
+            'categoria'      => $this->categoria->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
             'parametro'      => $this->parametro->listarSelectAssoc(array('campo' => 'nome', 'ordem' => 'ASC')),
-            'ponto_amostral' => $this->pontoAmostral->listarSelectAssoc($idLagoas, array('campo' => 'nome', 'ordem' => 'ASC'))
+            'ponto_amostral' => $this->pontoAmostral->listarSelectAssoc($idLagoas, array('campo' => 'nome', 'ordem' => 'ASC')),
+            'tipo_periodo'   => array('diario' => 'Diario', 'mensal' => 'Mensal'),
         ));
         $render->render();
     }

@@ -37,10 +37,15 @@ ul.lista{
 a img {
     vertical-align: sub;
 }
+
 .scroll_lista {
     height: 450px;
     overflow-x: hidden;
     overflow-y: scroll;
+}
+.scroll_log {
+    height: 200px;
+    overflow: scroll;
 }
 
 /* coisas de outro sistema */

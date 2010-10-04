@@ -30,18 +30,7 @@ class import_models_coleta extends import_models_base
                     break;
 
                 case 'data':
-                    $padraoDMAH     = '/^([1-9]|0[1-9]|[12][0-9]|3[01])\/([1-9]|0[1-9]|1[012])\/([12][0-9]{3})\ ([01][0-9]|2[0-3])$/';
-                    $padraoMAH      = '/^([1-9]|0[1-9]|1[012])\/([12][0-9]{3})\ ([01][0-9]|2[0-3])$/';
-                    $padraoMA       = '/^([1-9]|0[1-9]|1[012])\/([12][0-9]{3})$/';
-                    if (preg_match($padraoDMAH, $valor)) {
-                        $this->$propriedade = preg_replace($padraoDMAH, '\3-\2-\1 \4:00:00', $valor);
-                    } elseif (preg_match($padraoMAH, $valor)) {
-                        $this->$propriedade = preg_replace($padraoMAH, '\2-\1-01 \3:00:00', $valor);
-                    } elseif (preg_match($padraoMA, $valor)) {
-                        $this->$propriedade = preg_replace($padraoMA, '\2-\1-01 00:00:00', $valor);
-                    } else {
-                        $this->$propriedade = '';
-                    }
+                    $this->formataData($valor);
                     break;
 
                 default:
@@ -59,6 +48,54 @@ class import_models_coleta extends import_models_base
         } else {
             throw new Exception("GET: Propriedade {$propriedade} não existe na classe Coleta.");
         }
+    }
+
+    private function formataData($valor)
+    {
+        $padraoDMAHM = '/^([1-9]|0[1-9]|[12][0-9]|3[01])\/([1-9]|0[1-9]|1[012])\/([12][0-9]{3})\ ([01][0-9]|2[0-3])(:.+)/';
+        $padraoDMAH  = '/^([1-9]|0[1-9]|[12][0-9]|3[01])\/([1-9]|0[1-9]|1[012])\/([12][0-9]{3})\ ([01][0-9]|2[0-3])$/';
+        $padraoMAHM  = '/^([1-9]|0[1-9]|1[012])\/([12][0-9]{3})\ ([01][0-9]|2[0-3])(:.+)/';
+        $padraoMAH   = '/^([1-9]|0[1-9]|1[012])\/([12][0-9]{3})\ ([01][0-9]|2[0-3])$/';
+        $padraoMA    = '/^([1-9]|0[1-9]|1[012])\/([12][0-9]{3})$/';
+
+        if (preg_match($padraoDMAHM, $valor)) {
+            $this->data = preg_replace($padraoDMAHM, '\3-\2-\1 \4:00:00', $valor);
+        } elseif (preg_match($padraoDMAH, $valor)) {
+            $this->data = preg_replace($padraoDMAH, '\3-\2-\1 \4:00:00', $valor);
+        } elseif (preg_match($padraoMAHM, $valor)) {
+            $this->data = preg_replace($padraoMAHM, '\2-\1-01 \3:00:00', $valor);
+        } elseif (preg_match($padraoMAH, $valor)) {
+            $this->data = preg_replace($padraoMAH, '\2-\1-01 \3:00:00', $valor);
+        } elseif (preg_match($padraoMA, $valor)) {
+            $this->data = preg_replace($padraoMA, '\2-\1-01 00:00:00', $valor);
+        } else {
+            $this->data = '';
+        }
+
+        $this->corrigeData();
+
+    }
+
+    private function corrigeData()
+    {
+        list($data, $hora) = explode(' ', $this->data);
+        $arrayData = explode('-',$data);
+        $arrayHora = explode(':', $hora);
+
+        foreach ($arrayData as &$val) {
+            if (strlen($val) == 1) {
+                $val = "0{$val}";
+            }
+        }
+        foreach ($arrayHora as &$val) {
+            if (strlen($val) == 1) {
+                $val = "0{$val}";
+            }
+        }
+
+        $data = implode('-', $arrayData);
+        $hora = implode(':', $arrayHora);
+        $this->data = "{$data} {$hora}";
     }
 
     public function salvar($idProjeto)

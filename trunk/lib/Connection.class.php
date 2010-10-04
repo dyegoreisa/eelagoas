@@ -57,7 +57,7 @@ class Connection{
    */
   public function connect() {
     try {
-      $this->dbh = new PDO( $this->dsn, $this->user, $this->passwd );
+      $this->dbh = new PDO($this->dsn, $this->user, $this->passwd, array(PDO::ATTR_PERSISTENT => true));
     } catch (PDOException $e) {
       print "Error!: " . $e->getMessage() . "<br/>";
       die();
