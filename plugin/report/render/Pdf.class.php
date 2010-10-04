@@ -86,13 +86,19 @@ class Pdf extends Render
         $numY = $this->pulaLinhaFiltro($numX, $numY, $numHeight);
         
         $this->printCellFilter($numHeight, array('index'   => 'parametro', 
-                                                 'field'   => mb_convert_encoding('Parâmetros: ', 'ISO-8859-1', 'UTF-8'), 
+                                                 'field'   => latinToUTF('Parâmetros: '), 
                                                  'replace' => true));
 
         $numY = $this->pulaLinhaFiltro($numX, $numY, $numHeight);
         
-        $this->printCellFilter($numHeight, array('index'   => 'categorias', 
+        $this->printCellFilter($numHeight, array('index'   => 'categoria', 
                                                  'field'   => 'Categoria: ', 
+                                                 'replace' => true));   
+
+        $numY = $this->pulaLinhaFiltro($numX, $numY, $numHeight);
+
+        $this->printCellFilter($numHeight, array('index'   => 'tipo_periodo', 
+                                                 'field'   => latinToUTF('Período: '), 
                                                  'replace' => true));   
 
     }

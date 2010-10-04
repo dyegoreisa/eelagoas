@@ -149,7 +149,7 @@ abstract class BaseView extends Smarty{
             )
         );
         $permissao = new Permissao();
-        $this->assign('subMenu', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $subMenu));
+        $this->assign('subMenu', $permissao->getListaPermitida($subMenu));
         $this->assign('modulo', $this->getTpl());
         $this->assign('submenu', ABSOLUTE_PIECES . '/submenu.tpl');
         $this->displayHBF($body);

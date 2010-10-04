@@ -292,7 +292,7 @@ class Ctrl_GerenciarColeta extends BaseController implements Gerenciar {
         );
 
         $permissao = new Permissao();
-        $smarty->assign('acoesLista', $permissao->getListaPermitida($_SESSION[$_SESSION['SID']]['idPerfil'], $acoes));
+        $smarty->assign('acoesLista', $permissao->getListaPermitida($acoes));
 
         $smarty->assign( 'lagoa', $this->lagoa->getData() ); 
 

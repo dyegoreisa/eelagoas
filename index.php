@@ -48,7 +48,7 @@ if (session_id() != @$_SESSION['SID']) {
 }
 
 $permissao = new Permissao();
-$menu      = new Menu($permissao, $_SESSION[$_SESSION['SID']]['idPerfil']);
+$menu      = new Menu($permissao);
 
 $smarty->assign('menu', $menu->getMenu(R_SITE . '/index.php'));
 
@@ -56,7 +56,7 @@ $route->prepare();
 $route->setTemplate($smarty);
 
 try {
-    $temAcesso = $permissao->perfilTemAcessoAoMetodo($_SESSION[$_SESSION['SID']]['idPerfil'], $route->moduleBase, $route->method);
+    $temAcesso = $permissao->perfilTemAcessoAoMetodo($route->moduleBase, $route->method);
     if ($temAcesso == 'N') {
         $route->setRoute("/Main/negado/{$_SESSION[$_SESSION['SID']]['idPerfil']}/{$route->moduleBase}/{$route->method}");
     } 

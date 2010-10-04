@@ -115,11 +115,15 @@ class Xls extends Render
                                      'replace' => true));
         
         $this->printCellFilter(array('index'   => 'parametro', 
-                                     'field'   => mb_convert_encoding('Parâmetros: ', 'ISO-8859-1', 'UTF-8'), 
+                                     'field'   => latinToUTF('Parâmetros: '), 
                                      'replace' => true));
         
-        $this->printCellFilter(array('index'   => 'categorias', 
+        $this->printCellFilter(array('index'   => 'categoria', 
                                      'field'   => 'Categoria: ', 
+                                     'replace' => true));   
+
+        $this->printCellFilter(array('index'   => 'tipo_periodo', 
+                                     'field'   => latinToUTF('Período: '), 
                                      'replace' => true));   
         
         $this->y = 0;

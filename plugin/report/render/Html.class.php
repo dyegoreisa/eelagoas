@@ -26,25 +26,41 @@ class Html extends Render
     public function makeFilters()
     {
         $filters = array(
-            'projeto' => $this->makeFilter(array('index'   => 'projeto',
-                                                 'field'   => 'Projetos',
-                                                 'replace' => true)),
+            'projeto' => $this->makeFilter(array(
+                'index'   => 'projeto',
+                'field'   => 'Projetos',
+                'replace' => true
+            )),
 
-            'lagoa' => $this->makeFilter(array('index'   => 'lagoa',
-                                               'field'   => 'Lagoas',
-                                               'replace' => true)),
+            'lagoa' => $this->makeFilter(array(
+                'index'   => 'lagoa',
+                'field'   => 'Lagoas',
+                'replace' => true
+            )),
 
-            'ponto_amostral' => $this->makeFilter(array('index'   => 'ponto_amostral',
-                                                        'field'   => 'Pontos amostrais',
-                                                        'replace' => true)),
+            'ponto_amostral' => $this->makeFilter(array(
+                'index'   => 'ponto_amostral',
+                'field'   => 'Pontos amostrais',
+                'replace' => true
+            )),
 
-            'parametro' => $this->makeFilter(array('index'   => 'parametro',
-                                                   'field'   => 'Parametros',
-                                                   'replace' => true)),
+            'parametro' => $this->makeFilter(array(
+                'index'   => 'parametro',
+                'field'   => 'Parametros',
+                'replace' => true
+            )),
 
-            'categorias' => $this->makeFilter(array('index'   => 'categorias',
-                                                    'field'   => 'Categorias',
-                                                    'replace' => true)),
+            'categoria' => $this->makeFilter(array(
+                'index'   => 'categoria',
+                'field'   => 'Categorias',
+                'replace' => true
+            )),
+
+            'tipo_periodo' => $this->makeFilter(array(
+                'index'   => 'tipo_periodo',
+                'field'   => 'Per&iacute;odo',
+                'replace' =>  true
+            )),
         );
 
         return $filters;

@@ -9,7 +9,7 @@ class ItemMenu
     private $icone;
     private $itensMenu;
 
-    public function __construct(Permissao $permissao, $idPerfil, $texto, $modulo = null, $metodo = null, array $itensMenu = array(), $icone = '')
+    public function __construct(Permissao $permissao, $texto, $modulo = null, $metodo = null, array $itensMenu = array(), $icone = '')
     {
         $this->permissao = $permissao;
         $this->texto     = $texto;
@@ -19,7 +19,7 @@ class ItemMenu
         $this->itensMenu = $itensMenu;
 
         if (isset($modulo) && isset($metodo)) {
-            $this->acesso = $this->permissao->perfilTemAcessoAoMetodo($idPerfil, $this->modulo, $this->metodo);
+            $this->acesso = $this->permissao->perfilTemAcessoAoMetodo($this->modulo, $this->metodo);
         } else {
             $this->acesso = 'S';
         }

@@ -2,8 +2,11 @@
 class Mensagem
 {
     private static $mensagensOk;
+    private static $totalOk;
     private static $mensagensAtencao;
+    private static $totalAtencao;
     private static $mensagensErro;
+    private static $totalErro;
     private static $separador;
 
     private function __construct() {
@@ -30,14 +33,17 @@ class Mensagem
 
     public static function addOk($mensagem) {
         self::$mensagensOk[] = 'OK: ' .  htmlentities($mensagem);
+        self::$totalOk++;
     }
 
     public static function addAtencao($mensagem) {
         self::$mensagensAtencao[] = 'ATEN&Ccedil;&Atilde;O: ' . htmlentities($mensagem);
+        self::$totalAtencao++;
     }
 
     public static function addErro($mensagem) {
         self::$mensagensErro[] = 'ERRO: ' . htmlentities($mensagem);
+        self::$totalErro++;
     }
 
     public static function getOk() {
@@ -65,19 +71,23 @@ class Mensagem
     }
 
     public static function fetch() {
-        if (count(self::$mensagensErro)) {
+        if (self::$totalErro) {
             $saida[] = self::getErro();
-            if (count(self::$mensagensAtencao)) {
+            $saida[] = self::$separador . 'Total de erros: ' . self::$totalErro;
+            if (self::$totalAtencao) {
                 $saida[] = self::getAtencao();
+                $saida[] = self::$separador . 'Total de aten&ccdil;&otilde;es: ' . self::$totalAtencao;
             }
             return implode(self::getSeparador(), $saida);
         } else {
             $saida = array();
-            if (count(self::$mensagensAtencao)) {
+            if (self::$totalAtencao) {
                 $saida[] = self::getAtencao();
+                $saida[] = self::$separador . 'Total de aten&ccdil;&otilde;es: ' . self::$totalAtencao;
             }
-            if (count(self::$mensagensOk)) {
+            if (self::$totalOk) {
                 $saida[] = self::getOk();
+                $saida[] = self::$separador . 'Total de Ok: ' . self::$totalOk;
             }
             return implode(self::getSeparador(), $saida);
         }
