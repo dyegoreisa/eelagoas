@@ -44,7 +44,7 @@ class dao_excel
 
             $coleta = new model_coleta();
             $coleta->setData($this->excel->value($row, 'A'));
-            $coleta->setTipoPeriodo(($this->excel->value($row, 'D') == 1) ? 'diario' : 'mensal');
+            $coleta->setTipoPeriodo(($this->excel->value($row, 'D') == 0) ? 'diario' : 'mensal');
             $coleta->setProfundidade($this->excel->value($row, 'F'));
 
             $coleta->setLagoa($lagoa);
