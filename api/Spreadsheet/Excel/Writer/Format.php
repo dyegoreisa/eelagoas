@@ -33,7 +33,7 @@
 */
 
 //require_once 'PEAR.php';
-require_once 'api/PEAR.php';
+require_once PROC . 'api/PEAR.php';
 
 /**
 * Class for generating Excel XF records (formats)

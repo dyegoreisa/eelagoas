@@ -43,21 +43,116 @@ class Ctrl_Relatorio extends BaseController implements Relatorio
         $smarty->displayHBF( 'interface.tpl' );
     }
 
+    private function gerarXmlDeFiltros(array $arrayFiltros, $arquivo) 
+    {
+        // versao do encoding xml
+        $dom = new DOMDocument("1.0", "ISO-8859-1");
+
+        // retirar os espacos em branco
+        $dom->preserveWhiteSpace = false;
+
+        // gerar o codigo
+        $dom->formatOutput = true;
+
+        // criando o nó principal
+        $filtros = $dom->createElement("filtros");
+
+        foreach ($arrayFiltros as $item => $valores) {
+            if (is_array($valores)) {
+                $filtro = $dom->createElement($item);
+
+                foreach ($valores as $key => $val) {
+                    $elemento = $dom->createElement("elemento");
+
+                    $chave = $dom->createElement("chave", $key);
+                    $valor = $dom->createElement("valor", $val);
+
+                    $elemento->appendChild($chave);
+                    $elemento->appendChild($valor);
+
+                    $filtro->appendChild($elemento);
+                }
+
+                $filtros->appendChild($filtro);
+            } else { 
+                $filtro   = $dom->createElement($item);
+                $valor    = $dom->createElement("valor", $valores);
+
+                $filtro->appendChild($valor);
+
+                $filtros->appendChild($filtro);
+            }
+        }
+
+        $dom->appendChild($filtros);
+
+        $dom->save('/tmp/' . $arquivo);
+    }
+
+    private function gerarArrayDeFiltros($arquivo)
+    {
+        $objFiltros = simplexml_load_file('/tmp/' . $arquivo); 
+
+        foreach ($objFiltros as $filtro => $obj) {
+            if (isset($obj->elemento) === true) {
+                foreach ($obj->elemento as $elemento) {
+                    $tmp[$elemento->chave . PHP_EOL + 0] = $elemento->valor . PHP_EOL + 0;
+                }
+            } else {
+                $tmp = str_replace("\n", '', $obj->valor . PHP_EOL);
+            }
+            $filtros[$filtro] = $tmp;
+        }
+
+        return $filtros;
+    }
 
     public function gerar()
     {   
-        $filtros       = $_POST;
-        $tipoRelatorio = $_POST['tipo_relatorio'];
-        $idProjetos    = (isset($_POST['projeto'])    && $_POST['projeto']    != '') ? implode(', ', $_POST['projeto']) : '';
-        $idLagoas      = (isset($_POST['lagoa'])      && $_POST['lagoa']      != '') ? implode(', ', $_POST['lagoa'])   : '';
-        $orientacao    = (isset($_POST['orientacao']) && $_POST['orientacao'] != '') ? $_POST['orientacao']             : 'L';
-        $formato       = (isset($_POST['formato'])    && $_POST['formato']    != '') ? $_POST['formato']                : 'A4';
+        $arquivo = 'filtros_' . rand(1, 1000) . '.xml';
+
+        $this->gerarXmlDeFiltros($_POST, $arquivo);
 
         $this->usuario->setId($_SESSION[$_SESSION['SID']]['idUsuario']);
         $this->usuario->pegar();
 
+        $this->gerarWeb($arquivo, $this->usuario->getData('nome'));
+    }
+
+    private function gerarWeb($xml, $nomeUsuario)
+    {
+        $this->processarRelatorio($xml, $nomeUsuario, false);
+    }
+
+    public function gerarBackground($xml, $nomeUsuario)
+    {
+        $this->processarRelatorio($xml, $nomeUsuario, true);
+    }
+
+    /**
+     * Executa processamento para gerar o relatório
+     * 
+     * @param string $xml 
+     * @param string $nomeUsuario 
+     * @param boolean $EArquivo - true para gerar arquivo e false para exibição na web
+     * @access private
+     * @return void
+     */
+    private function processarRelatorio($xml, $nomeUsuario, $EArquivo)
+    {
+        // Desabilita o Garbage Collection
+        gc_disable();
+
+        $filtros = $this->gerarArrayDeFiltros($xml);
+
+        $tipoRelatorio = $filtros['tipo_relatorio'];
+        $idProjetos    = (isset($filtros['projeto'])    && $filtros['projeto']    != '') ? implode(',', $filtros['projeto']) : '';
+        $idLagoas      = (isset($filtros['lagoa'])      && $filtros['lagoa']      != '') ? implode(',', $filtros['lagoa'])   : '';
+        $orientacao    = (isset($filtros['orientacao']) && $filtros['orientacao'] != '') ? $filtros['orientacao']             : 'L';
+        $formato       = (isset($filtros['formato'])    && $filtros['formato']    != '') ? $filtros['formato']                : 'A4';
+
         $report = new Report(
-            $this->usuario->getData('nome'),
+            $nomeUsuario,
             $filtros,
             'Relatório'
         );

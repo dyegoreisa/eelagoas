@@ -6,8 +6,11 @@ require_once 'render/Html.class.php';
 require_once 'render/Pdf.class.php';
 require_once 'render/Xls.class.php';
 require_once 'data/Process.class.php';
-require_once 'data/Result.class.php';
 require_once 'data/Column.class.php';
+require_once 'data/Ordem.class.php';
+require_once 'data/model/Coleta.class.php';
+require_once 'data/model/Parametro.class.php';
+require_once 'data/model/Especie.class.php';
 
 class Report
 {
@@ -50,6 +53,13 @@ class Report
         $this->render->setFilters($this->filters);
         $this->render->setReportName($this->reportName);
     }
+
+    public function setTpl($EArquivo = false) 
+    {
+        $this->render = new Tpl($EArquivo);
+        $this->setData();
+    }
+
 
     public function setHtml() 
     {

@@ -32,13 +32,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once 'api/PEAR.php';
-require_once 'api/Spreadsheet/Excel/Writer/Format.php';
-require_once 'api/Spreadsheet/Excel/Writer/BIFFwriter.php';
-require_once 'api/Spreadsheet/Excel/Writer/Worksheet.php';
-require_once 'api/Spreadsheet/Excel/Writer/Parser.php';
-require_once 'api/OLE/PPS/Root.php';
-require_once 'api/OLE/PPS/File.php';
+require_once PROC . 'api/PEAR.php';
+require_once PROC . 'api/Spreadsheet/Excel/Writer/Format.php';
+require_once PROC . 'api/Spreadsheet/Excel/Writer/BIFFwriter.php';
+require_once PROC . 'api/Spreadsheet/Excel/Writer/Worksheet.php';
+require_once PROC . 'api/Spreadsheet/Excel/Writer/Parser.php';
+require_once PROC . 'api/OLE/PPS/Root.php';
+require_once PROC . 'api/OLE/PPS/File.php';
 
 /**
 * Class for generating Excel Spreadsheets

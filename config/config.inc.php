@@ -4,7 +4,7 @@
 /**
  * Pasta principal do sistema 
  */
-define('ROOT_FOLDER', '');
+define('ROOT_FOLDER', '/eelagoas');
 
 /**
  * Define a rota padrão
@@ -19,8 +19,8 @@ define('LOGIN', '/Sessao/login/');
 /**
  * Define os caminhos padrôes 
  */
-define('R_DIR',      ROOT_FOLDER . '/index.php');
-define('R_SITE',     'http://' . $_SERVER['HTTP_HOST'] . ROOT_FOLDER);
+define('R_DIR', ROOT_FOLDER . '/index.php');
+define('R_SITE', 'http://' . $_SERVER['HTTP_HOST'] . ROOT_FOLDER);
 define('D_ABSOLUTE', $_SERVER['DOCUMENT_ROOT'] . ROOT_FOLDER);
 define('PROC_D_ABSOLUTE', '/var/www' . ROOT_FOLDER);
 define('PROC', ($_SERVER['DOCUMENT_ROOT'] !== NULL) ? PROC_D_ABSOLUTE . '/' : '');
@@ -41,10 +41,10 @@ define('ABSOLUTE_PIECES', D_ABSOLUTE . '/' . DIR_VIEW . '/' . DIR_PIECES);
 /**
  * Define os diretórios do Smarty
  */
-define('TEMPLATES', 'app/view');
-define('COMPILED',  'compiled');
-define('CONFIG',    'config');
-define('CACHE',     '');
+define('TEMPLATES', PROC . 'app/view');
+define('COMPILED',  PROC . 'compiled');
+define('CONFIG',    PROC . 'config');
+define('CACHE',     PROC . '');
 
 /**
  * Limite de linha por consulta
@@ -54,9 +54,9 @@ define('LIMIT', 999999 );
 /**
  * Diretório da instalação de framework
  */
-define('SMARTY_TEMPLATE', PROC . PROC . 'api/smarty/');
-define('FPDF',            PROC . PROC . 'api/fpdf16/');
-define('SPREADSHEET',     PROC . PROC . 'api/Spreadsheet/Excel/');
+define('SMARTY_TEMPLATE', PROC . 'api/smarty/');
+define('FPDF',            PROC . 'api/fpdf16/');
+define('SPREADSHEET',     PROC . 'api/Spreadsheet/Excel/');
 
 /**
  * Logos para os relatórios 
@@ -69,8 +69,13 @@ define('LOGO_XLS', 'images/logo.bmp');
 /**
  * Define se mostra mensagens de erros do PHP 
  */
-define('DISPLAY_ERRORS', 'off');
+define('DISPLAY_ERRORS', true);
 
 /**
  * Define informações para acesso ao banco de dados
  */
+define('DB_DRIVER', 'mysql');
+define('DB_HOST',   'localhost');
+define('DB_NAME',   'eelagoas');
+define('DB_USER',   'eelagoas');
+define('DB_PASSWD', '33l4g04s');

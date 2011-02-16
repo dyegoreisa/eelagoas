@@ -18,7 +18,7 @@
 //
 // $Id: Getopt.php,v 1.4 2007/06/12 14:58:56 cellog Exp $
 
-require_once 'api/PEAR.php';
+require_once PROC . 'api/PEAR.php';
 
 /**
  * Command-line options parsing class.
