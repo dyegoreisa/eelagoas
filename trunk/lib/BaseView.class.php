@@ -64,9 +64,9 @@ abstract class BaseView extends Smarty{
      */
     public function setDirectory( $templates, $compiled, $config, $cache ) {
         $this->template_dir = $templates;
-        $this->compile_dir    = $compiled;
-        $this->config_dir     = $config;
-        $this->cache_dir        = $cache;
+        $this->compile_dir  = $compiled;
+        $this->config_dir   = $config;
+        $this->cache_dir    = $cache;
     }
 
     /**

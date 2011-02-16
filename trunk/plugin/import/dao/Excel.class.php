@@ -1,11 +1,11 @@
 <?php
-require_once 'plugin/import/model/Lagoa.class.php';
-require_once 'plugin/import/model/PontoAmostral.class.php';
-require_once 'plugin/import/model/Categoria.class.php';
-require_once 'plugin/import/model/Parametro.class.php';
-require_once 'plugin/import/model/Especie.class.php';
-require_once 'plugin/import/model/ColetaParametro.class.php';
-require_once 'plugin/import/model/ColetaParametroEspecie.class.php';
+require_once PROC . 'plugin/import/model/Lagoa.class.php';
+require_once PROC . 'plugin/import/model/PontoAmostral.class.php';
+require_once PROC . 'plugin/import/model/Categoria.class.php';
+require_once PROC . 'plugin/import/model/Parametro.class.php';
+require_once PROC . 'plugin/import/model/Especie.class.php';
+require_once PROC . 'plugin/import/model/ColetaParametro.class.php';
+require_once PROC . 'plugin/import/model/ColetaParametroEspecie.class.php';
 
 class dao_excel
 {

@@ -1,6 +1,6 @@
 <?php
 require_once 'Base.class.php';
-require_once 'plugin/import/dao/Categoria.class.php';
+require_once PROC . 'plugin/import/dao/Categoria.class.php';
 
 class model_categoria extends model_base
 {

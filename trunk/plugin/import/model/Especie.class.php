@@ -1,6 +1,6 @@
 <?php
 require_once 'Base.class.php';
-require_once 'plugin/import/dao/Especie.class.php';
+require_once PROC . 'plugin/import/dao/Especie.class.php';
 
 class model_especie extends model_base
 {

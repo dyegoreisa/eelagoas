@@ -20,8 +20,8 @@
 // $Id: Root.php,v 1.10 2008/02/02 21:00:37 schmidt Exp $
 
 
-require_once 'api/OLE/PPS.php';
-require_once 'api/System.php';
+require_once PROC . 'api/OLE/PPS.php';
+require_once PROC . 'api/System.php';
 
 /**
 * Class for creating Root PPS's for OLE containers

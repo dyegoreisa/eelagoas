@@ -165,7 +165,7 @@ class Process
         $dados = array();
         foreach ($sth->fetchAll() as $val) {
             $val['parametro'] = $this->executeParametro($val['id_coleta']);
-            $dados[] = new Result($val);
+            $dados[] = new data_model_coleta($val);
         }
         return $dados;
     }
@@ -193,7 +193,7 @@ class Process
             if ($val['composicao'] == 1) {
                 $val['composicao'] = $this->executeEspecie($idColeta, $val['id_parametro']);
             }
-            $dados[] = new Result($val);
+            $dados[] = new data_model_parametro($val);
         }
         return $dados;
     }
@@ -203,6 +203,7 @@ class Process
         $sth = $this->dbh->prepare("
             SELECT
                 e.id_especie
+                , cp.id_parametro
                 , e.nome AS especie
                 , cpe.quantidade
             FROM especie e
@@ -221,7 +222,7 @@ class Process
 
         $dados = array();
         foreach ($sth->fetchAll() as $val) {
-            $dados[] = new Result($val);
+            $dados[] = new data_model_especie($val);
         }
         return $dados;
     }

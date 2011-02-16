@@ -93,7 +93,7 @@ define('SPREADSHEET_EXCEL_WRITER_EQ', "=");
 define('SPREADSHEET_EXCEL_WRITER_NE', "<>");
 
 
-require_once 'api/PEAR.php';
+require_once PROC . 'api/PEAR.php';
 
 /**
 * Class for parsing Excel formulas

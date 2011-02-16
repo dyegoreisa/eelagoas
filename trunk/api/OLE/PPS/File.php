@@ -20,8 +20,8 @@
 // $Id: File.php,v 1.12 2008/02/02 21:00:37 schmidt Exp $
 
 
-require_once 'api/OLE/PPS.php';
-require_once 'api/System.php';
+require_once PROC . 'api/OLE/PPS.php';
+require_once PROC . 'api/System.php';
 
 /**
 * Class for creating File PPS's for OLE containers

@@ -1,7 +1,7 @@
 <?php
 require_once 'Base.class.php';
-require_once 'plugin/import/dao/Parametro.class.php';
-require_once 'plugin/import/dao/ColetaParametroEspecie.class.php';
+require_once PROC . 'plugin/import/dao/Parametro.class.php';
+require_once PROC . 'plugin/import/dao/ColetaParametroEspecie.class.php';
 
 class model_parametro extends model_base
 {

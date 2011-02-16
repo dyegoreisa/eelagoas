@@ -5,17 +5,11 @@ require_once SMARTY_TEMPLATE . 'Smarty.class.php';
 class Html extends Render
 {
     private $formatedData;
-    private $smarty;
     private $algins;
 
     public function __construct() 
     {
         parent::__construct();
-        $this->smarty = new Smarty();
-        $this->smarty->template_dir = TEMPLATE_DIR;
-        $this->smarty->compile_dir  = COMPILE_DIR;
-        $this->smarty->config_dir   = CONFIG_DIR;
-        $this->smarty->cache_dir    = CACHE_DIR;
     }
 
     public function totalLines()
@@ -84,116 +78,115 @@ class Html extends Render
     {
         $nivel = 0;
         $ordem = array();
-        $header = $this->makeHeader($this->makeTitle(), &$ordem, &$nivel, true);
-        $data = $this->makeData($this->getData(), $ordem);
 
-        $html = array_merge($header, $data);
-
-        array_unshift($html, "\n" . '<table id="report">' . "\n");
-        $html[] = '</table>' . "\n";
-
-        return implode($html);
+        echo "\n" . '<table id="report">' . "\n";
+        $this->makeHeader($this->makeTitle(), &$ordem, &$nivel, true);
+        $this->makeData($this->getData(), $ordem);
+        echo '</table>' . "\n";
     }
 
     private function makeHeader(array $colunas, $ordem, $nivel = 0, $inicio = false)
     {
-        $html     = array();
-        $subHtml  = array();
+        $subHtml  = '';
         $beginTr  = "\t" . '<tr class="header">' . "\n";
         $endTr    = "\t" . '</tr>'. "\n";
        
         if ($nivel < 1) { 
             if (!$inicio) {
-                $html[] = $endTr;
+                echo $endTr;
             }
-            $html[] = $beginTr;
+            echo $beginTr;
         }
 
         foreach ($colunas as $coluna) {
             if (is_array($coluna->getColumns())) {
-                $html[]  = "\t\t" . '<th class="align_' . $coluna->getAlign() . '" colspan="' . $coluna->getWidth() . '">' . $coluna->getText() . '</th>' . "\n";
-                $subHtml = array_merge($subHtml, $this->makeHeader($coluna->getColumns(), &$ordem, $nivel++));
+                echo "\t\t" . '<th class="align_' . $coluna->getAlign() . '" colspan="' . $coluna->getWidth() . '">' . $coluna->getText() . '</th>' . "\n";
+                ob_start();
+                $this->makeHeader($coluna->getColumns(), &$ordem, $nivel++);
+                $subHtml .= ob_get_contents();
+                ob_end_clean();
             } else {
-                $html[]  = "\t\t" . '<th class="align_' . $coluna->getAlign() . '" rowspan="' . $coluna->getHeight() . '">' . $coluna->getText() . '</th>' . "\n";
-                $ordem[] = array(
-                    'id'    => $coluna->getId(), 
-                    'field' => $coluna->getField()
-                );
+                echo "\t\t" . '<th class="align_' . $coluna->getAlign() . '" rowspan="' . $coluna->getHeight() . '">' . $coluna->getText() . '</th>' . "\n";
+                $ordem[] = new Ordem($coluna->getId(), $coluna->getField());
             }
         }
 
-        $html = array_merge($html, $subHtml);
+        echo $subHtml;
 
         if ($inicio) {
-            $html[] = $endTr;
+            echo $endTr;
         }
-
-        return $html;
     }
 
     private function makeData(array $dados, array $ordem) 
     {
-        $html       = array();
         $beginTr[0] = "\t" . '<tr class="linha1">' . "\n";
         $beginTr[1] = "\t" . '<tr class="linha2">' . "\n";
         $endTr      = "\t" . '</tr>'. "\n";
 
-        foreach ($dados as $key => $dado) {
-            $html[] = $beginTr[$key%2];
+        foreach ($dados as $key => $coleta) {
+            
+            echo $beginTr[$key%2];
 
-            $html[] = "\t\t" . '<td class="align_L">' . $dado->data . '</td>' . "\n";
-            $html[] = "\t\t" . '<td class="align_L">' . $dado->nome_projeto . '</td>' . "\n";
-            $html[] = "\t\t" . '<td class="align_L">' . $dado->nome_lagoa . '</td>' . "\n";
-            $html[] = "\t\t" . '<td class="align_L">' . $dado->nome_ponto_amostral . '</td>' . "\n";
-            $html[] = "\t\t" . '<td class="align_L">' . $dado->nome_categoria . '</td>' . "\n";
-            $html[] = "\t\t" . '<td class="align_L">' . $dado->profundidade . '</td>' . "\n";
-
-            for ($i = 6; $i < count($ordem); $i++) {
-                $encontrado = false;
-                foreach ($dado->parametro as $parametro) {
-                    if (!is_array($parametro->composicao)) {
-                        if ($ordem[$i]['field'] == 'id_parametro' && $ordem[$i]['id'] == $parametro->id_parametro) {
-                            $html[] = "\t\t" . '<td class="align_C">' . $parametro->valor . '</td>' . "\n";
-                            $encontrado = true;
-                        }
-                    } else {
-                        foreach ($parametro->composicao as $especie) {
-                            if ($ordem[$i]['field'] == 'id_especie' && $ordem[$i]['id'] == $especie->id_especie) {
-                                $html[] = "\t\t" . '<td class="align_C">' . $especie->quantidade . '</td>' . "\n";
-                                $encontrado = true;
-                            }
-                        }
-                    }
-                }
-                if (!$encontrado) {
-                    $html[] = "\t\t" . '<td class="align_">&nbsp;</td>' . "\n";
-                }
+            echo "\t\t" . '<td class="align_L">' . $coleta->getData() . '</td>' . "\n";
+            echo "\t\t" . '<td class="align_L">' . $coleta->getNomeProjeto() . '</td>' . "\n";
+            echo "\t\t" . '<td class="align_L">' . $coleta->getNomeLagoa() . '</td>' . "\n";
+            echo "\t\t" . '<td class="align_L">' . $coleta->getNomePontoAmostral() . '</td>' . "\n";
+            echo "\t\t" . '<td class="align_L">' . $coleta->getNomeCategoria() . '</td>' . "\n";
+            echo "\t\t" . '<td class="align_L">' . $coleta->getProfundidade() . '</td>' . "\n";
+            
+            $qtdeOrdem = count($ordem);
+            for ($i = 6; $i < $qtdeOrdem; $i++) {
+            	$this->makeDataParametro($coleta, $ordem[$i]);           
             }
 
-            $html[] = $endTr;
+            echo $endTr;
         }
-
-        return $html;
+    }
+    
+    private function makeDataParametro($coleta, $ordem)
+    {
+        $objModel = $coleta->findParametro($ordem->getId(), $ordem->getField());
+        if (isset($objModel)) {
+            echo "\t\t" . '<td class="align_C">' . $objModel->getValor() . '</td>' . "\n";
+        } else {
+            echo "\t\t" . '<td class="align_">&nbsp;</td>' . "\n";
+        }
+    	
     }
 
     public function render()
     {
-        $smarty = $this->smarty;
-        //$smarty->debugging = true;
+        echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"'
+           . '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+           . '<html>'
+           . '<head>'
+           . '<title>'
+           . $this->getReportName()
+           . '</title>'
+           . '<link rel="stylesheet" type="text/css" href="' . SITE . '/plugin/report/render/css/report.css" />'
+           . '<head>'
+           . '<body>'
+           . '<img src="' . REP_LOGO_HTML . '" id="logo">'
+           . '<div id="header">'
+           . '    <h2>' . $this->getReportName() . '</h2>'
+           . '    <p><b>Emitido por:</b> ' . $this->getUserName() . '</p>'
+           . '    <p><b>Emiss&atilde;o:</b> ' . $this->getTodayBR() . '</p>'
+           . '</div>'
+           . '<div id="filter">'
+           . '    <ul>';
 
-        $smarty->assign('site', SITE);
-        $smarty->assign('barra_titulo', $this->getReportName());
-        $smarty->assign('alinhamento', $this->getArrayColumnAlign());
-        $smarty->assign('total_linhas', $this->totalLines());
-        $smarty->assign('logo', REP_LOGO_HTML);
-        $smarty->assign('nome_relatorio', $this->getReportName());
-        $smarty->assign('usuario', $this->getUserName());
-        $smarty->assign('data_emissao', $this->getTodayBR());
-        $smarty->assign('filtros', $this->makeFilters());
-        $smarty->assign('render_html', $this->makeHtml());
+        $filtros = $this->makeFilters();
+        foreach ($filtros as $filtro) {
+           echo '            <li><b>' . $filtro['field'] . ':</b>  ' . $filtro['value'] . '</li>';
+        }
 
-        $smarty->display('header.tpl');
-        $smarty->display('body.tpl');
-        $smarty->display('footer.tpl');
+        echo '    </ul>'
+           . '</div>'
+           . '<p id="total">Total de registros impressos: ' . $this->totalLines() . '</p>';
+
+        $this->makeHtml();
+         
+        echo '</body></html>';
     }
 }

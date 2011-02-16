@@ -1,6 +1,6 @@
 <?php
 
-require_once 'lib/myFPDF.class.php';
+require_once PROC . 'lib/myFPDF.class.php';
 
 class Pdf extends Render
 {

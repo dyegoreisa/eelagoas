@@ -3,6 +3,8 @@ if (!is_file('config/instaled')) {
     header('Location: install/install01.php');
 }
 
+ini_set('display_errors', true);
+
 //include 'lib/Debug.class.php';
 require_once 'config/config.inc.php';
 require_once 'lib/lib.inc.php';
@@ -17,10 +19,8 @@ require_once 'app/view/Template.class.php';
 require_once 'app/view/Mensagem.class.php';
 
 // Plugins
-require_once 'plugin/report/Report.class.php';
-require_once 'plugin/import/ImportadorExcel.class.php';
-
-ini_set('display_errors', DISPLAY_ERRORS);
+require_once PROC . 'plugin/report/Report.class.php';
+require_once PROC . 'plugin/import/ImportadorExcel.class.php';
 
 loadModules(DIR_MODELS);
 loadModules(DIR_CONTROLLER);
@@ -40,9 +40,15 @@ $smarty->assign('nomePerfil', $_SESSION[$_SESSION['SID']]['nomePerfil']);
 $route = new Route();
 $route->setRouteDefault(D_ROUTE);
 
-if (session_id() != @$_SESSION['SID']) {
+if (session_id() != @$_SESSION['SID'] && empty($argv)) {
     $route->setRoute(LOGIN); 
     $smarty->setHeader('common/header_logoff.tpl');
+} elseif (!empty($argv) && is_array($argv)) {
+    array_shift($argv);
+    foreach ($argv as $param) {
+        $url .= '/'. $param; 
+    }
+    $route->setRoute($url); 
 } else {
     $smarty->setHeader('common/header_logon.tpl');
 }

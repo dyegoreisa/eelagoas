@@ -101,8 +101,8 @@ $(document).ready(onLoad);
         <fieldset class="campo">
             <legend>Tipo de relat&oacute;rio</legend>
             <input type="radio" name="tipo_relatorio" value="html" id="radio_html" checked><label for="radio_html">HTML</label>
-            <input type="radio" name="tipo_relatorio" value="pdf" id="radio_pdf" ><label for="radio_pdf">PDF</label>
-            <input type="radio" name="tipo_relatorio" value="xls" id="radio_xls"><label for="radio_xls">Excel</label>
+            {*<input type="radio" name="tipo_relatorio" value="pdf" id="radio_pdf" ><label for="radio_pdf">PDF</label>*]
+            {*<input type="radio" name="tipo_relatorio" value="xls" id="radio_xls"><label for="radio_xls">Excel</label>*}
         </fieldset>
 
         <fieldset class="campo escondido" id="opcao_pdf">

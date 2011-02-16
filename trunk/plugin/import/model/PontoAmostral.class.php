@@ -1,6 +1,6 @@
 <?php
 require_once 'Base.class.php';
-require_once 'plugin/import/dao/PontoAmostral.class.php';
+require_once PROC . 'plugin/import/dao/PontoAmostral.class.php';
 
 class model_pontoAmostral extends model_base
 {
