@@ -194,10 +194,7 @@ class Xls extends Render
                 $this->worksheet->writeString($this->x, $this->y, mb_convert_encoding($column->getText(), 'ISO-8859-1', 'UTF-8'), $this->format[$format]);
                 $this->y++;
 
-                $ordem[] = array(
-                    'id'    => $column->getId(), 
-                    'field' => $column->getField()
-                );
+                $ordem[] = new Ordem($column->getId(), $column->getField());
             }
         }
         return $xAtual;
@@ -207,38 +204,33 @@ class Xls extends Render
     {
         $ordem = array();
         $this->makeColumns(&$ordem);
-        foreach ($this->data as $key => $dado) {
+        foreach ($this->data as $key => $coleta) {
             $this->y = 0;
             $cycle = ($key % 2) ? 'row_even' : 'row_odd';
 
-            $this->worksheet->writeString($this->x, 0, $dado->data, $this->format[$cycle]);
-            $this->worksheet->writeString($this->x, 1, $dado->nome_projeto, $this->format[$cycle]);
-            $this->worksheet->writeString($this->x, 2, $dado->nome_lagoa, $this->format[$cycle]);
-            $this->worksheet->writeString($this->x, 3, $dado->nome_ponto_amostral, $this->format[$cycle]);
-            $this->worksheet->writeString($this->x, 4, $dado->nome_categoria, $this->format[$cycle]);
-            $this->worksheet->writeString($this->x, 5, $dado->profundidade, $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 0, $coleta->getData(), $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 1, $coleta->getNomeProjeto(), $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 2, $coleta->getNomeLagoa(), $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 3, $coleta->getNomePontoAmostral(), $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 4, $coleta->getNomeCategoria(), $this->format[$cycle]);
+            $this->worksheet->writeString($this->x, 5, $coleta->getProfundidade(), $this->format[$cycle]);
 
-            for ($i = 6; $i < count($ordem); $i++) {
+            $qtdeOrdem = count($ordem);
+            for ($i = 6; $i < $qtdeOrdem; $i++) {
                 $this->y = $i;
-                foreach ($dado->parametro as $parametro) {
-                    if (!is_array($parametro->composicao)) {
-                        if ($ordem[$i]['field'] == 'id_parametro' && $ordem[$i]['id'] == $parametro->id_parametro) {
-                            $this->worksheet->writeString($this->x, $this->y, $parametro->valor, $this->format[$cycle]);
-                        } else {
-                            $this->worksheet->writeString($this->x, $this->y, '', $this->format[$cycle]);
-                        }
-                    } else {
-                        foreach ($parametro->composicao as $especie) {
-                            if ($ordem[$i]['field'] == 'id_especie' && $ordem[$i]['id'] == $especie->id_especie) {
-                                $this->worksheet->writeString($this->x, $this->y, $especie->quantidade, $this->format[$cycle]);
-                            } else {
-                                $this->worksheet->writeString($this->x, $this->y, '', $this->format[$cycle]);
-                            }
-                        }
-                    }
-                }
+            	$this->makeDataParametro($coleta, $ordem[$i], $cycle);
             }
             $this->x++;
+        }
+    }
+
+    private function makeDataParametro($coleta, $ordem, $cycle)
+    {
+        $objModel = $coleta->findParametro($ordem->getId(), $ordem->getField());
+        if (isset($objModel)) {
+            $this->worksheet->writeNumber($this->x, $this->y, $objModel->getValor(), $this->format[$cycle]);
+        } else {
+            $this->worksheet->writeString($this->x, $this->y, '', $this->format[$cycle]);
         }
     }
 
