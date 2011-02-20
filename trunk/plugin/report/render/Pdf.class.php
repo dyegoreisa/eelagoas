@@ -187,13 +187,7 @@ class Pdf extends Render
             if (is_array($column->getColumns())) {
                 $this->makeRecursiveColumns($x, $y + 6, $column->getColumns(), &$ordem);
             } else {
-                $ordem[] = array(
-                    'id'     => $column->getId(), 
-                    'field'  => $column->getField(),
-                    'width'  => $width,
-                    'height' => $height,
-                    'text'   => $text
-                );
+                $ordem[] = new Ordem($column->getId(), $column->getField(), $width, $height, $text);
             }
 
             $x += $width;
@@ -208,7 +202,7 @@ class Pdf extends Render
 
         $this->fpdf->SetFont('Arial', 'B', 6);     
 
-        foreach ($this->data as $dado) {
+        foreach ($this->data as $coleta) {
             $widths = $heights = $aligns = $texts = array();
 
             $this->fpdf->SetX(4);
@@ -220,35 +214,20 @@ class Pdf extends Render
             }            
 
             for ($i = 0; $i < 6; $i++) {
-                $atribute  = $this->columns[$i]->getField();
                 $widths[]  = $this->columns[$i]->getWidth() * $this->fatorWidth;
                 $heights[] = $this->columns[$i]->getHeight();
-                $texts[]   = $dado->$atribute;
+                $texts[]   = $coleta->getDataByField($this->columns[$i]->getField());
                 $aligns[]  = 'L';
             }
 
-            $i = 6;
-            while ($i < count($ordem)) {
-                $text = '';
-                foreach ($dado->parametro as $parametro) {
-                    if (!is_array($parametro->composicao)) {
-                        if ($ordem[$i]['field'] == 'id_parametro' && $ordem[$i]['id'] == $parametro->id_parametro) {
-                            $text = $parametro->valor;
-                        }
-                    } else {
-                        foreach ($parametro->composicao as $especie) {
-                            if ($ordem[$i]['field'] == 'id_especie' && $ordem[$i]['id'] == $especie->id_especie) {
-                                $text = $especie->quantidade;
-                            }
-                        }
-                    }
-                }
+            $qtdeOrdem = count($ordem);
+            for ($i = 6; $i < $qtdeOrdem; $i++) {
+                $dados = $this->makeDataParametro($coleta, $ordem[$i]);
 
-                $widths[]  = $ordem[$i]['width'];
-                $heights[] = $ordem[$i]['height'];
-                $texts[]   = $text;
-                $aligns[]  = 'L';
-                $i++;
+                $widths[]  = $dados['widths'];
+                $heights[] = $dados['height'];
+                $texts[]   = $dados['texts'];
+                $aligns[]  = $dados['aligns'];
             }
 
             $this->fpdf->SetWidths($widths);
@@ -260,6 +239,23 @@ class Pdf extends Render
 
             $this->fpdf->currentLine++;
         }
+    }
+
+    private function makeDataParametro($coleta, $ordem)
+    {
+        $objModel = $coleta->findParametro($ordem->getId(), $ordem->getField());
+        if (isset($objModel)) {
+            $text = $objModel->getValor();
+        } else {
+            $text = '';
+        }
+
+        return array(
+            'widths'  => $ordem->getWidth(),
+            'heights' => $ordem->getHeight(),
+            'texts'   => $text,
+            'aligns'  => 'L'
+        );
     }
 
     /**
