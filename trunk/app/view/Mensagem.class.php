@@ -37,7 +37,7 @@ class Mensagem
     }
 
     public static function addAtencao($mensagem) {
-        self::$mensagensAtencao[] = 'ATEN&Ccedil;&Atilde;O: ' . htmlentities($mensagem);
+        self::$mensagensAtencao[] = latinToUTF('ATENÇÃO: ') . htmlentities($mensagem);
         self::$totalAtencao++;
     }
 
@@ -76,14 +76,14 @@ class Mensagem
             $saida[] = self::$separador . 'Total de erros: ' . self::$totalErro;
             if (self::$totalAtencao) {
                 $saida[] = self::getAtencao();
-                $saida[] = self::$separador . 'Total de aten&ccdil;&otilde;es: ' . self::$totalAtencao;
+                $saida[] = self::$separador . latinToUTF('Total de atenções: ') . self::$totalAtencao;
             }
             return implode(self::getSeparador(), $saida);
         } else {
             $saida = array();
             if (self::$totalAtencao) {
                 $saida[] = self::getAtencao();
-                $saida[] = self::$separador . 'Total de aten&ccdil;&otilde;es: ' . self::$totalAtencao;
+                $saida[] = self::$separador . latinToUTF('Total de atenções: ') . self::$totalAtencao;
             }
             if (self::$totalOk) {
                 $saida[] = self::getOk();
