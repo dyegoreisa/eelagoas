@@ -108,7 +108,8 @@ class Report
         $method = "set{$type}";
         foreach ($this->columns as &$column) {
             if ($column->getField() == $field) {
-                call_user_method_array($method, $column, array($value));
+                $refMethod = new ReflectionMethod($column, $method);
+                $refMethod->invokeArgs($column, array($value));
             }
         }
     }
