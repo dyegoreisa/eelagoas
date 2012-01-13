@@ -3,7 +3,7 @@ if (!is_file('config/instaled')) {
     header('Location: install/install01.php');
 }
 
-ini_set('display_errors', true);
+ini_set('display_errors', false);
 
 //include 'lib/Debug.class.php';
 require_once 'config/config.inc.php';

@@ -9,6 +9,8 @@ try {
     $dsnRoot = "{$_SESSION['DB_DRIVER']}:host={$_SESSION['DB_HOST']}";
     $dbhRoot = new PDO($dsnRoot, $_SESSION['DB_USER_ROOT'], $_SESSION['DB_PASSWD_ROOT']);
 
+    // apaga o banco
+    $dbhRoot->exec("DROP DATABASE {$_SESSION['DB_NAME']}");
     // criar o banco
     $dbhRoot->exec("CREATE DATABASE {$_SESSION['DB_NAME']}");
     // cria o usuário

@@ -4,7 +4,7 @@
 /**
  * Pasta principal do sistema 
  */
-define('ROOT_FOLDER', '');
+define('ROOT_FOLDER', '/eelagoas');
 
 /**
  * Define a rota padrão
@@ -65,11 +65,6 @@ define('LOGO_SITE', ROOT_FOLDER . '/images/logo_longa.png');
 define('LOGO_HTML', ROOT_FOLDER . '/images/logo.jpg');
 define('LOGO_PDF', 'images/logo.jpg');
 define('LOGO_XLS', 'images/logo.bmp');
-
-/**
- * Define se mostra mensagens de erros do PHP 
- */
-define('DISPLAY_ERRORS', true);
 
 /**
  * Define informações para acesso ao banco de dados
