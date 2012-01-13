@@ -2,7 +2,6 @@
 if (is_file('../config/instaled')) {
     header('Location: ../index.php');
 }
-require 'config.inc.php';
 
 $pedacos = explode('/', $_SERVER['SCRIPT_NAME']);
 
@@ -19,17 +18,18 @@ if (is_file('../config/config.inc.php')) {
 } else {
     $negado = 0;
     // Verifica se tem permissão de escrita nas pasta dos templates
-    if (@file_put_contents('../' . COMPILED . '/teste.txt', 'teste') !== false) {
-        @exec('rm -rf ../' . COMPILED . '/*');
-        $mensagem[] = "Pasta '" . COMPILED . "' com acesso <span style=\"color:green\">liberado</span>.";
+    $compiled_c = 'compiled';
+    if (@file_put_contents("../{$compiled_c}/teste.txt", 'teste') !== false) {
+        @exec('rm -f ../' . $compiled_c . '/*');
+        $mensagem[] = "Pasta '{$compiled_c}' com acesso <span style=\"color:green\">liberado</span>.";
     } else {
-        $mensagem[] = "Pasta '" . COMPILED . "' com acesso <span style=\"color:red\">negado</span>.";
+        $mensagem[] = "Pasta '{$compiled_c}' com acesso <span style=\"color:red\">negado</span>.";
         $negado++;
     }
 
     $config_c = 'config';
     if (@file_put_contents("../{$config_c}/teste.txt", 'teste') !== false) {
-        @exec("rm -rf ../{$config_c}/*");
+        @exec("rm -f ../{$config_c}/*");
         $mensagem[] = "Pasta '{$config_c}' com acesso <span style=\"color:green\">liberado</span>.";
     } else {
         $mensagem[] = "Pasta '{$config_c}' com acesso <span style=\"color:red\">negado</span>.";

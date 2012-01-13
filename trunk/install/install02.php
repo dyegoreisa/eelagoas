@@ -89,6 +89,7 @@ if (
     <input type="password" id="DB_PASSWD_ROOT" name="DB_PASSWD_ROOT"/> Este dado n&atilde;o &eacute; armazenado.
     <br/>
 </fieldset>
+<h3>Se existir outro banco com o mesmo nome ele ser&aacute; apagado!</h3>
 <fieldset>
     <legend>Dados gerados para o sistema</legend>
     <label for="DB_NAME">Nome do banco:</label>
