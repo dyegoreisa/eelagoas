@@ -100,5 +100,11 @@ class Ctrl_Importador extends BaseController implements Importar{
 
         $smarty->displayHBF('importar.tpl');
     }
+    
+    public function tabelaPadrao() 
+    {
+        $smarty = $this->getSmarty();
+        $smarty->downloadFile('tabela-padrao.xls', 'application/xls');
+    }
 }
 ?>

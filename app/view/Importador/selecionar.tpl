@@ -6,6 +6,9 @@
 
 <form action="{$dir}/Importador/verificar" method="POST" class="cmxform" enctype="multipart/form-data">
 
+    <a href="{$dir}/Importador/tabelaPadrao" id="tabela_padrao" target="_blank">Baixar tabela padr&atilde;o</a>
+    <br/><br/>
+    
     <label for="id_projeto">Projeto:</label><br/>
     <select id="id_projeto" name="id_projeto">
         {html_options options=$select_projeto selected=''}

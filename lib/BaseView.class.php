@@ -235,4 +235,11 @@ abstract class BaseView extends Smarty{
     {
         $this->assign('icone', $icone);
     }
+    
+    public function downloadFile($fileName, $fileType)
+    {      
+        header('Content-type: ' . $fileType);
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        readfile(PROC_D_ABSOLUTE . '/files/' . $fileName);
+    }
 }
